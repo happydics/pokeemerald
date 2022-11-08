@@ -1,3 +1,28 @@
+static const u16 sFrontierExchangeCorner_Decor1[] =
+{
+    DECOR_KISS_POSTER,
+    DECOR_KISS_CUSHION,
+    DECOR_SMOOCHUM_DOLL,
+    DECOR_TOGEPI_DOLL,
+    DECOR_MEOWTH_DOLL,
+    DECOR_CLEFAIRY_DOLL,
+    DECOR_DITTO_DOLL,
+    DECOR_CYNDAQUIL_DOLL,
+    DECOR_CHIKORITA_DOLL,
+    DECOR_TOTODILE_DOLL,
+    ITEM_LIST_END
+};
+
+static const u16 sFrontierExchangeCorner_Decor2[] =
+{
+    DECOR_LAPRAS_DOLL,
+    DECOR_SNORLAX_DOLL,
+    DECOR_VENUSAUR_DOLL,
+    DECOR_CHARIZARD_DOLL,
+    DECOR_BLASTOISE_DOLL,
+    ITEM_LIST_END
+};
+
 static const u16 sFrontierExchangeCorner_Vitamins[] =
 {
     ITEM_PROTEIN,
@@ -6,7 +31,7 @@ static const u16 sFrontierExchangeCorner_Vitamins[] =
     ITEM_ZINC,
     ITEM_CARBOS,
     ITEM_HP_UP,
-    0xFFFF
+    ITEM_LIST_END
 };
 
 static const u16 sFrontierExchangeCorner_HoldItems[] =
@@ -20,7 +45,7 @@ static const u16 sFrontierExchangeCorner_HoldItems[] =
     ITEM_KINGS_ROCK,
     ITEM_FOCUS_BAND,
     ITEM_SCOPE_LENS,
-    0xFFFF
+    ITEM_LIST_END
 };
 
 static const u8 *const sFrontierExchangeCorner_VitaminsDescriptions[] =

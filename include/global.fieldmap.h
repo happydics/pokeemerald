@@ -4,9 +4,9 @@
 // Masks/shifts for blocks in the map grid
 // Map grid blocks consist of a 10 bit metatile id, a 2 bit collision value, and a 4 bit elevation value
 // This is the data stored in each data/layouts/*/map.bin file
-#define MAPGRID_METATILE_ID_MASK 0x03FF // Bits 1-10
-#define MAPGRID_COLLISION_MASK   0x0C00 // Bits 11-12
-#define MAPGRID_ELEVATION_MASK   0xF000 // Bits 13-16
+#define MAPGRID_METATILE_ID_MASK 0x03FF // Bits 0-9
+#define MAPGRID_COLLISION_MASK   0x0C00 // Bits 10-11
+#define MAPGRID_ELEVATION_MASK   0xF000 // Bits 12-15
 #define MAPGRID_COLLISION_SHIFT  10
 #define MAPGRID_ELEVATION_SHIFT  12
 
@@ -16,8 +16,8 @@
 // Masks/shifts for metatile attributes
 // Metatile attributes consist of an 8 bit behavior value, 4 unused bits, and a 4 bit layer type value
 // This is the data stored in each data/tilesets/*/*/metatile_attributes.bin file
-#define METATILE_ATTR_BEHAVIOR_MASK 0x00FF // Bits 1-8
-#define METATILE_ATTR_LAYER_MASK    0xF000 // Bits 13-16
+#define METATILE_ATTR_BEHAVIOR_MASK 0x00FF // Bits 0-7
+#define METATILE_ATTR_LAYER_MASK    0xF000 // Bits 12-15
 #define METATILE_ATTR_LAYER_SHIFT   12
 
 enum {
@@ -270,6 +270,8 @@ enum {
 #define PLAYER_AVATAR_FLAG_FORCED_MOVE  (1 << 6)
 #define PLAYER_AVATAR_FLAG_DASH         (1 << 7)
 
+#define PLAYER_AVATAR_FLAG_BIKE        (PLAYER_AVATAR_FLAG_MACH_BIKE | PLAYER_AVATAR_FLAG_ACRO_BIKE)
+
 enum
 {
     ACRO_BIKE_NORMAL,
@@ -322,7 +324,8 @@ struct PlayerAvatar
     /*0x02*/ u8 runningState; // this is a static running state. 00 is not moving, 01 is turn direction, 02 is moving.
     /*0x03*/ u8 tileTransitionState; // this is a transition running state: 00 is not moving, 01 is transition between tiles, 02 means you are on the frame in which you have centered on a tile but are about to keep moving, even if changing directions. 2 is also used for a ledge hop, since you are transitioning.
     /*0x04*/ u8 spriteId;
-    /*0x05*/ u8 objectEventId;
+    /*0x05*/ u8 objectEventId:7;
+             u8 creeping:1;
     /*0x06*/ bool8 preventStep;
     /*0x07*/ u8 gender;
     /*0x08*/ u8 acroBikeState; // 00 is normal, 01 is turning, 02 is standing wheelie, 03 is hopping wheelie

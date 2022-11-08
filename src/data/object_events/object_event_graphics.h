@@ -289,7 +289,7 @@ const u16 gFieldEffectObjectPalette1[] = INCBIN_U16("graphics/field_effects/pale
 const u32 gFieldEffectObjectPic_GroundImpactDust[] = INCBIN_U32("graphics/field_effects/pics/ground_impact_dust.4bpp");
 const u32 gFieldEffectObjectPic_JumpTallGrass[] = INCBIN_U32("graphics/field_effects/pics/jump_tall_grass.4bpp");
 const u32 gUnusedGrass3[] = INCBIN_U32("graphics/field_effects/pics/unused_grass_3.4bpp");
-const u32 gFieldEffectObjectPic_JumpLongGrass[] = INCBIN_U32("graphics/field_effects/pics/unknown_16.4bpp");
+const u32 gFieldEffectObjectPic_JumpLongGrass[] = INCBIN_U32("graphics/field_effects/pics/jump_long_grass.4bpp");
 const u32 gFieldEffectObjectPic_Unknown17[] = INCBIN_U32("graphics/field_effects/pics/unknown_17.4bpp");
 const u32 gFieldEffectObjectPic_UnusedGrass2[] = INCBIN_U32("graphics/field_effects/pics/unused_grass_2.4bpp");
 const u32 gFieldEffectObjectPic_LongGrass[] = INCBIN_U32("graphics/field_effects/pics/long_grass.4bpp");
@@ -806,3 +806,6 @@ const u32 gObjectEventPic_KyogreOW[] = INCBIN_U32("graphics/object_events/pics/p
 
 const u16 gObjectEventPaletteLight[] = INCBIN_U16("graphics/object_events/palettes/light.gbapal");
 const u16 gObjectEventPaletteEmotes[] = INCBIN_U16("graphics/misc/emotes.gbapal");
+
+const u32 gFieldEffectObjectPic_CaveDust[] = INCBIN_U32("graphics/field_effects/pics/cave_dust.4bpp");
+const u16 gFieldEffectObjectPalette_CaveDust[] = INCBIN_U16("graphics/field_effects/palettes/cave_dust.gbapal");

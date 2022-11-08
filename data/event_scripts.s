@@ -1059,11 +1059,8 @@ Common_EventScript_LegendaryFlewAway::
 	.include "data/text/frontier_brain.inc"
 	.include "data/text/save.inc"
 	.include "data/text/birch_speech.inc"
-
 	.include "data/maps/AlteringCave_Underwater/scripts.inc"
-
 	.include "data/maps/LilycoveCity_DepartmentStore_6F/scripts.inc"
-
 	.include "data/maps/SlateportCity_Dojo/scripts.inc"
-
 	.include "data/maps/PetalburgCity_PostOffice/scripts.inc"
+    .include "data/scripts/dexnav.inc"
