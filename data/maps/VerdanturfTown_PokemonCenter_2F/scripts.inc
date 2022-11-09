@@ -1,52 +1,20 @@
-.set LOCALID_MOVE_DELETER, 1
-
 VerdanturfTown_PokemonCenter_2F_MapScripts::
+	map_script MAP_SCRIPT_ON_FRAME_TABLE, CableClub_OnFrame
+	map_script MAP_SCRIPT_ON_WARP_INTO_MAP_TABLE, CableClub_OnWarp
+	map_script MAP_SCRIPT_ON_LOAD, CableClub_OnLoad
+	map_script MAP_SCRIPT_ON_TRANSITION, CableClub_OnTransition
 	.byte 0
 
-VerdanturfTown_PokemonCenter_2F_EventScript_RankBoard::
-	lock
-	call Common_EventScript_Pkmn_Center_Services_RankBoard
-	release
+@ The below 3 are unused and leftover from RS
+VerdanturfTown_PokemonCenter_2F_EventScript_Colosseum::
+	call CableClub_EventScript_Colosseum
 	end
 
-VerdanturfTown_PokemonCenter_2F_EventScript_MoveDeleter::
-	lock
-	faceplayer
-	setvar VAR_0x800B, LOCALID_MOVE_DELETER
-	call Common_EventScript_Pkmn_Center_Services_MoveDeleter
-	release
+VerdanturfTown_PokemonCenter_2F_EventScript_TradeCenter::
+	call CableClub_EventScript_TradeCenter
 	end
 
-VerdanturfTown_PokemonCenter_2F_EventScript_BerryClerk::
-	lock
-	faceplayer
-	call Common_EventScript_Pkmn_Center_Services_BerryClerk
-	release
+VerdanturfTown_PokemonCenter_2F_EventScript_RecordCorner::
+	call CableClub_EventScript_RecordCorner
 	end
 
-VerdanturfTown_PokemonCenter_2F_EventScript_EliteShop::
-	lock
-	faceplayer
-	call Common_EventScript_Pkmn_Center_Services_EliteShop
-	release
-	end
-
-VerdanturfTown_PokemonCenter_2F_EventScript_Kid::
-	lock
-	faceplayer
-	msgbox VerdanturfTown_PokemonCenter_2F_Text_GoAllTheWay, MSGBOX_DEFAULT
-	release
-	end
-
-VerdanturfTown_PokemonCenter_2F_Text_GoAllTheWay:
-	.string "I just hit BEGINNER rank.\p"
-	.string "AZURILL and I are going to go\n"
-	.string "all the way!$"
-
-VerdanturfTown_PokemonCenter_2F_EventScript_Azurill::
-	lock
-	faceplayer
-	playmoncry SPECIES_AZURILL, CRY_MODE_NORMAL
-	waitmoncry
-	release
-	end

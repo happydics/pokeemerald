@@ -8,7 +8,6 @@ EverGrandeCity_HallOfFame_EventScript_SetGameClearFlags::
 	setflag FLAG_HIDE_SLATEPORT_CITY_STERNS_SHIPYARD_MR_BRINEY
 	clearflag FLAG_HIDE_SS_TIDAL_CORRIDOR_MR_BRINEY
 	clearflag FLAG_HIDE_MOSSDEEP_CITY_STEVENS_HOUSE_INVISIBLE_NINJA_BOY
-	clearflag FLAG_HIDE_SLATEPORT_CITY_POWER_ITEM_VENDOR
 	setvar VAR_STEVENS_HOUSE_STATE, 2
 	setflag FLAG_HIDE_VICTORY_ROAD_ENTRANCE_WALLY
 	clearflag FLAG_HIDE_VICTORY_ROAD_EXIT_WALLY
@@ -22,8 +21,7 @@ EverGrandeCity_HallOfFame_EventScript_SetGameClearFlags::
 	call_if_unset FLAG_RECEIVED_BELDUM, EverGrandeCity_HallOfFame_EventScript_ShowStevensHouseBeldum
 	setflag FLAG_HIDE_LITTLEROOT_TOWN_BRENDANS_HOUSE_RIVAL_BEDROOM
 	setflag FLAG_HIDE_LITTLEROOT_TOWN_MAYS_HOUSE_RIVAL_BEDROOM
-	call_if_eq VAR_POSTGAME_BIRCH_GIFT, 0, EverGrandeCity_HallOfFame_EventScript_ReadyPostgameBirchStarter
-	call_if_ge VAR_POSTGAME_BIRCH_GIFT, 3, EverGrandeCity_HallOfFame_EventScript_ReenablePostgameBirch
+	call_if_eq VAR_DEX_UPGRADE_JOHTO_STARTER_STATE, 0, EverGrandeCity_HallOfFame_EventScript_ReadyDexUpgradeEvent
 	return
 
 EverGrandeCity_HallOfFame_EventScript_ResetDefeatedEventLegendaries::
@@ -32,16 +30,6 @@ EverGrandeCity_HallOfFame_EventScript_ResetDefeatedEventLegendaries::
 	clearflag FLAG_DEFEATED_DEOXYS
 	clearflag FLAG_DEFEATED_LUGIA
 	clearflag FLAG_DEFEATED_HO_OH
-	clearflag FLAG_DEFEATED_ARTICUNO
-	clearflag FLAG_DEFEATED_ZAPDOS
-	clearflag FLAG_DEFEATED_MOLTRES
-	clearflag FLAG_DEFEATED_MELTAN
-	clearflag FLAG_DEFEATED_MEWTWO
-	clearflag FLAG_DEFEATED_RAIKOU
-	clearflag FLAG_DEFEATED_ENTEI
-	clearflag FLAG_DEFEATED_SUICUNE
-	clearflag FLAG_DEFEATED_CELEBI
-	clearflag FLAG_DEFEATED_JIRACHI
 	return
 
 EverGrandeCity_HallOfFame_EventScript_SetDesertUnderpassCommentReady::
@@ -58,14 +46,6 @@ EverGrandeCity_HallOfFame_EventScript_ReadyReceiveSSTicketEvent::
 	clearflag FLAG_HIDE_PLAYERS_HOUSE_DAD
 	return
 
-EverGrandeCity_HallOfFame_EventScript_ReadyPostgameBirchStarter::
-	setvar VAR_POSTGAME_BIRCH_GIFT, 1
-	return
-
-EverGrandeCity_HallOfFame_EventScript_ReenablePostgameBirch::
-	goto_if_set FLAG_DAILY_RECEIVED_BIRCH_STARTER, EverGrandeCity_HallOfFame_EventScript_DoNotEnablePostgameBirch
-	setvar VAR_POSTGAME_BIRCH_GIFT, 5
-	return
-
-EverGrandeCity_HallOfFame_EventScript_DoNotEnablePostgameBirch::
+EverGrandeCity_HallOfFame_EventScript_ReadyDexUpgradeEvent::
+	setvar VAR_DEX_UPGRADE_JOHTO_STARTER_STATE, 1
 	return

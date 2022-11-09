@@ -127,7 +127,7 @@ Route115_EventScript_ItemPPUp::
 	end
 
 Route116_EventScript_ItemXSpecial::
-	finditem ITEM_X_SPECIAL
+	finditem ITEM_X_SP_ATK
 	end
 
 Route116_EventScript_ItemEther::
@@ -315,7 +315,7 @@ MauvilleCity_EventScript_ItemXSpeed::
 	end
 
 RustboroCity_EventScript_ItemXDefend::
-	finditem ITEM_X_DEFEND
+	finditem ITEM_X_DEFENSE
 	end
 
 LilycoveCity_EventScript_ItemMaxRepel::
@@ -368,10 +368,6 @@ GraniteCave_B2F_EventScript_ItemRareCandy::
 
 JaggedPass_EventScript_ItemBurnHeal::
 	finditem ITEM_BURN_HEAL
-	end
-
-JaggedPass_EventScript_ItemTM35::
-	finditem ITEM_TM35
 	end
 
 FieryPath_EventScript_ItemFireStone::
@@ -660,20 +656,4 @@ MagmaHideout_4F_EventScript_ItemMaxRevive::
 
 MagmaHideout_3F_3R_EventScript_ItemEscapeRope::
 	finditem ITEM_ESCAPE_ROPE
-	end
-
-UnderwaterRoute_124_EventScript_ItemDomeFossil::
-	finditem ITEM_DOME_FOSSIL
-	end
-
-SeafloorCavern_EventScript_ItemHelixFossil::
-	finditem ITEM_HELIX_FOSSIL
-	end
-
-MeteorFalls_EventScript_ItemOldAmber::
-	finditem ITEM_OLD_AMBER
-	end
-
-MeteorFalls_EventScript_ItemPixieDust::
-	finditem ITEM_PIXIE_DUST
 	end

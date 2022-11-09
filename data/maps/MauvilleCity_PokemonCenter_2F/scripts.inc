@@ -1,13 +1,25 @@
-.set LOCALID_MOVE_DELETER, 1
-
 MauvilleCity_PokemonCenter_2F_MapScripts::
+	map_script MAP_SCRIPT_ON_FRAME_TABLE, CableClub_OnFrame
+	map_script MAP_SCRIPT_ON_WARP_INTO_MAP_TABLE, CableClub_OnWarp
+	map_script MAP_SCRIPT_ON_LOAD, CableClub_OnLoad
+	map_script MAP_SCRIPT_ON_TRANSITION, CableClub_OnTransition
 	.byte 0
 
+@ The below 3 are unused and leftover from RS
+MauvilleCity_PokemonCenter_2F_EventScript_Colosseum::
+	call CableClub_EventScript_Colosseum
+	end
+
+MauvilleCity_PokemonCenter_2F_EventScript_TradeCenter::
+	call CableClub_EventScript_TradeCenter
+	end
+
+MauvilleCity_PokemonCenter_2F_EventScript_RecordCorner::
+	call CableClub_EventScript_RecordCorner
+	end
+
 MauvilleCity_PokemonCenter_2F_EventScript_Youngster::
-	lock
-	faceplayer
-	msgbox MauvilleCity_PokemonCenter_2F_Text_Youngster, MSGBOX_DEFAULT
-	release
+	msgbox MauvilleCity_PokemonCenter_2F_Text_Youngster, MSGBOX_NPC
 	end
 
 MauvilleCity_PokemonCenter_2F_Text_Youngster:
@@ -18,30 +30,3 @@ MauvilleCity_PokemonCenter_2F_Text_Youngster:
 	.string "It's embarrassing if you lose more\n"
 	.string "often than you win…$"
 
-MauvilleCity_PokemonCenter_2F_EventScript_RankBoard::
-	lock
-	call Common_EventScript_Pkmn_Center_Services_RankBoard
-	release
-	end
-
-MauvilleCity_PokemonCenter_2F_EventScript_MoveDeleter::
-	lock
-	faceplayer
-	setvar VAR_0x800B, LOCALID_MOVE_DELETER
-	call Common_EventScript_Pkmn_Center_Services_MoveDeleter
-	release
-	end
-
-MauvilleCity_PokemonCenter_2F_EventScript_BerryClerk::
-	lock
-	faceplayer
-	call Common_EventScript_Pkmn_Center_Services_BerryClerk
-	release
-	end
-
-MauvilleCity_PokemonCenter_2F_EventScript_EliteShop::
-	lock
-	faceplayer
-	call Common_EventScript_Pkmn_Center_Services_EliteShop
-	release
-	end

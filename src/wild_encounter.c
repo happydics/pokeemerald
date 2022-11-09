@@ -14,9 +14,11 @@
 #include "tv.h"
 #include "link.h"
 #include "script.h"
+#include "battle_debug.h"
 #include "battle_pike.h"
 #include "battle_pyramid.h"
 #include "constants/abilities.h"
+#include "constants/battle_config.h"
 #include "constants/game_stat.h"
 #include "constants/items.h"
 #include "constants/layouts.h"
@@ -52,11 +54,13 @@ static void FeebasSeedRng(u16 seed);
 static bool8 IsWildLevelAllowedByRepel(u8 level);
 static void ApplyFluteEncounterRateMod(u32 *encRate);
 static void ApplyCleanseTagEncounterRateMod(u32 *encRate);
-static bool8 TryGetAbilityInfluencedWildMonIndex(const struct WildPokemon *wildMon, u8 type, u8 ability, u8 *monIndex);
+static bool8 TryGetAbilityInfluencedWildMonIndex(const struct WildPokemon *wildMon, u8 type, u16 ability, u8 *monIndex);
 static bool8 IsAbilityAllowingEncounter(u8 level);
 
 EWRAM_DATA static u8 sWildEncountersDisabled = 0;
 EWRAM_DATA static u32 sFeebasRngValue = 0;
+EWRAM_DATA bool8 gIsFishingEncounter = 0;
+EWRAM_DATA bool8 gIsSurfingEncounter = 0;
 
 #include "data/wild_encounters.h"
 
@@ -175,7 +179,7 @@ static void FeebasSeedRng(u16 seed)
 }
 
 // LAND_WILD_COUNT
-u8 ChooseWildMonIndex_Land(void)
+static u8 ChooseWildMonIndex_Land(void)
 {
     u8 rand = Random() % ENCOUNTER_CHANCE_LAND_MONS_TOTAL;
 
@@ -191,12 +195,22 @@ u8 ChooseWildMonIndex_Land(void)
         return 4;
     else if (rand >= ENCOUNTER_CHANCE_LAND_MONS_SLOT_4 && rand < ENCOUNTER_CHANCE_LAND_MONS_SLOT_5)
         return 5;
-    else 
+    else if (rand >= ENCOUNTER_CHANCE_LAND_MONS_SLOT_5 && rand < ENCOUNTER_CHANCE_LAND_MONS_SLOT_6)
         return 6;
+    else if (rand >= ENCOUNTER_CHANCE_LAND_MONS_SLOT_6 && rand < ENCOUNTER_CHANCE_LAND_MONS_SLOT_7)
+        return 7;
+    else if (rand >= ENCOUNTER_CHANCE_LAND_MONS_SLOT_7 && rand < ENCOUNTER_CHANCE_LAND_MONS_SLOT_8)
+        return 8;
+    else if (rand >= ENCOUNTER_CHANCE_LAND_MONS_SLOT_8 && rand < ENCOUNTER_CHANCE_LAND_MONS_SLOT_9)
+        return 9;
+    else if (rand >= ENCOUNTER_CHANCE_LAND_MONS_SLOT_9 && rand < ENCOUNTER_CHANCE_LAND_MONS_SLOT_10)
+        return 10;
+    else
+        return 11;
 }
 
 // ROCK_WILD_COUNT / WATER_WILD_COUNT
-u8 ChooseWildMonIndex_WaterRock(void)
+static u8 ChooseWildMonIndex_WaterRock(void)
 {
     u8 rand = Random() % ENCOUNTER_CHANCE_WATER_MONS_TOTAL;
 
@@ -206,8 +220,10 @@ u8 ChooseWildMonIndex_WaterRock(void)
         return 1;
     else if (rand >= ENCOUNTER_CHANCE_WATER_MONS_SLOT_1 && rand < ENCOUNTER_CHANCE_WATER_MONS_SLOT_2)
         return 2;
-    else 
+    else if (rand >= ENCOUNTER_CHANCE_WATER_MONS_SLOT_2 && rand < ENCOUNTER_CHANCE_WATER_MONS_SLOT_3)
         return 3;
+    else
+        return 4;
 }
 
 // FISH_WILD_COUNT
@@ -220,22 +236,30 @@ static u8 ChooseWildMonIndex_Fishing(u8 rod)
     switch (rod)
     {
     case OLD_ROD:
-        if (rand <= ENCOUNTER_CHANCE_FISHING_MONS_OLD_ROD_SLOT_0)
+        if (rand < ENCOUNTER_CHANCE_FISHING_MONS_OLD_ROD_SLOT_0)
             wildMonIndex = 0;
+        else
+            wildMonIndex = 1;
         break;
     case GOOD_ROD:
-        if (rand < ENCOUNTER_CHANCE_FISHING_MONS_GOOD_ROD_SLOT_1)
-            wildMonIndex = 1;
-        if (rand >= ENCOUNTER_CHANCE_FISHING_MONS_GOOD_ROD_SLOT_1 && rand < ENCOUNTER_CHANCE_FISHING_MONS_GOOD_ROD_SLOT_2)
+        if (rand < ENCOUNTER_CHANCE_FISHING_MONS_GOOD_ROD_SLOT_2)
             wildMonIndex = 2;
+        if (rand >= ENCOUNTER_CHANCE_FISHING_MONS_GOOD_ROD_SLOT_2 && rand < ENCOUNTER_CHANCE_FISHING_MONS_GOOD_ROD_SLOT_3)
+            wildMonIndex = 3;
+        if (rand >= ENCOUNTER_CHANCE_FISHING_MONS_GOOD_ROD_SLOT_3 && rand < ENCOUNTER_CHANCE_FISHING_MONS_GOOD_ROD_SLOT_4)
+            wildMonIndex = 4;
         break;
     case SUPER_ROD:
-        if (rand < ENCOUNTER_CHANCE_FISHING_MONS_SUPER_ROD_SLOT_3)
-            wildMonIndex = 3;
-        if (rand >= ENCOUNTER_CHANCE_FISHING_MONS_SUPER_ROD_SLOT_3 && rand < ENCOUNTER_CHANCE_FISHING_MONS_SUPER_ROD_SLOT_4)
-            wildMonIndex = 4;
-        if (rand >= ENCOUNTER_CHANCE_FISHING_MONS_SUPER_ROD_SLOT_4 && rand < ENCOUNTER_CHANCE_FISHING_MONS_SUPER_ROD_SLOT_5)
+        if (rand < ENCOUNTER_CHANCE_FISHING_MONS_SUPER_ROD_SLOT_5)
             wildMonIndex = 5;
+        if (rand >= ENCOUNTER_CHANCE_FISHING_MONS_SUPER_ROD_SLOT_5 && rand < ENCOUNTER_CHANCE_FISHING_MONS_SUPER_ROD_SLOT_6)
+            wildMonIndex = 6;
+        if (rand >= ENCOUNTER_CHANCE_FISHING_MONS_SUPER_ROD_SLOT_6 && rand < ENCOUNTER_CHANCE_FISHING_MONS_SUPER_ROD_SLOT_7)
+            wildMonIndex = 7;
+        if (rand >= ENCOUNTER_CHANCE_FISHING_MONS_SUPER_ROD_SLOT_7 && rand < ENCOUNTER_CHANCE_FISHING_MONS_SUPER_ROD_SLOT_8)
+            wildMonIndex = 8;
+        if (rand >= ENCOUNTER_CHANCE_FISHING_MONS_SUPER_ROD_SLOT_8 && rand < ENCOUNTER_CHANCE_FISHING_MONS_SUPER_ROD_SLOT_9)
+            wildMonIndex = 9;
         break;
     }
     return wildMonIndex;
@@ -265,7 +289,7 @@ static u8 ChooseWildMonLevel(const struct WildPokemon *wildPokemon)
     // check ability for max level mon
     if (!GetMonData(&gPlayerParty[0], MON_DATA_SANITY_IS_EGG))
     {
-        u8 ability = GetMonAbility(&gPlayerParty[0]);
+        u16 ability = GetMonAbility(&gPlayerParty[0]);
         if (ability == ABILITY_HUSTLE || ability == ABILITY_VITAL_SPIRIT || ability == ABILITY_PRESSURE)
         {
             if (Random() % 2 == 0)
@@ -278,7 +302,7 @@ static u8 ChooseWildMonLevel(const struct WildPokemon *wildPokemon)
     return min + rand;
 }
 
-u16 GetCurrentMapWildMonHeaderId(void)
+static u16 GetCurrentMapWildMonHeaderId(void)
 {
     u16 i;
 
@@ -291,226 +315,15 @@ u16 GetCurrentMapWildMonHeaderId(void)
         if (gWildMonHeaders[i].mapGroup == gSaveBlock1Ptr->location.mapGroup &&
             gWildMonHeaders[i].mapNum == gSaveBlock1Ptr->location.mapNum)
         {
-            //Overworld Routes
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE101) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE101))
-                i += VarGet(VAR_TIMEOFDAY);
+            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ALTERING_CAVE) &&
+                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ALTERING_CAVE))
+            {
+                u16 alteringCaveId = VarGet(VAR_ALTERING_CAVE_WILD_SET);
+                if (alteringCaveId >= NUM_ALTERING_CAVE_TABLES)
+                    alteringCaveId = 0;
 
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE102) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE102))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE103) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE103))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE104) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE104))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE105) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE105))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE106) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE106))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE107) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE107))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE108) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE108))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE109) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE109))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE110) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE110))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE111) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE111))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE112) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE112))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE113) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE113))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE114) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE114))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE115) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE115))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE116) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE116))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE117) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE117))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE118) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE118))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE119) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE119))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE120) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE120))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE121) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE121))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE122) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE122))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE123) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE123))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE124) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE124))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE125) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE125))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE126) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE126))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE127) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE127))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE128) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE128))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE129) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE129))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE130) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE130))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE131) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE131))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE132) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE132))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE133) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE133))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE134) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE134))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            //Underwater Routes
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(UNDERWATER_ROUTE124) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(UNDERWATER_ROUTE124))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(UNDERWATER_ROUTE126) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(UNDERWATER_ROUTE126))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            //Dungeons
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(PETALBURG_WOODS) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(PETALBURG_WOODS))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(MT_PYRE_EXTERIOR) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(MT_PYRE_EXTERIOR))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(MT_PYRE_SUMMIT) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(MT_PYRE_SUMMIT))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(JAGGED_PASS) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(JAGGED_PASS))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            //Safari Zones
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(SAFARI_ZONE_NORTH) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(SAFARI_ZONE_NORTH))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(SAFARI_ZONE_NORTHWEST) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(SAFARI_ZONE_NORTHWEST))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(SAFARI_ZONE_NORTHEAST) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(SAFARI_ZONE_NORTHEAST))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(SAFARI_ZONE_SOUTH) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(SAFARI_ZONE_SOUTH))
-                i += VarGet(VAR_TIMEOFDAY);
-            
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(SAFARI_ZONE_SOUTHWEST) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(SAFARI_ZONE_SOUTHWEST))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(SAFARI_ZONE_SOUTHEAST) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(SAFARI_ZONE_SOUTHEAST))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            //Towns
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(PETALBURG_CITY) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(PETALBURG_CITY))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(SLATEPORT_CITY) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(SLATEPORT_CITY))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(LILYCOVE_CITY) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(LILYCOVE_CITY))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(MOSSDEEP_CITY) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(MOSSDEEP_CITY))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(SOOTOPOLIS_CITY) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(SOOTOPOLIS_CITY))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(EVER_GRANDE_CITY) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(EVER_GRANDE_CITY))
-                i += VarGet(VAR_TIMEOFDAY);
-
-            if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(DEWFORD_TOWN) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(DEWFORD_TOWN))
-                i += VarGet(VAR_TIMEOFDAY);
-
-             if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(PACIFIDLOG_TOWN) &&
-                gSaveBlock1Ptr->location.mapNum == MAP_NUM(PACIFIDLOG_TOWN))
-                i += VarGet(VAR_TIMEOFDAY);
+                i += alteringCaveId;
+            }
 
             return i;
         }
@@ -554,7 +367,10 @@ static u8 PickWildMonNature(void)
     // check synchronize for a pokemon with the same ability
     if (!GetMonData(&gPlayerParty[0], MON_DATA_SANITY_IS_EGG)
         && GetMonAbility(&gPlayerParty[0]) == ABILITY_SYNCHRONIZE
-        && Random() % 2 == 0)
+    #if B_SYNCHRONIZE_NATURE <= GEN_7
+        && (Random() % 2 == 0)
+    #endif
+    )
     {
         return GetMonData(&gPlayerParty[0], MON_DATA_PERSONALITY) % NUM_NATURES;
     }
@@ -563,7 +379,7 @@ static u8 PickWildMonNature(void)
     return Random() % NUM_NATURES;
 }
 
-void CreateWildMon(u16 species, u8 level)
+static void CreateWildMon(u16 species, u8 level)
 {
     bool32 checkCuteCharm;
 
@@ -613,11 +429,29 @@ static bool8 TryGenerateWildMon(const struct WildPokemonInfo *wildMonInfo, u8 ar
             break;
         if (TryGetAbilityInfluencedWildMonIndex(wildMonInfo->wildPokemon, TYPE_ELECTRIC, ABILITY_STATIC, &wildMonIndex))
             break;
+        if (TryGetAbilityInfluencedWildMonIndex(wildMonInfo->wildPokemon, TYPE_ELECTRIC, ABILITY_LIGHTNING_ROD, &wildMonIndex))
+            break;
+        if (TryGetAbilityInfluencedWildMonIndex(wildMonInfo->wildPokemon, TYPE_FIRE, ABILITY_FLASH_FIRE, &wildMonIndex))
+            break;
+        if (TryGetAbilityInfluencedWildMonIndex(wildMonInfo->wildPokemon, TYPE_GRASS, ABILITY_HARVEST, &wildMonIndex))
+            break;
+        if (TryGetAbilityInfluencedWildMonIndex(wildMonInfo->wildPokemon, TYPE_WATER, ABILITY_STORM_DRAIN, &wildMonIndex))
+            break;
 
         wildMonIndex = ChooseWildMonIndex_Land();
         break;
     case WILD_AREA_WATER:
+        if (TryGetAbilityInfluencedWildMonIndex(wildMonInfo->wildPokemon, TYPE_STEEL, ABILITY_MAGNET_PULL, &wildMonIndex))
+            break;
         if (TryGetAbilityInfluencedWildMonIndex(wildMonInfo->wildPokemon, TYPE_ELECTRIC, ABILITY_STATIC, &wildMonIndex))
+            break;
+        if (TryGetAbilityInfluencedWildMonIndex(wildMonInfo->wildPokemon, TYPE_ELECTRIC, ABILITY_LIGHTNING_ROD, &wildMonIndex))
+            break;
+        if (TryGetAbilityInfluencedWildMonIndex(wildMonInfo->wildPokemon, TYPE_FIRE, ABILITY_FLASH_FIRE, &wildMonIndex))
+            break;
+        if (TryGetAbilityInfluencedWildMonIndex(wildMonInfo->wildPokemon, TYPE_GRASS, ABILITY_HARVEST, &wildMonIndex))
+            break;
+        if (TryGetAbilityInfluencedWildMonIndex(wildMonInfo->wildPokemon, TYPE_WATER, ABILITY_STORM_DRAIN, &wildMonIndex))
             break;
 
         wildMonIndex = ChooseWildMonIndex_WaterRock();
@@ -705,6 +539,12 @@ static bool8 DoWildEncounterRateTest(u32 encounterRate, bool8 ignoreAbility)
             encounterRate /= 2;
         else if (ability == ABILITY_SNOW_CLOAK && gSaveBlock1Ptr->weather == WEATHER_SNOW)
             encounterRate /= 2;
+        else if (ability == ABILITY_QUICK_FEET)
+            encounterRate /= 2;
+        else if (ability == ABILITY_INFILTRATOR)
+            encounterRate /= 2;
+        else if (ability == ABILITY_NO_GUARD)
+            encounterRate = encounterRate * 3 / 2;
     }
     if (encounterRate > MAX_ENCOUNTER_RATE)
         encounterRate = MAX_ENCOUNTER_RATE;
@@ -802,7 +642,17 @@ bool8 StandardWildEncounter(u16 currMetaTileBehavior, u16 previousMetaTileBehavi
                 // try a regular wild land encounter
                 if (TryGenerateWildMon(gWildMonHeaders[headerId].landMonsInfo, WILD_AREA_LAND, WILD_CHECK_REPEL | WILD_CHECK_KEEN_EYE) == TRUE)
                 {
-                    BattleSetup_StartWildBattle();
+                    if (TryDoDoubleWildBattle())
+                    {
+                        struct Pokemon mon1 = gEnemyParty[0];
+                        TryGenerateWildMon(gWildMonHeaders[headerId].landMonsInfo, WILD_AREA_LAND, WILD_CHECK_KEEN_EYE);
+                        gEnemyParty[1] = mon1;
+                        BattleSetup_StartDoubleWildBattle();
+                    }
+                    else
+                    {
+                        BattleSetup_StartWildBattle();
+                    }
                     return TRUE;
                 }
 
@@ -834,7 +684,18 @@ bool8 StandardWildEncounter(u16 currMetaTileBehavior, u16 previousMetaTileBehavi
             {
                 if (TryGenerateWildMon(gWildMonHeaders[headerId].waterMonsInfo, WILD_AREA_WATER, WILD_CHECK_REPEL | WILD_CHECK_KEEN_EYE) == TRUE)
                 {
-                    BattleSetup_StartWildBattle();
+                    gIsSurfingEncounter = TRUE;
+                    if (TryDoDoubleWildBattle())
+                    {
+                        struct Pokemon mon1 = gEnemyParty[0];
+                        TryGenerateWildMon(gWildMonHeaders[headerId].waterMonsInfo, WILD_AREA_WATER, WILD_CHECK_KEEN_EYE);
+                        gEnemyParty[1] = mon1;
+                        BattleSetup_StartDoubleWildBattle();
+                    }
+                    else
+                    {
+                        BattleSetup_StartWildBattle();
+                    }
                     return TRUE;
                 }
 
@@ -975,6 +836,7 @@ void FishingWildEncounter(u8 rod)
     }
     IncrementGameStat(GAME_STAT_FISHING_CAPTURES);
     SetPokemonAnglerSpecies(species);
+    gIsFishingEncounter = TRUE;
     BattleSetup_StartWildBattle();
 }
 
@@ -1077,7 +939,7 @@ static bool8 IsWildLevelAllowedByRepel(u8 wildLevel)
 
 static bool8 IsAbilityAllowingEncounter(u8 level)
 {
-    u8 ability;
+    u16 ability;
 
     if (GetMonData(&gPlayerParty[0], MON_DATA_SANITY_IS_EGG))
         return TRUE;
@@ -1114,7 +976,7 @@ static bool8 TryGetRandomWildMonIndexByType(const struct WildPokemon *wildMon, u
     return TRUE;
 }
 
-static bool8 TryGetAbilityInfluencedWildMonIndex(const struct WildPokemon *wildMon, u8 type, u8 ability, u8 *monIndex)
+static bool8 TryGetAbilityInfluencedWildMonIndex(const struct WildPokemon *wildMon, u8 type, u16 ability, u8 *monIndex)
 {
     if (GetMonData(&gPlayerParty[0], MON_DATA_SANITY_IS_EGG))
         return FALSE;
@@ -1140,24 +1002,17 @@ static void ApplyCleanseTagEncounterRateMod(u32 *encRate)
         *encRate = *encRate * 2 / 3;
 }
 
-u8 ChooseHiddenMonIndex(void)
+bool8 TryDoDoubleWildBattle(void)
 {
-    #ifdef ENCOUNTER_CHANCE_HIDDEN_MONS_TOTAL
-        u8 rand = Random() % ENCOUNTER_CHANCE_HIDDEN_MONS_TOTAL;
-
-        if (rand < ENCOUNTER_CHANCE_HIDDEN_MONS_SLOT_0)
-            return 0;
-        else if (rand >= ENCOUNTER_CHANCE_HIDDEN_MONS_SLOT_0 && rand < ENCOUNTER_CHANCE_HIDDEN_MONS_SLOT_1)
-            return 1;
-        else
-            return 2;
-    #else
-        return 0xFF;
-    #endif
+    if (GetSafariZoneFlag() || GetMonsStateToDoubles() != PLAYER_HAS_TWO_USABLE_MONS)
+        return FALSE;
+#if B_FLAG_FORCE_DOUBLE_WILD != 0
+    else if (FlagGet(B_FLAG_FORCE_DOUBLE_WILD))
+        return TRUE;
+#endif
+#if B_DOUBLE_WILD_CHANCE != 0
+    else if ((Random() % 100) + 1 < B_DOUBLE_WILD_CHANCE)
+        return TRUE;
+#endif
+    return FALSE;
 }
-
-bool32 MapHasNoEncounterData(void)
-{
-    return (GetCurrentMapWildMonHeaderId() == HEADER_NONE);
-}
-

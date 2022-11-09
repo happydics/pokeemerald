@@ -65,6 +65,7 @@
 #include "constants/weather.h"
 #include "constants/metatile_labels.h"
 #include "palette.h"
+#include "battle_util.h"
 
 EWRAM_DATA bool8 gBikeCyclingChallenge = FALSE;
 EWRAM_DATA u8 gBikeCollisions = 0;
@@ -583,10 +584,10 @@ static void LoadLinkPartnerObjectEventSpritePalette(u8 graphicsId, u8 localEvent
             switch (graphicsId)
             {
             case OBJ_EVENT_GFX_LINK_RS_BRENDAN:
-                LoadPalette(gObjectEventPal_Brendan, 0x100 + (adjustedPaletteNum << 4), 0x20);
+                LoadPalette(gObjectEventPal_RubySapphireBrendan, 0x100 + (adjustedPaletteNum << 4), 0x20);
                 break;
             case OBJ_EVENT_GFX_LINK_RS_MAY:
-                LoadPalette(gObjectEventPal_May, 0x100 + (adjustedPaletteNum << 4), 0x20);
+                LoadPalette(gObjectEventPal_RubySapphireMay, 0x100 + (adjustedPaletteNum << 4), 0x20);
                 break;
             case OBJ_EVENT_GFX_RIVAL_BRENDAN_NORMAL:
                 LoadPalette(gObjectEventPal_Brendan, 0x100 + (adjustedPaletteNum << 4), 0x20);
@@ -939,21 +940,7 @@ u16 GetWeekCount(void)
 
 u8 GetLeadMonFriendshipScore(void)
 {
-    struct Pokemon *pokemon = &gPlayerParty[GetLeadMonIndex()];
-    if (GetMonData(pokemon, MON_DATA_FRIENDSHIP) == MAX_FRIENDSHIP)
-        return FRIENDSHIP_MAX;
-    if (GetMonData(pokemon, MON_DATA_FRIENDSHIP) >= 200)
-        return FRIENDSHIP_200_TO_254;
-    if (GetMonData(pokemon, MON_DATA_FRIENDSHIP) >= 150)
-        return FRIENDSHIP_150_TO_199;
-    if (GetMonData(pokemon, MON_DATA_FRIENDSHIP) >= 100)
-        return FRIENDSHIP_100_TO_149;
-    if (GetMonData(pokemon, MON_DATA_FRIENDSHIP) >= 50)
-        return FRIENDSHIP_50_TO_99;
-    if (GetMonData(pokemon, MON_DATA_FRIENDSHIP) >= 1)
-        return FRIENDSHIP_1_TO_49;
-
-    return FRIENDSHIP_NONE;
+    return GetMonFriendshipScore(&gPlayerParty[GetLeadMonIndex()]);
 }
 
 static void CB2_FieldShowRegionMap(void)
@@ -966,9 +953,25 @@ void FieldShowRegionMap(void)
     SetMainCallback2(CB2_FieldShowRegionMap);
 }
 
+static bool8 IsPlayerInFrontOfPC(void)
+{
+    u16 x, y;
+    u16 tileInFront;
+
+    GetXYCoordsOneStepInFrontOfPlayer(&x, &y);
+    tileInFront = MapGridGetMetatileIdAt(x, y);
+
+    return (tileInFront == METATILE_BrendansMaysHouse_BrendanPC_On
+         || tileInFront == METATILE_BrendansMaysHouse_BrendanPC_Off
+         || tileInFront == METATILE_BrendansMaysHouse_MayPC_On
+         || tileInFront == METATILE_BrendansMaysHouse_MayPC_Off
+         || tileInFront == METATILE_Building_PC_On
+         || tileInFront == METATILE_Building_PC_Off);
+}
+
 void DoPCTurnOnEffect(void)
 {
-    if (FuncIsActiveTask(Task_PCTurnOnEffect) != TRUE)
+    if (FuncIsActiveTask(Task_PCTurnOnEffect) != TRUE && IsPlayerInFrontOfPC() == TRUE)
     {
         u8 taskId = CreateTask(Task_PCTurnOnEffect, 8);
         gTasks[taskId].data[0] = 0;
@@ -1054,6 +1057,9 @@ static void PCTurnOffEffect(void)
     s8 dy = 0;
     u16 tileId = 0;
     u8 playerDirection = GetPlayerFacingDirection();
+
+    if (IsPlayerInFrontOfPC() == FALSE)
+        return;
     switch (playerDirection)
     {
     case DIR_NORTH:
@@ -1508,6 +1514,23 @@ void TryInitBattleTowerAwardManObjectEvent(void)
     //TryInitLocalObjectEvent(6);
 }
 
+u16 GetDaysUntilPacifidlogTMAvailable(void)
+{
+    u16 tmReceivedDay = VarGet(VAR_PACIFIDLOG_TM_RECEIVED_DAY);
+    if (gLocalTime.days - tmReceivedDay >= 7)
+        return 0;
+    else if (gLocalTime.days < 0)
+        return 8;
+
+    return 7 - (gLocalTime.days - tmReceivedDay);
+}
+
+u16 SetPacifidlogTMReceivedDay(void)
+{
+    VarSet(VAR_PACIFIDLOG_TM_RECEIVED_DAY, gLocalTime.days);
+    return gLocalTime.days;
+}
+
 bool8 MonOTNameNotPlayer(void)
 {
     if (GetMonData(&gPlayerParty[gSpecialVar_0x8004], MON_DATA_LANGUAGE) != GAME_LANGUAGE)
@@ -1722,29 +1745,25 @@ u16 GetDeptStoreDefaultFloorChoice(void)
     {
         switch (gSaveBlock1Ptr->dynamicWarp.mapNum)
         {
-        case MAP_NUM(LILYCOVE_CITY_DEPARTMENT_STORE_6F):
+        case MAP_NUM(LILYCOVE_CITY_DEPARTMENT_STORE_5F):
             sLilycoveDeptStore_NeverRead = 0;
             sLilycoveDeptStore_DefaultFloorChoice = 0;
             break;
-        case MAP_NUM(LILYCOVE_CITY_DEPARTMENT_STORE_5F):
+        case MAP_NUM(LILYCOVE_CITY_DEPARTMENT_STORE_4F):
             sLilycoveDeptStore_NeverRead = 0;
             sLilycoveDeptStore_DefaultFloorChoice = 1;
             break;
-        case MAP_NUM(LILYCOVE_CITY_DEPARTMENT_STORE_4F):
+        case MAP_NUM(LILYCOVE_CITY_DEPARTMENT_STORE_3F):
             sLilycoveDeptStore_NeverRead = 0;
             sLilycoveDeptStore_DefaultFloorChoice = 2;
             break;
-        case MAP_NUM(LILYCOVE_CITY_DEPARTMENT_STORE_3F):
+        case MAP_NUM(LILYCOVE_CITY_DEPARTMENT_STORE_2F):
             sLilycoveDeptStore_NeverRead = 0;
             sLilycoveDeptStore_DefaultFloorChoice = 3;
             break;
-        case MAP_NUM(LILYCOVE_CITY_DEPARTMENT_STORE_2F):
-            sLilycoveDeptStore_NeverRead = 0;
-            sLilycoveDeptStore_DefaultFloorChoice = 4;
-            break;
         case MAP_NUM(LILYCOVE_CITY_DEPARTMENT_STORE_1F):
             sLilycoveDeptStore_NeverRead = 0;
-            sLilycoveDeptStore_DefaultFloorChoice = 5;
+            sLilycoveDeptStore_DefaultFloorChoice = 4;
             break;
         }
     }
@@ -2202,6 +2221,26 @@ void ShowScrollableMultichoice(void)
         task->tKeepOpenAfterSelect = FALSE;
         task->tTaskId = taskId;
         break;
+    case SCROLL_MULTI_BF_EXCHANGE_CORNER_DECOR_VENDOR_1:
+        task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
+        task->tNumItems = 11;
+        task->tLeft = 14;
+        task->tTop = 1;
+        task->tWidth = 15;
+        task->tHeight = 12;
+        task->tKeepOpenAfterSelect = FALSE;
+        task->tTaskId = taskId;
+        break;
+    case SCROLL_MULTI_BF_EXCHANGE_CORNER_DECOR_VENDOR_2:
+        task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
+        task->tNumItems = 6;
+        task->tLeft = 14;
+        task->tTop = 1;
+        task->tWidth = 15;
+        task->tHeight = 12;
+        task->tKeepOpenAfterSelect = FALSE;
+        task->tTaskId = taskId;
+        break;
     case SCROLL_MULTI_BF_EXCHANGE_CORNER_VITAMIN_VENDOR:
         task->tMaxItemsOnScreen = MAX_SCROLL_MULTI_ON_SCREEN;
         task->tNumItems = 7;
@@ -2311,6 +2350,29 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
         gText_90Pts,
         gText_100Pts,
         gText_QuestionMark
+    },
+    [SCROLL_MULTI_BF_EXCHANGE_CORNER_DECOR_VENDOR_1] =
+    {
+        gText_KissPoster16BP,
+        gText_KissCushion32BP,
+        gText_SmoochumDoll32BP,
+        gText_TogepiDoll48BP,
+        gText_MeowthDoll48BP,
+        gText_ClefairyDoll48BP,
+        gText_DittoDoll48BP,
+        gText_CyndaquilDoll80BP,
+        gText_ChikoritaDoll80BP,
+        gText_TotodileDoll80BP,
+        gText_Exit
+    },
+    [SCROLL_MULTI_BF_EXCHANGE_CORNER_DECOR_VENDOR_2] =
+    {
+        gText_LaprasDoll128BP,
+        gText_SnorlaxDoll128BP,
+        gText_VenusaurDoll256BP,
+        gText_CharizardDoll256BP,
+        gText_BlastoiseDoll256BP,
+        gText_Exit
     },
     [SCROLL_MULTI_BF_EXCHANGE_CORNER_VITAMIN_VENDOR] =
     {
@@ -2855,14 +2917,12 @@ void CloseFrontierExchangeCornerItemIconWindow(void)
 static void FillFrontierExchangeCornerWindowAndItemIcon(u16 menu, u16 selection)
 {
     #include "data/battle_frontier/battle_frontier_exchange_corner.h"
-    //Don't forget to adjust this range if adding a new vendor
-    if (menu >= SCROLL_MULTI_BF_EXCHANGE_CORNER_VITAMIN_VENDOR && menu <= SCROLL_MULTI_BF_EXCHANGE_CORNER_HOLD_ITEM_VENDOR)
+
+    if (menu >= SCROLL_MULTI_BF_EXCHANGE_CORNER_DECOR_VENDOR_1 && menu <= SCROLL_MULTI_BF_EXCHANGE_CORNER_HOLD_ITEM_VENDOR)
     {
         FillWindowPixelRect(0, PIXEL_FILL(1), 0, 0, 216, 32);
         switch (menu)
         {
-<<<<<<< HEAD
-=======
         case SCROLL_MULTI_BF_EXCHANGE_CORNER_DECOR_VENDOR_1:
             AddTextPrinterParameterized2(0, FONT_NORMAL, sFrontierExchangeCorner_Decor1Descriptions[selection], 0, NULL, TEXT_COLOR_DARK_GRAY, TEXT_COLOR_WHITE, TEXT_COLOR_LIGHT_GRAY);
             if (sFrontierExchangeCorner_Decor1[selection] == ITEM_LIST_END)
@@ -2889,7 +2949,6 @@ static void FillFrontierExchangeCornerWindowAndItemIcon(u16 menu, u16 selection)
                 sScrollableMultichoice_ItemSpriteId = AddDecorationIconObject(sFrontierExchangeCorner_Decor2[selection], 33, 88, 0, TAG_ITEM_ICON, TAG_ITEM_ICON);
             }
             break;
->>>>>>> e1021af6bd6a83cc4d53fc3879dacb5f401a0f83
         case SCROLL_MULTI_BF_EXCHANGE_CORNER_VITAMIN_VENDOR:
             AddTextPrinterParameterized2(0, FONT_NORMAL, sFrontierExchangeCorner_VitaminsDescriptions[selection], 0, NULL, TEXT_COLOR_DARK_GRAY, TEXT_COLOR_WHITE, TEXT_COLOR_LIGHT_GRAY);
             ShowFrontierExchangeCornerItemIcon(sFrontierExchangeCorner_Vitamins[selection]);
@@ -2922,50 +2981,20 @@ static void HideFrontierExchangeCornerItemIcon(u16 menu, u16 unused)
     {
         switch (menu)
         {
+        case SCROLL_MULTI_BF_EXCHANGE_CORNER_DECOR_VENDOR_1:
+        case SCROLL_MULTI_BF_EXCHANGE_CORNER_DECOR_VENDOR_2:
         case SCROLL_MULTI_BF_EXCHANGE_CORNER_VITAMIN_VENDOR:
         case SCROLL_MULTI_BF_EXCHANGE_CORNER_HOLD_ITEM_VENDOR:
-            //DestroySpriteAndFreeResources(&gSprites[sScrollableMultichoice_ItemSpriteId]); //Original code
-            FieldEffectFreeGraphicsResources(&gSprites[sScrollableMultichoice_ItemSpriteId]); //Merrp's fix for Decor Vendors
+            DestroySpriteAndFreeResources(&gSprites[sScrollableMultichoice_ItemSpriteId]);
             break;
         }
         sScrollableMultichoice_ItemSpriteId = MAX_SPRITES;
     }
 }
 
-static const u16 sBattleFrontier_TutorMoves1[] =
-{
-    MOVE_SOFT_BOILED,
-    MOVE_SEISMIC_TOSS,
-    MOVE_DREAM_EATER,
-    MOVE_MEGA_PUNCH,
-    MOVE_MEGA_KICK,
-    MOVE_BODY_SLAM,
-    MOVE_ROCK_SLIDE,
-    MOVE_COUNTER,
-    MOVE_THUNDER_WAVE,
-    MOVE_SWORDS_DANCE
-};
-
-static const u16 sBattleFrontier_TutorMoves2[] =
-{
-    MOVE_DEFENSE_CURL,
-    MOVE_SNORE,
-    MOVE_MUD_SLAP,
-    MOVE_SWIFT,
-    MOVE_ICY_WIND,
-    MOVE_ENDURE,
-    MOVE_PSYCH_UP,
-    MOVE_ICE_PUNCH,
-    MOVE_THUNDER_PUNCH,
-    MOVE_FIRE_PUNCH
-};
-
 void BufferBattleFrontierTutorMoveName(void)
 {
-    if (gSpecialVar_0x8005 != 0)
-        StringCopy(gStringVar1, gMoveNames[sBattleFrontier_TutorMoves2[gSpecialVar_0x8004]]);
-    else
-        StringCopy(gStringVar1, gMoveNames[sBattleFrontier_TutorMoves1[gSpecialVar_0x8004]]);
+    StringCopy(gStringVar1, gMoveNames[gSpecialVar_0x8005]);
 }
 
 static void ShowBattleFrontierTutorWindow(u8 menu, u16 selection)
@@ -3058,44 +3087,6 @@ void ScrollableMultichoice_RedrawPersistentMenu(void)
         AddTextPrinterParameterized(task->tWindowId, FONT_NORMAL, gText_SelectorArrow, 0, selectedRow * 16, TEXT_SKIP_DRAW, NULL);
         PutWindowTilemap(task->tWindowId);
         CopyWindowToVram(task->tWindowId, COPYWIN_FULL);
-    }
-}
-
-void GetBattleFrontierTutorMoveIndex(void)
-{
-    u8 i;
-    u16 moveTutor = 0;
-    u16 moveIndex = 0;
-    gSpecialVar_0x8005 = 0;
-
-    moveTutor = VarGet(VAR_TEMP_E);
-    moveIndex = VarGet(VAR_TEMP_D);
-
-    if (moveTutor != 0)
-    {
-        i = 0;
-        do
-        {
-            if (gTutorMoves[i] == sBattleFrontier_TutorMoves2[moveIndex])
-            {
-                gSpecialVar_0x8005 = i;
-                break;
-            }
-            i++;
-        } while (i < TUTOR_MOVE_COUNT);
-    }
-    else
-    {
-        i = 0;
-        do
-        {
-            if (gTutorMoves[i] == sBattleFrontier_TutorMoves1[moveIndex])
-            {
-                gSpecialVar_0x8005 = i;
-                break;
-            }
-            i++;
-        } while (i < TUTOR_MOVE_COUNT);
     }
 }
 
@@ -4139,27 +4130,4 @@ void SetPlayerGotFirstFans(void)
 u8 Script_TryGainNewFanFromCounter(void)
 {
     return TryGainNewFanFromCounter(gSpecialVar_0x8004);
-}
-
-void GetTimeOfDay(void)
-{
-    u8 timeofday;
-    RtcCalcLocalTime();
-    if (gLocalTime.hours >= 21 || gLocalTime.hours < 5)
-    {
-        timeofday = 2; //Night
-    }
-    else if (gLocalTime.hours >= 5 && gLocalTime.hours < 9)
-    {
-        timeofday = 1; //Twilight (Morning)
-    }
-    else if (gLocalTime.hours >= 17 && gLocalTime.hours < 21)
-    {
-        timeofday = 1; //Evening
-    }
-    else
-    {
-        timeofday = 0; //Day (9 - 16)
-    }
-    gSpecialVar_Result = timeofday;
 }

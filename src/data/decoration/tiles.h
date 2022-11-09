@@ -457,6 +457,11 @@ const u16 DecorGfx_SKY_POSTER[] = {
     DECOR_TILE(SkyPoster_Right)
 };
 
+const u16 DecorGfx_KISS_POSTER[] = {
+    DECOR_TILE(KissPoster_Left),
+    DECOR_TILE(KissPoster_Right)
+};
+
 const u16 DecorGfx_PICHU_DOLL[] = {
     OBJ_EVENT_GFX_PICHU_DOLL
 };
@@ -501,6 +506,10 @@ const u16 DecorGfx_DITTO_DOLL[] = {
     OBJ_EVENT_GFX_DITTO_DOLL
 };
 
+const u16 DecorGfx_SMOOCHUM_DOLL[] = {
+    OBJ_EVENT_GFX_SMOOCHUM_DOLL
+};
+
 const u16 DecorGfx_TREECKO_DOLL[] = {
     OBJ_EVENT_GFX_TREECKO_DOLL
 };
@@ -521,6 +530,14 @@ const u16 DecorGfx_WYNAUT_DOLL[] = {
     OBJ_EVENT_GFX_WYNAUT_DOLL
 };
 
+const u16 DecorGfx_BALTOY_DOLL[] = {
+    OBJ_EVENT_GFX_BALTOY_DOLL
+};
+
+const u16 DecorGfx_KECLEON_DOLL[] = {
+    OBJ_EVENT_GFX_KECLEON_DOLL
+};
+
 const u16 DecorGfx_AZURILL_DOLL[] = {
     OBJ_EVENT_GFX_AZURILL_DOLL
 };
@@ -533,6 +550,18 @@ const u16 DecorGfx_SWABLU_DOLL[] = {
     OBJ_EVENT_GFX_SWABLU_DOLL
 };
 
+const u16 DecorGfx_GULPIN_DOLL[] = {
+    OBJ_EVENT_GFX_GULPIN_DOLL
+};
+
+const u16 DecorGfx_LOTAD_DOLL[] = {
+    OBJ_EVENT_GFX_LOTAD_DOLL
+};
+
+const u16 DecorGfx_SEEDOT_DOLL[] = {
+    OBJ_EVENT_GFX_SEEDOT_DOLL
+};
+
 const u16 DecorGfx_PIKA_CUSHION[] = {
     OBJ_EVENT_GFX_PIKA_CUSHION
 };
@@ -541,8 +570,16 @@ const u16 DecorGfx_ROUND_CUSHION[] = {
     OBJ_EVENT_GFX_ROUND_CUSHION
 };
 
+const u16 DecorGfx_KISS_CUSHION[] = {
+    OBJ_EVENT_GFX_KISS_CUSHION
+};
+
 const u16 DecorGfx_ZIGZAG_CUSHION[] = {
     OBJ_EVENT_GFX_ZIGZAG_CUSHION
+};
+
+const u16 DecorGfx_SPIN_CUSHION[] = {
+    OBJ_EVENT_GFX_SPIN_CUSHION
 };
 
 const u16 DecorGfx_DIAMOND_CUSHION[] = {

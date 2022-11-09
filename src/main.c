@@ -408,7 +408,9 @@ static void IntrDummy(void)
 static void WaitForVBlank(void)
 {
     gMain.intrCheck &= ~INTR_FLAG_VBLANK;
-    asm("swi 0x5");
+
+    while (!(gMain.intrCheck & INTR_FLAG_VBLANK))
+        ;
 }
 
 void SetTrainerHillVBlankCounter(u32 *counter)
@@ -436,14 +438,4 @@ void DoSoftReset(void)
 void ClearPokemonCrySongs(void)
 {
     CpuFill16(0, gPokemonCrySongs, MAX_POKEMON_CRIES * sizeof(struct PokemonCrySong));
-}
-
-// TODO: Needs to be updated if compiling for a different processor than the GBA's
-bool8 IsAccurateGBA(void) { // tests to see whether running on either an accurate emulator in >=2020, or real hardware
-  u32 code[5] = {0xFF1EE12F, 0xE1DF00B0, 0xE12FFF1E, 0xAAAABBBB, 0xCCCCDDDD}; // ARM: _;ldrh r0, [pc];bx lr
-  u32 func = (u32) &code[0];
-  if (func & 3) // not word aligned; safer to just return false here
-    return FALSE;
-  func = (func & ~3) | 0x2; // misalign PC to test PC-relative loading
-  return ((u32 (*)(void)) func)() == code[3] >> 16;
 }

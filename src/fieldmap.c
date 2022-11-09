@@ -30,7 +30,6 @@ EWRAM_DATA struct MapHeader gMapHeader = {0};
 EWRAM_DATA struct Camera gCamera = {0};
 EWRAM_DATA static struct ConnectionFlags sMapConnectionFlags = {0};
 EWRAM_DATA static u32 sFiller = 0; // without this, the next file won't align properly
-EWRAM_DATA struct Coords16 gLightMetatiles[32] = {0};
 
 struct BackupMapLayout gBackupMapLayout;
 
@@ -63,7 +62,6 @@ static bool8 IsCoordInIncomingConnectingMap(int coord, int srcMax, int destMax, 
 #define AreCoordsWithinMapGridBounds(x, y) (x >= 0 && x < gBackupMapLayout.width && y >= 0 && y < gBackupMapLayout.height)
 
 #define GetMapGridBlockAt(x, y) (AreCoordsWithinMapGridBounds(x, y) ? gBackupMapLayout.map[x + gBackupMapLayout.width * y] : GetBorderBlockAt(x, y))
-static void CacheLightMetatiles(void);
 
 struct MapHeader const *const GetMapHeaderFromConnection(struct MapConnection *connection)
 {
@@ -75,7 +73,6 @@ void InitMap(void)
     InitMapLayoutData(&gMapHeader);
     SetOccupiedSecretBaseEntranceMetatiles(gMapHeader.events);
     RunOnLoadMapScript();
-    CacheLightMetatiles();
 }
 
 void InitMapFromSavedGame(void)
@@ -85,7 +82,6 @@ void InitMapFromSavedGame(void)
     SetOccupiedSecretBaseEntranceMetatiles(gMapHeader.events);
     LoadSavedMapView();
     RunOnLoadMapScript();
-    CacheLightMetatiles();
     UpdateTVScreensOnMap(gBackupMapLayout.width, gBackupMapLayout.height);
 }
 
@@ -380,23 +376,6 @@ u32 MapGridGetMetatileBehaviorAt(int x, int y)
 {
     u16 metatile = MapGridGetMetatileIdAt(x, y);
     return GetMetatileAttributesById(metatile) & METATILE_ATTR_BEHAVIOR_MASK;
-}
-
-// Caches light metatile coordinates
-static void CacheLightMetatiles(void) { // TODO: Better way to dynamically generate lights
-  u8 i = 0;
-  s16 x, y;
-  for (x = 0; x < gBackupMapLayout.width; x++) {
-    for (y = 0; y < gBackupMapLayout.height; y++) {
-      if (MapGridGetMetatileBehaviorAt(x, y) == 0x04) {
-        gLightMetatiles[i].x = x;
-        gLightMetatiles[i].y = y;
-        i++;
-      }
-    }
-  }
-  gLightMetatiles[i].x = -1;
-  gLightMetatiles[i].y = -1;
 }
 
 u8 MapGridGetMetatileLayerTypeAt(int x, int y)
@@ -895,40 +874,24 @@ static void ApplyGlobalTintToPaletteSlot(u8 slot, u8 count)
 void LoadTilesetPalette(struct Tileset const *tileset, u16 destOffset, u16 size)
 {
     u16 black = RGB_BLACK;
-    u32 low = 0;
-    u32 high = 0;
 
     if (tileset)
     {
         if (tileset->isSecondary == FALSE)
         {
             LoadPalette(&black, destOffset, 2);
-            LoadPalette(((u16*)tileset->palettes) + 1, destOffset + 1, size - 2);
-            FieldmapPaletteDummy(destOffset + 1, (size - 2) >> 1);
-            low = 0;
-            high = NUM_PALS_IN_PRIMARY;
+            LoadPalette(((u16 *)tileset->palettes) + 1, destOffset + 1, size - 2);
+            ApplyGlobalTintToPaletteEntries(destOffset + 1, (size - 2) >> 1);
         }
         else if (tileset->isSecondary == TRUE)
         {
-            LoadPalette(((u16*)tileset->palettes) + (NUM_PALS_IN_PRIMARY * 16), destOffset, size);
-            low = NUM_PALS_IN_PRIMARY;
-            high = NUM_PALS_TOTAL;
+            LoadPalette(((u16 *)tileset->palettes) + (NUM_PALS_IN_PRIMARY * 16), destOffset, size);
+            ApplyGlobalTintToPaletteEntries(destOffset, size >> 1);
         }
         else
         {
             LoadCompressedPalette((u32 *)tileset->palettes, destOffset, size);
             ApplyGlobalTintToPaletteEntries(destOffset, size >> 1);
-        }
-        if (tileset->isSecondary == FALSE || tileset->isSecondary == TRUE) {
-            u32 i;
-            for (i = low; i < high; i++) {
-                if (tileset->lightPalettes & (1 << (i - low))) { // Mark as light palette
-                    u32 index = i * 16;
-                    gPlttBufferFaded[index] = gPlttBufferUnfaded[index] |= 0x8000;
-                    if (tileset->customLightColor & (1 << (i - low))) // Mark as custom light color
-                        gPlttBufferFaded[index+15] = gPlttBufferUnfaded[index+15] |= 0x8000;
-                }
-            }
         }
     }
 }

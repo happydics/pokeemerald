@@ -1,43 +1,20 @@
-.set LOCALID_MOVE_DELETER, 1
-
 RustboroCity_PokemonCenter_2F_MapScripts::
+	map_script MAP_SCRIPT_ON_FRAME_TABLE, CableClub_OnFrame
+	map_script MAP_SCRIPT_ON_WARP_INTO_MAP_TABLE, CableClub_OnWarp
+	map_script MAP_SCRIPT_ON_LOAD, CableClub_OnLoad
+	map_script MAP_SCRIPT_ON_TRANSITION, CableClub_OnTransition
 	.byte 0
 
-RustboroCity_PokemonCenter_2F_EventScript_RankBoard::
-	lock
-	call Common_EventScript_Pkmn_Center_Services_RankBoard
-	release
+@ The below 3 are unused and leftover from RS
+RustboroCity_PokemonCenter_2F_EventScript_Colosseum::
+	call CableClub_EventScript_Colosseum
 	end
 
-RustboroCity_PokemonCenter_2F_EventScript_MoveDeleter::
-	lock
-	faceplayer
-	setvar VAR_0x800B, LOCALID_MOVE_DELETER
-	call Common_EventScript_Pkmn_Center_Services_MoveDeleter
-	release
+RustboroCity_PokemonCenter_2F_EventScript_TradeCenter::
+	call CableClub_EventScript_TradeCenter
 	end
 
-RustboroCity_PokemonCenter_2F_EventScript_BerryClerk::
-	lock
-	faceplayer
-	call Common_EventScript_Pkmn_Center_Services_BerryClerk
-	release
+RustboroCity_PokemonCenter_2F_EventScript_RecordCorner::
+	call CableClub_EventScript_RecordCorner
 	end
 
-RustboroCity_PokemonCenter_2F_EventScript_EliteShop::
-	lock
-	faceplayer
-	call Common_EventScript_Pkmn_Center_Services_EliteShop
-	release
-	end
-
-RustboroCity_PokemonCenter_2F_EventScript_Pressure::
-	lock
-	faceplayer
-	msgbox RustboroCity_PokemonCenter_2F_Text_Pressure, MSGBOX_DEFAULT
-	release
-	end
-
-RustboroCity_PokemonCenter_2F_Text_Pressure:
-	.string "This GYM CHALLENGE is too much\p"
-	.string "pressure! I can't take it!$"

@@ -44,7 +44,8 @@
 #include "berry_powder.h"
 #include "mystery_gift.h"
 #include "union_room_chat.h"
-#include "constants/map_groups.h"
+#include "constants/items.h"
+#include "quests.h"
 
 extern const u8 EventScript_ResetAllMapFlags[];
 
@@ -90,11 +91,10 @@ static void InitPlayerTrainerId(void)
 // L=A isnt set here for some reason.
 static void SetDefaultOptions(void)
 {
-    gSaveBlock2Ptr->optionsTextSpeed = OPTIONS_TEXT_SPEED_FAST;
+    gSaveBlock2Ptr->optionsTextSpeed = OPTIONS_TEXT_SPEED_MID;
     gSaveBlock2Ptr->optionsWindowFrameType = 0;
     gSaveBlock2Ptr->optionsSound = OPTIONS_SOUND_MONO;
     gSaveBlock2Ptr->optionsBattleStyle = OPTIONS_BATTLE_STYLE_SHIFT;
-    gSaveBlock2Ptr->optionsFollowerVisible = OPTIONS_FOLLOWER_ON;
     gSaveBlock2Ptr->optionsBattleSceneOff = FALSE;
     gSaveBlock2Ptr->regionMapZoom = FALSE;
 }
@@ -102,8 +102,8 @@ static void SetDefaultOptions(void)
 static void ClearPokedexFlags(void)
 {
     gUnusedPokedexU8 = 0;
-    memset(&gSaveBlock2Ptr->pokedex.owned, 0, sizeof(gSaveBlock2Ptr->pokedex.owned));
-    memset(&gSaveBlock2Ptr->pokedex.seen, 0, sizeof(gSaveBlock2Ptr->pokedex.seen));
+    memset(&gSaveBlock1Ptr->dexCaught, 0, sizeof(gSaveBlock1Ptr->dexCaught));
+    memset(&gSaveBlock1Ptr->dexSeen, 0, sizeof(gSaveBlock1Ptr->dexSeen));
 }
 
 void ClearAllContestWinnerPics(void)
@@ -205,9 +205,7 @@ void NewGameInitData(void)
     WipeTrainerNameRecords();
     ResetTrainerHillResults();
     ResetContestLinkResults();
-    gSaveBlock2Ptr->expShare = 0;
-    memset(gSaveBlock1Ptr->dexNavSearchLevels, 0, sizeof(gSaveBlock1Ptr->dexNavSearchLevels));
-    gSaveBlock1Ptr->dexNavChain = 0;
+    QuestMenu_ResetMenuSaveData();
 }
 
 static void ResetMiniGamesRecords(void)

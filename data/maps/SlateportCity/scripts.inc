@@ -18,14 +18,12 @@
 .set LOCALID_GRUNT_9, 31
 .set LOCALID_GRUNT_11, 33
 .set LOCALID_SCOTT, 35
-.set LOCALID_FISHERMAN, 37
 
 @ Note: LOCALID_SLATEPORT_ENERGY_GURU is a local id for this map used elsewhere. It's defined in event_objects.h
 
 SlateportCity_MapScripts::
 	map_script MAP_SCRIPT_ON_TRANSITION, SlateportCity_OnTransition
 	map_script MAP_SCRIPT_ON_FRAME_TABLE, SlateportCity_OnFrame
-	map_script MAP_SCRIPT_ON_RESUME, SlateportCity_OnResume
 	.byte 0
 
 SlateportCity_OnTransition:
@@ -33,43 +31,7 @@ SlateportCity_OnTransition:
 	call SlateportCity_EventScript_EnterSlateport
 	call_if_eq VAR_SLATEPORT_CITY_STATE, 1, SlateportCity_EventScript_MovePeopleForSternInterview
 	call_if_eq VAR_SLATEPORT_OUTSIDE_MUSEUM_STATE, 1, SlateportCity_EventScript_SetReadyForScottScene
-	special GetTimeOfDay
-	goto_if_eq VAR_RESULT, 0, SlateportCity_OnTransition_Day
-	goto_if_eq VAR_RESULT, 1, SlateportCity_OnTransition_Twilight
-	goto_if_eq VAR_RESULT, 2, SlateportCity_OnTransition_Night
 	end
-
-SlateportCity_OnTransition_Day:
-	setvar VAR_TIMEOFDAY, 0
-	end
-
-SlateportCity_OnTransition_Twilight:
-	setvar VAR_TIMEOFDAY, 1
-	end
-
-SlateportCity_OnTransition_Night:
-	setvar VAR_TIMEOFDAY, 2
-	end
-
-SlateportCity_OnResume:
-	special GetTimeOfDay
-	goto_if_eq VAR_RESULT, 0, SlateportCity_OnResume_Day
-	goto_if_eq VAR_RESULT, 1, SlateportCity_OnResume_Twilight
-	goto_if_eq VAR_RESULT, 2, SlateportCity_OnResume_Night
-	end	
-
-SlateportCity_OnResume_Day:
-	setvar VAR_TIMEOFDAY, 0
-	end
-
-SlateportCity_OnResume_Twilight:
-	setvar VAR_TIMEOFDAY, 1
-	end
-
-SlateportCity_OnResume_Night:
-	setvar VAR_TIMEOFDAY, 2
-	end
-
 
 SlateportCity_EventScript_EnterSlateport::
 	setflag FLAG_VISITED_SLATEPORT_CITY
@@ -173,47 +135,6 @@ SlateportCity_Movement_ScottExit:
 	walk_left
 	walk_left
 	step_end
-
-SlateportCity_EventScript_MintLady::
-	lock
-	faceplayer
-	message SlateportCity_Text_MintLadyChangeYourLife
-	waitmessage
-	pokemart SlateportCity_Pokemart_MintLady
-	msgbox gText_PleaseComeAgain, MSGBOX_DEFAULT
-	release
-	end
-
-	.align 2
-SlateportCity_Pokemart_MintLady:
-	.2byte ITEM_ADAMANT_MINT
-	.2byte ITEM_BOLD_MINT
-	.2byte ITEM_BRAVE_MINT
-	.2byte ITEM_CALM_MINT
-	.2byte ITEM_CAREFUL_MINT
-	.2byte ITEM_GENTLE_MINT
-	.2byte ITEM_HASTY_MINT
-	.2byte ITEM_IMPISH_MINT
-	.2byte ITEM_JOLLY_MINT
-	.2byte ITEM_LAX_MINT
-	.2byte ITEM_LONELY_MINT
-	.2byte ITEM_MILD_MINT
-	.2byte ITEM_MODEST_MINT
-	.2byte ITEM_NAIVE_MINT
-	.2byte ITEM_NAUGHTY_MINT
-	.2byte ITEM_QUIET_MINT
-	.2byte ITEM_RASH_MINT
-	.2byte ITEM_RELAXED_MINT
-	.2byte ITEM_SASSY_MINT
-	.2byte ITEM_SERIOUS_MINT
-	.2byte ITEM_TIMID_MINT
-	.2byte ITEM_NONE
-	release
-	end
-
-SlateportCity_Text_MintLadyChangeYourLife:
-	.string "I'm the MINT LADY! These treats\n"
-	.string "will change your POKéMON's life.$"
 
 SlateportCity_EventScript_EnergyGuru::
 	lock
@@ -593,56 +514,12 @@ SlateportCity_PokemartDecor_Dolls:
 	.2byte DECOR_AZURILL_DOLL
 	.2byte DECOR_MARILL_DOLL
 	.2byte DECOR_SKITTY_DOLL
-	.2byte DECOR_MEOWTH_DOLL
-	.2byte DECOR_DITTO_DOLL
-	.2byte DECOR_SNORLAX_DOLL
 	.2byte DECOR_NONE
 	release
 	end
 
 SlateportCity_EventScript_ComeBackWithSecretPower::
 	msgbox gText_ComeBackWithSecretPower, MSGBOX_DEFAULT
-	release
-	end
-
-SlateportCity_EventScript_PowerItemVendor::
-	lock
-	faceplayer
-	msgbox SlateportCity_Text_PowerItemVendor, MSGBOX_DEFAULT
-	message gText_HowMayIServeYou
-	waitmessage
-	pokemart SlateportCity_PokemartPowerItems
-	msgbox gText_PleaseComeAgain, MSGBOX_DEFAULT
-	release
-	end
-
-SlateportCity_Text_PowerItemVendor:
-	.string "Looking to get an edge in your\n"
-	.string "POKéMON BATTLES?\p"
-	.string "How about giving your POKéMON a\n"
-	.string "boost with one of these ITEMS?$"
-
-	.align 2
-SlateportCity_PokemartPowerItems:
-	.2byte ITEM_BLACK_BELT
-	.2byte ITEM_BLACK_GLASSES
-	.2byte ITEM_CHARCOAL
-	.2byte ITEM_DRAGON_FANG
-	.2byte ITEM_HARD_STONE
-	.2byte ITEM_MAGNET
-	.2byte ITEM_METAL_COAT
-	.2byte ITEM_MIRACLE_SEED
-	.2byte ITEM_MYSTIC_WATER
-	.2byte ITEM_NEVER_MELT_ICE
-	.2byte ITEM_PIXIE_DUST
-	.2byte ITEM_POISON_BARB
-	.2byte ITEM_SHARP_BEAK
-	.2byte ITEM_SILK_SCARF
-	.2byte ITEM_SILVER_POWDER
-	.2byte ITEM_SOFT_SAND
-	.2byte ITEM_SPELL_TAG
-	.2byte ITEM_TWISTED_SPOON
-	.2byte ITEM_NONE
 	release
 	end
 
@@ -690,12 +567,7 @@ SlateportCity_EventScript_PowerTMClerk::
 	.align 2
 SlateportCity_Pokemart_PowerTMs:
 	.2byte ITEM_TM10  @ Hidden Power
-	.2byte ITEM_PROTEIN_MINUS
-	.2byte ITEM_IRON_MINUS
-	.2byte ITEM_CARBOS_MINUS
-	.2byte ITEM_ZINC_MINUS
-	.2byte ITEM_CALCIUM_MINUS
-	.2byte ITEM_HP_DOWN
+	.2byte ITEM_TM43  @ Secret Power
 	.2byte ITEM_NONE
 	release
 	end
@@ -1511,102 +1383,3 @@ SlateportCity_Text_TakingBattleTentChallenge:
 	.string "After all, a tough TRAINER is\n"
 	.string "the perfect fit for the BATTLE TENT!\p"
 	.string "Give it your best effort!$"
-
-SlateportCity_EventScript_Fisherman::
-	lock
-	faceplayer
-	msgbox SlateportCity_Text_GetRichQuick, MSGBOX_DEFAULT
-	checkitem ITEM_PEARL
-	goto_if_eq VAR_RESULT, TRUE, SlateportCity_EventScript_FishermanTrade
-	applymovement LOCALID_FISHERMAN, Common_Movement_FaceOriginalDirection
-	release
-	end
-
-SlateportCity_Text_GetRichQuick:
-	.string "I thought I could get rich quick\n"
-	.string "by fishing up PEARLS...$"
-
-SlateportCity_EventScript_FishermanTrade::
-	applymovement LOCALID_FISHERMAN, Common_Movement_ExclamationMark
-	msgbox SlateportCity_Text_TradeThatPearl, MSGBOX_YESNO
-	goto_if_eq VAR_RESULT, NO, SlateportCity_EventScript_DeclineTrade
-	goto_if_eq VAR_RESULT, YES, SlateportCity_EventScript_DeepSeaTrade
-	applymovement LOCALID_FISHERMAN, Common_Movement_FaceOriginalDirection
-	end
-
-SlateportCity_EventScript_DeepSeaTrade::
-	message SlateportCity_Text_WhichOneDoYouWant
-	waitmessage
-	multichoice 0, 0, MULTI_STERN_DEEPSEA, FALSE
-	switch VAR_RESULT
-	case 0, SlateportCity_EventScript_DeepSeaTooth
-	case 1, SlateportCity_EventScript_DeepSeaScale
-	case 2, SlateportCity_EventScript_DeclineTrade
-	case MULTI_B_PRESSED, SlateportCity_EventScript_DeclineTrade
-	end
-
-SlateportCity_Text_WhichOneDoYouWant:
-	.string "Which one do you want?$"
-
-SlateportCity_EventScript_DeepSeaTooth::
-	msgbox SlateportCity_Text_TradeForDeepSeaTooth, MSGBOX_YESNO
-	goto_if_eq VAR_RESULT, NO, SlateportCity_EventScript_DeepSeaTrade
-	giveitem ITEM_DEEP_SEA_TOOTH
-	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
-	removeitem ITEM_PEARL
-	msgbox SlateportCity_Text_MoreWhereThatCameFrom, MSGBOX_DEFAULT
-	applymovement LOCALID_FISHERMAN, Common_Movement_FaceOriginalDirection
-	release
-	end
-
-SlateportCity_Text_TradeForDeepSeaTooth:
-	.string "So you'll trade it for\n"
-	.string "a DEEPSEATOOTH?$"
-
-SlateportCity_EventScript_DeepSeaScale::
-	msgbox SlateportCity_Text_TradeForDeepSeaScale, MSGBOX_YESNO
-	goto_if_eq VAR_RESULT, NO, SlateportCity_EventScript_DeepSeaTrade
-	giveitem ITEM_DEEP_SEA_SCALE
-	goto_if_eq VAR_RESULT, FALSE, Common_EventScript_ShowBagIsFull
-	removeitem ITEM_PEARL
-	msgbox SlateportCity_Text_MoreWhereThatCameFrom, MSGBOX_DEFAULT
-	applymovement LOCALID_FISHERMAN, Common_Movement_FaceOriginalDirection
-	release
-	end
-
-SlateportCity_Text_TradeForDeepSeaScale:
-	.string "So you'll trade it for\n"
-	.string "a DEEPSEASCALE?$"
-
-SlateportCity_Text_MoreWhereThatCameFrom:
-	.string "Now that's what I'm talking!\n"
-	.string "about! Easy money!\p"
-	.string "I've got more where that came\n"
-	.string "from, so if you've got any\l"
-	.string "more PEARLS, you know where\l"
-	.string "to find me!$"
-
-SlateportCity_EventScript_DeclineTrade::
-	msgbox SlateportCity_Text_DeclineTrade, MSGBOX_DEFAULT
-	applymovement LOCALID_FISHERMAN, Common_Movement_FaceOriginalDirection
-	release
-	end
-
-SlateportCity_Text_DeclineTrade:
-	.string "You know where to find me\n"
-	.string "if you change your mind...$"
-
-SlateportCity_Text_TradeThatPearl:
-	.string "Oh! What do you have there?\p"
-	.string "Is that a PEARL?\p"
-	.string "How about a trade? I could\n"
-	.string "give you a DEEPSEATOOTH or\l"
-	.string "this DEEPSEASCALE.$"
-
-SlateportCity_EventScript_DojoSign::
-	msgbox SlateportCity_Text_DojoSign, MSGBOX_SIGN
-	end
-
-SlateportCity_Text_DojoSign:
-	.string "SLATEPORT DOJO\n"
-	.string "“Where HOENN's Champs train!”$"

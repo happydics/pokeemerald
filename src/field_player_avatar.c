@@ -141,9 +141,6 @@ static u8 Fishing_EndNoMon(struct Task *);
 static void AlignFishingAnimationFrames(void);
 
 static u8 TrySpinPlayerForWarp(struct ObjectEvent *, s16 *);
-static void PlayerGoSlow(u8 direction);
-
-// .rodata
 
 static bool8 (*const sForcedMovementTestFuncs[NUM_FORCED_MOVEMENTS])(u8) =
 {
@@ -629,27 +626,11 @@ static void PlayerNotOnBikeMoving(u8 direction, u16 heldKeys)
             return;
         }
     }
-    
-    gPlayerAvatar.creeping = FALSE;
+
     if (gPlayerAvatar.flags & PLAYER_AVATAR_FLAG_SURFING)
     {
-<<<<<<< HEAD
-        if (heldKeys & B_BUTTON)
-            PlayerWalkFaster(direction);
-        else
-            PlayerWalkFast(direction);
-=======
-        if (FlagGet(FLAG_SYS_DEXNAV_SEARCH) && (heldKeys & A_BUTTON))
-        {
-            gPlayerAvatar.creeping = TRUE;
-            PlayerGoSlow(direction);
-        }
-        else
-        {
-            // speed 2 is fast, same speed as running
-            PlayerWalkFast(direction);
-        }
->>>>>>> e1021af6bd6a83cc4d53fc3879dacb5f401a0f83
+        // same speed as running
+        PlayerWalkFast(direction);
         return;
     }
 
@@ -659,11 +640,6 @@ static void PlayerNotOnBikeMoving(u8 direction, u16 heldKeys)
         PlayerRun(direction);
         gPlayerAvatar.flags |= PLAYER_AVATAR_FLAG_DASH;
         return;
-    }
-    else if (FlagGet(FLAG_SYS_DEXNAV_SEARCH) && (heldKeys & A_BUTTON))
-    {
-        gPlayerAvatar.creeping = TRUE;
-        PlayerGoSlow(direction);
     }
     else
     {
@@ -953,12 +929,12 @@ static bool8 PlayerCheckIfAnimFinishedOrInactive(void)
 
 static void PlayerSetCopyableMovement(u8 movement)
 {
-    gObjectEvents[gPlayerAvatar.objectEventId].extra.playerCopyableMovement = movement;
+    gObjectEvents[gPlayerAvatar.objectEventId].playerCopyableMovement = movement;
 }
 
 u8 PlayerGetCopyableMovement(void)
 {
-    return gObjectEvents[gPlayerAvatar.objectEventId].extra.playerCopyableMovement;
+    return gObjectEvents[gPlayerAvatar.objectEventId].playerCopyableMovement;
 }
 
 static void PlayerForceSetHeldMovement(u8 movementActionId)
@@ -973,12 +949,6 @@ void PlayerSetAnimId(u8 movementActionId, u8 copyableMovement)
         PlayerSetCopyableMovement(copyableMovement);
         ObjectEventSetHeldMovement(&gObjectEvents[gPlayerAvatar.objectEventId], movementActionId);
     }
-}
-
-// slow
-static void PlayerGoSlow(u8 direction)
-{
-    PlayerSetAnimId(GetWalkSlowMovementAction(direction), 2);
 }
 
 void PlayerWalkNormal(u8 direction)
@@ -1693,7 +1663,6 @@ static void Task_WaitStopSurfing(u8 taskId)
         gPlayerAvatar.preventStep = FALSE;
         UnlockPlayerFieldControls();
         DestroySprite(&gSprites[playerObjEvent->fieldEffectSpriteId]);
-        playerObjEvent->triggerGroundEffectsOnMove = TRUE;
         DestroyTask(taskId);
     }
 }
@@ -1817,6 +1786,15 @@ static bool8 Fishing_ShowDots(struct Task *task)
 
     AlignFishingAnimationFrames();
     task->tFrameCounter++;
+    if (JOY_NEW(A_BUTTON))
+    {
+        task->tStep = FISHING_NO_BITE;
+        if (task->tRoundsPlayed != 0)
+            task->tStep = FISHING_GOT_AWAY;
+        return TRUE;
+    }
+    else
+    {
         if (task->tFrameCounter >= 20)
         {
             task->tFrameCounter = 0;
@@ -1829,12 +1807,14 @@ static bool8 Fishing_ShowDots(struct Task *task)
             }
             else
             {
-                AddTextPrinterParameterized(0, 1, dot, task->tNumDots * 8, 1, 0, NULL);
+                AddTextPrinterParameterized(0, FONT_NORMAL, dot, task->tNumDots * 8, 1, 0, NULL);
                 task->tNumDots++;
             }
         }
         return FALSE;
+    }
 }
+
 static bool8 Fishing_CheckForBite(struct Task *task)
 {
     bool8 bite;
@@ -1851,7 +1831,7 @@ static bool8 Fishing_CheckForBite(struct Task *task)
     {
         if (!GetMonData(&gPlayerParty[0], MON_DATA_SANITY_IS_EGG))
         {
-            u8 ability = GetMonAbility(&gPlayerParty[0]);
+            u16 ability = GetMonAbility(&gPlayerParty[0]);
             if (ability == ABILITY_SUCTION_CUPS || ability  == ABILITY_STICKY_HOLD)
             {
                 if (Random() % 100 > 14)
@@ -1875,7 +1855,10 @@ static bool8 Fishing_CheckForBite(struct Task *task)
 
 static bool8 Fishing_GotBite(struct Task *task)
 {
-    task->tStep += 3;
+    AlignFishingAnimationFrames();
+    AddTextPrinterParameterized(0, FONT_NORMAL, gText_OhABite, 0, 17, 0, NULL);
+    task->tStep++;
+    task->tFrameCounter = 0;
     return FALSE;
 }
 

@@ -12,7 +12,7 @@
   "allow_running": true,
   "show_map_name": true,
   "battle_scene": "MAP_BATTLE_SCENE_NORMAL",
-  "connections": 0,
+  "connections": null,
   "object_events": [
     {
       "graphics_id": "OBJ_EVENT_GFX_CUTTABLE_TREE",
@@ -82,7 +82,7 @@
     {
       "graphics_id": "OBJ_EVENT_GFX_ITEM_BALL",
       "x": 35,
-      "y": 31,
+      "y": 20,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_FACE_DOWN",
       "movement_range_x": 0,
@@ -172,8 +172,8 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_GIRL_2",
-      "x": 32,
-      "y": 7,
+      "x": 33,
+      "y": 5,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
       "movement_range_x": 1,
@@ -182,19 +182,6 @@
       "trainer_sight_or_berry_tree_id": "0",
       "script": "PetalburgWoods_EventScript_Girl",
       "flag": "0"
-    },
-    {
-      "graphics_id": "OBJ_EVENT_GFX_CELEBI",
-      "x": 34,
-      "y": 16,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_WANDER_AROUND",
-      "movement_range_x": 1,
-      "movement_range_y": 1,
-      "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "PetalburgWoods_EventScript_Celebi",
-      "flag": "FLAG_HIDE_CELEBI"
     }
   ],
   "warp_events": [

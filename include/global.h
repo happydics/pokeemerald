@@ -58,6 +58,7 @@
 
 // Converts a number to Q4.12 fixed-point format
 #define Q_4_12(n)  ((s16)((n) * 4096))
+#define UQ_4_12(n)  ((u16)((n) * 4096))
 
 // Converts a number to Q24.8 fixed-point format
 #define Q_24_8(n)  ((s32)((n) << 8))
@@ -67,9 +68,14 @@
 
 // Converts a Q4.12 fixed-point format number to a regular integer
 #define Q_4_12_TO_INT(n)  ((int)((n) / 4096))
+#define UQ_4_12_TO_INT(n)  ((int)((n) / 4096))
 
 // Converts a Q24.8 fixed-point format number to a regular integer
 #define Q_24_8_TO_INT(n) ((int)((n) >> 8))
+
+// Rounding value for Q4.12 fixed-point format
+#define Q_4_12_ROUND ((1) << (12 - 1))
+#define UQ_4_12_ROUND ((1) << (12 - 1))
 
 #define min(a, b) ((a) < (b) ? (a) : (b))
 #define max(a, b) ((a) >= (b) ? (a) : (b))
@@ -129,9 +135,7 @@
 
 #define ROUND_BITS_TO_BYTES(numBits) DIV_ROUND_UP(numBits, 8)
 
-// NUM_DEX_FLAG_BYTES allocates more flags than it needs to, as NUM_SPECIES includes the "old unown"
-// values that don't appear in the Pokedex. NATIONAL_DEX_COUNT does not include these values.
-#define NUM_DEX_FLAG_BYTES ROUND_BITS_TO_BYTES(NUM_SPECIES)
+#define NUM_DEX_FLAG_BYTES ROUND_BITS_TO_BYTES(POKEMON_SLOTS_NUMBER)
 #define NUM_FLAG_BYTES ROUND_BITS_TO_BYTES(FLAGS_COUNT)
 #define NUM_ADDITIONAL_PHRASE_BYTES ROUND_BITS_TO_BYTES(NUM_ADDITIONAL_PHRASES)
 
@@ -192,8 +196,7 @@ struct Pokedex
     /*0x04*/ u32 unownPersonality; // set when you first see Unown
     /*0x08*/ u32 spindaPersonality; // set when you first see Spinda
     /*0x0C*/ u32 unknown3;
-    /*0x10*/ u8 owned[NUM_DEX_FLAG_BYTES];
-    /*0x44*/ u8 seen[NUM_DEX_FLAG_BYTES];
+    /*0x10*/ u8 filler[0x68]; // Previously Dex Flags, feel free to remove.
 };
 
 struct PokemonJumpRecords
@@ -470,6 +473,9 @@ struct RankingHall2P
     u8 language;
 };
 
+// quest menu
+#include "constants/quests.h"
+
 struct SaveBlock2
 {
     /*0x00*/ u8 playerName[PLAYER_NAME_LENGTH + 1];
@@ -487,8 +493,6 @@ struct SaveBlock2
              u16 optionsBattleStyle:1; // OPTIONS_BATTLE_STYLE_[SHIFT/SET]
              u16 optionsBattleSceneOff:1; // whether battle animations are disabled
              u16 regionMapZoom:1; // whether the map is zoomed in
-             u16 expShare:1;
-             u16 optionsFollowerVisible:1; //OPTIONS_FOLLOWER_[ON/OFF] whether or not followers will be displayed
     /*0x18*/ struct Pokedex pokedex;
     /*0x90*/ u8 filler_90[0x8];
     /*0x98*/ struct Time localTimeOffset;
@@ -504,12 +508,16 @@ struct SaveBlock2
     /*0x57C*/ struct RankingHall2P hallRecords2P[FRONTIER_LVL_MODE_COUNT][HALL_RECORDS_COUNT]; // From record mixing.
     /*0x624*/ u16 contestLinkResults[CONTEST_CATEGORIES_COUNT][CONTESTANT_COUNT];
     /*0x64C*/ struct BattleFrontier frontier;
-}; // sizeof=0xF2C
+
+#define QUEST_FLAGS_COUNT ROUND_BITS_TO_BYTES(QUEST_COUNT)
+#define SUB_FLAGS_COUNT ROUND_BITS_TO_BYTES(SUB_QUEST_COUNT)
+#define QUEST_STATES 5 //Number of different quest states tracked in the saveblock
+
+    u8 questData[QUEST_FLAGS_COUNT * QUEST_STATES];
+    u8 subQuests[SUB_FLAGS_COUNT];
+}; 
 
 extern struct SaveBlock2 *gSaveBlock2Ptr;
-
-extern u8 UpdateSpritePaletteWithTime(u8);
-extern bool8 IsAccurateGBA(void);
 
 struct SecretBaseParty
 {
@@ -886,6 +894,7 @@ struct MysteryGiftSave
     u32 trainerIds[2][5]; // Saved ids for 10 trainers, 5 each for battles and trades
 }; // 0x36C 0x3598
 
+
 // For external event data storage. The majority of these may have never been used.
 // In Emerald, the only known used fields are the PokeCoupon and BoxRS ones, but hacking the distribution discs allows Emerald to receive events and set the others
 struct ExternalEventData
@@ -958,7 +967,7 @@ struct SaveBlock1
     /*0x690*/ struct ItemSlot bagPocket_TMHM[BAG_TMHM_COUNT];
     /*0x790*/ struct ItemSlot bagPocket_Berries[BAG_BERRIES_COUNT];
     /*0x848*/ struct Pokeblock pokeblocks[POKEBLOCKS_COUNT];
-    /*0x988*/ u8 seen1[NUM_DEX_FLAG_BYTES];
+    /*0x988*/ u8 filler1[0x34]; // Previously Dex Flags, feel free to remove.
     /*0x9BC*/ u16 berryBlenderRecords[3];
     /*0x9C2*/ u8 unused_9C2[6];
     /*0x9C8*/ u16 trainerRematchStepCounter;
@@ -1010,6 +1019,10 @@ struct SaveBlock1
     /*0x31DC*/ struct Roamer roamer;
     /*0x31F8*/ struct EnigmaBerry enigmaBerry;
     /*0x322C*/ struct MysteryGiftSave mysteryGift;
+//Maybe a problem \/
+    /*0x3???*/ u8 dexSeen[NUM_DEX_FLAG_BYTES];
+    /*0x3???*/ u8 dexCaught[NUM_DEX_FLAG_BYTES];
+//Maybe a problem /\
     /*0x3598*/ u8 unused_3598[0x180];
     /*0x3718*/ u32 trainerHillTimes[NUM_TRAINER_HILL_MODES];
     /*0x3728*/ struct RamScript ramScript;
@@ -1021,9 +1034,7 @@ struct SaveBlock1
     /*0x3D5A*/ u8 unused_3D5A[10];
     /*0x3D64*/ struct TrainerHillSave trainerHill;
     /*0x3D70*/ struct WaldaPhrase waldaPhrase;
-               u8 dexNavSearchLevels[NUM_SPECIES];
-               u8 dexNavChain;
-    // sizeof: 0x3D88
+    /* size = 0x3D88 */
 };
 
 extern struct SaveBlock1* gSaveBlock1Ptr;

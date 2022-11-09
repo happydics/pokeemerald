@@ -50,14 +50,6 @@ SootopolisCity_EventScript_LockGymDoor::
 	return
 
 SootopolisCity_OnTransition:
-	special GetTimeOfDay
-	goto_if_eq VAR_RESULT, 0, SootopolisCity_OnTransition_Day
-	goto_if_eq VAR_RESULT, 1, SootopolisCity_OnTransition_Twilight
-	goto_if_eq VAR_RESULT, 2, SootopolisCity_OnTransition_Night
-	end
-
-SootopolisCity_OnTransition_Day:
-	setvar VAR_TIMEOFDAY, 0
 	setflag FLAG_VISITED_SOOTOPOLIS_CITY
 	call_if_eq VAR_SOOTOPOLIS_CITY_STATE, 1, SootopolisCity_EventScript_HideMapNamePopup
 	call_if_eq VAR_SKY_PILLAR_STATE, 1, SootopolisCity_EventScript_HideMapNamePopup
@@ -73,66 +65,6 @@ SootopolisCity_OnTransition_Day:
 	call_if_eq VAR_SOOTOPOLIS_CITY_STATE, 4, SootopolisCity_EventScript_SetExitCaveOfOriginObjPos
 	call_if_eq VAR_SOOTOPOLIS_CITY_STATE, 5, SootopolisCity_EventScript_SetOutsideGymObjPos
 	call_if_eq VAR_SOOTOPOLIS_CITY_STATE, 6, SootopolisCity_EventScript_SetExpertBlockCaveEntrance
-	end
-
-SootopolisCity_OnTransition_Twilight:
-	setvar VAR_TIMEOFDAY, 1
-	setflag FLAG_VISITED_SOOTOPOLIS_CITY
-	call_if_eq VAR_SOOTOPOLIS_CITY_STATE, 1, SootopolisCity_EventScript_HideMapNamePopup
-	call_if_eq VAR_SKY_PILLAR_STATE, 1, SootopolisCity_EventScript_HideMapNamePopup
-	call SootopolisCity_EventScript_SetWeather
-	call SootopolisCity_EventScript_SetLayout
-	call_if_eq VAR_SOOTOPOLIS_CITY_STATE, 1, SootopolisCity_EventScript_SetBattleSpectators
-	call_if_eq VAR_SOOTOPOLIS_CITY_STATE, 2, SootopolisCity_EventScript_SetBattleSpectators
-	call_if_eq VAR_SOOTOPOLIS_CITY_STATE, 3, SootopolisCity_EventScript_SetBattleSpectators
-	call_if_eq VAR_SOOTOPOLIS_CITY_STATE, 4, SootopolisCity_EventScript_SetBattleSpectators
-	call_if_eq VAR_SOOTOPOLIS_CITY_STATE, 5, SootopolisCity_EventScript_SetBattleSpectators
-	call_if_eq VAR_SOOTOPOLIS_CITY_STATE, 2, SootopolisCity_EventScript_CheckSetEnterCaveOfOriginObjPos
-	call_if_eq VAR_SOOTOPOLIS_CITY_STATE, 3, SootopolisCity_EventScript_CheckSetEnterCaveOfOriginObjPos
-	call_if_eq VAR_SOOTOPOLIS_CITY_STATE, 4, SootopolisCity_EventScript_SetExitCaveOfOriginObjPos
-	call_if_eq VAR_SOOTOPOLIS_CITY_STATE, 5, SootopolisCity_EventScript_SetOutsideGymObjPos
-	call_if_eq VAR_SOOTOPOLIS_CITY_STATE, 6, SootopolisCity_EventScript_SetExpertBlockCaveEntrance
-	end
-
-SootopolisCity_OnTransition_Night:
-	setvar VAR_TIMEOFDAY, 2
-	setflag FLAG_VISITED_SOOTOPOLIS_CITY
-	call_if_eq VAR_SOOTOPOLIS_CITY_STATE, 1, SootopolisCity_EventScript_HideMapNamePopup
-	call_if_eq VAR_SKY_PILLAR_STATE, 1, SootopolisCity_EventScript_HideMapNamePopup
-	call SootopolisCity_EventScript_SetWeather
-	call SootopolisCity_EventScript_SetLayout
-	call_if_eq VAR_SOOTOPOLIS_CITY_STATE, 1, SootopolisCity_EventScript_SetBattleSpectators
-	call_if_eq VAR_SOOTOPOLIS_CITY_STATE, 2, SootopolisCity_EventScript_SetBattleSpectators
-	call_if_eq VAR_SOOTOPOLIS_CITY_STATE, 3, SootopolisCity_EventScript_SetBattleSpectators
-	call_if_eq VAR_SOOTOPOLIS_CITY_STATE, 4, SootopolisCity_EventScript_SetBattleSpectators
-	call_if_eq VAR_SOOTOPOLIS_CITY_STATE, 5, SootopolisCity_EventScript_SetBattleSpectators
-	call_if_eq VAR_SOOTOPOLIS_CITY_STATE, 2, SootopolisCity_EventScript_CheckSetEnterCaveOfOriginObjPos
-	call_if_eq VAR_SOOTOPOLIS_CITY_STATE, 3, SootopolisCity_EventScript_CheckSetEnterCaveOfOriginObjPos
-	call_if_eq VAR_SOOTOPOLIS_CITY_STATE, 4, SootopolisCity_EventScript_SetExitCaveOfOriginObjPos
-	call_if_eq VAR_SOOTOPOLIS_CITY_STATE, 5, SootopolisCity_EventScript_SetOutsideGymObjPos
-	call_if_eq VAR_SOOTOPOLIS_CITY_STATE, 6, SootopolisCity_EventScript_SetExpertBlockCaveEntrance
-	end
-
-SootopolisCity_OnResume:
-	special GetTimeOfDay
-	goto_if_eq VAR_RESULT, 0, SootopolisCity_OnResume_Day
-	goto_if_eq VAR_RESULT, 1, SootopolisCity_OnResume_Twilight
-	goto_if_eq VAR_RESULT, 2, SootopolisCity_OnResume_Night
-	end	
-
-SootopolisCity_OnResume_Day:
-	setvar VAR_TIMEOFDAY, 0
-	setdivewarp MAP_UNDERWATER_SOOTOPOLIS_CITY, 9, 6
-	end
-
-SootopolisCity_OnResume_Twilight:
-	setvar VAR_TIMEOFDAY, 1
-	setdivewarp MAP_UNDERWATER_SOOTOPOLIS_CITY, 9, 6
-	end
-
-SootopolisCity_OnResume_Night:
-	setvar VAR_TIMEOFDAY, 2
-	setdivewarp MAP_UNDERWATER_SOOTOPOLIS_CITY, 9, 6
 	end
 
 SootopolisCity_EventScript_HideMapNamePopup::
@@ -223,12 +155,7 @@ SootopolisCity_EventScript_SetWallaceLeft::
 	return
 
 SootopolisCity_EventScript_SetExpertBlockCaveEntrance::
-	goto_if_set FLAG_IS_CHAMPION, SootopolisCity_EventScript_SetExpertBlockCaveEntrancePostgame
 	setobjectxyperm LOCALID_EXPERT, 31, 18
-	return
-
-SootopolisCity_EventScript_SetExpertBlockCaveEntrancePostgame::
-	setobjectxyperm LOCALID_EXPERT, 32, 21
 	return
 
 SootopolisCity_OnWarp:
@@ -248,6 +175,10 @@ SootopolisCity_EventScript_PlayerFaceLegendaries2::
 	turnobject OBJ_EVENT_ID_PLAYER, DIR_NORTH
 	setvar VAR_SKY_PILLAR_STATE, 3
 	return
+
+SootopolisCity_OnResume:
+	setdivewarp MAP_UNDERWATER_SOOTOPOLIS_CITY, 9, 6
+	end
 
 SootopolisCity_OnFrame:
 	map_script_2 VAR_SOOTOPOLIS_CITY_STATE, 1, SootopolisCity_EventScript_StartLegendariesScene
@@ -753,7 +684,6 @@ SootopolisCity_Movement_UnusedPanBack:
 SootopolisCity_EventScript_CaveOfOriginExpert::
 	lock
 	faceplayer
-	goto_if_set FLAG_IS_CHAMPION, SootopolisCity_EventScript_ExpertPostgame
 	goto_if_ge VAR_SOOTOPOLIS_CITY_STATE, 6, SootopolisCity_EventScript_ExpertPostLegendaries
 	goto_if_eq VAR_SOOTOPOLIS_CITY_STATE, 5, SootopolisCity_EventScript_ExpertLegendaries
 	goto_if_ge VAR_SOOTOPOLIS_CITY_STATE, 2, SootopolisCity_EventScript_ExpertLeadToCave
@@ -770,29 +700,6 @@ SootopolisCity_EventScript_ExpertPostLegendaries::
 	msgbox SootopolisCity_Text_CaveOfOriginSleepsToo, MSGBOX_DEFAULT
 	release
 	end
-
-SootopolisCity_EventScript_ExpertPostgame::
-	goto_if_set FLAG_CAUGHT_JIRACHI, SootopolisCity_EventScript_YouAreTheWish
-	msgbox SootopolisCity_Text_MadeAWish, MSGBOX_DEFAULT
-	release
-	end
-
-SootopolisCity_Text_MadeAWish:
-	.string "The people of SOOTOPOLIS made a\n"
-	.string "WISH to bring peace to HOENN...\p"
-	.string "I believe a POKéMON will grant\n"
-	.string "that WISH one day....$"
-
-SootopolisCity_EventScript_YouAreTheWish::
-	applymovement LOCALID_EXPERT, Common_Movement_ExclamationMark
-	msgbox SootopolisCity_Text_YouAreTheWish, MSGBOX_DEFAULT
-	release
-	end
-
-SootopolisCity_Text_YouAreTheWish:
-	.string "That POKéMON...\p"
-	.string "Perhaps it recognized you as\n"
-	.string "someone who wishes for PEACE too.$"
 
 SootopolisCity_EventScript_ExpertLegendaries::
 	msgbox SootopolisCity_Text_AwakenedPokemonClash, MSGBOX_DEFAULT

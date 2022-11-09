@@ -1,46 +1,20 @@
-.set LOCALID_MOVE_DELETER, 1
-
 SootopolisCity_PokemonCenter_2F_MapScripts::
+	map_script MAP_SCRIPT_ON_FRAME_TABLE, CableClub_OnFrame
+	map_script MAP_SCRIPT_ON_WARP_INTO_MAP_TABLE, CableClub_OnWarp
+	map_script MAP_SCRIPT_ON_LOAD, CableClub_OnLoad
+	map_script MAP_SCRIPT_ON_TRANSITION, CableClub_OnTransition
 	.byte 0
 
-SootopolisCity_PokemonCenter_2F_EventScript_RankBoard::
-	lock
-	call Common_EventScript_Pkmn_Center_Services_RankBoard
-	release
+@ The below 3 are unused and leftover from RS
+SootopolisCity_PokemonCenter_2F_EventScript_Colosseum::
+	call CableClub_EventScript_Colosseum
 	end
 
-SootopolisCity_PokemonCenter_2F_EventScript_MoveDeleter::
-	lock
-	faceplayer
-	setvar VAR_0x800B, LOCALID_MOVE_DELETER
-	call Common_EventScript_Pkmn_Center_Services_MoveDeleter
-	release
+SootopolisCity_PokemonCenter_2F_EventScript_TradeCenter::
+	call CableClub_EventScript_TradeCenter
 	end
 
-SootopolisCity_PokemonCenter_2F_EventScript_BerryClerk::
-	lock
-	faceplayer
-	call Common_EventScript_Pkmn_Center_Services_BerryClerk
-	release
+SootopolisCity_PokemonCenter_2F_EventScript_RecordCorner::
+	call CableClub_EventScript_RecordCorner
 	end
 
-SootopolisCity_PokemonCenter_2F_EventScript_EliteShop::
-	lock
-	faceplayer
-	call Common_EventScript_Pkmn_Center_Services_EliteShop
-	release
-	end
-
-SootopolisCity_PokemonCenter_2F_EventScript_Ruckus::
-	lock
-	faceplayer
-	msgbox SootopolisCity_PokemonCenter_2F_Text_Ruckus, MSGBOX_DEFAULT
-	release
-	end
-
-SootopolisCity_PokemonCenter_2F_Text_Ruckus:
-	.string "Why do people like TEAM MAGMA and\n"
-	.string "TEAM AQUA feel like they need to\l"
-	.string "make such a ruckus?\p"
-	.string "They should be more like me and\n"
-	.string "learn to relax a little!$"

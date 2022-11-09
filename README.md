@@ -1,74 +1,43 @@
-# Pokémon Emerald DX
+# pokeemerald Expansion
 
-_The Hoenn region is unstable — Rayquaza has awakened! Your skills as a Trainer will be challenged like they've never been challenged before as you try to maintain balance between Kyogre & Groudon. Prove your skill by earning Badges & gaining access to the Battle Frontier — the front line of Pokémon battling that offers a whole new level of competition. Never-before-experienced battles await you!_
+## What is the pokeemerald Expansion?
 
-**Pokémon Emerald DX** is an enhanced version of the classic GBA adventure, seeking to provide a satisfying blend of mechanical improvements while remaining true to the original game. With upgraded art, quality of life improvements, and some new mechanics, you'll get to experience the Hoenn region in a brand new light!
+The Pokeemerald Expansion is a collection of feature branches that can be integrated into existing [pokeemerald](https://github.com/pret/pokeemerald) projects.
 
-## Features
+## What features are included?
+- Upgraded battle engine.
+    - Fairy Type.
+    - Physical/Special/Status Category Split.
+    - New moves and abilities up to SwSh.
+    - Options to change behaviors and data by generation.
+    - Mega Evolution and Primal Reversion
+    - Z-Moves
+- Pokémon Species from newer Generations (with the option to disable them if needed).
+    - Updates Hoenn's Regional Dex to match ORAS'.
+    - Updates National Dex incorporating all the new species.
+    - Option to change base stats by generation.
+    - New evolution methods.
+    - Hidden Abilities data (How to make them available is up to the user).
+- Items from newer Generations and updated item effects for battle and field use.
 
-### A New way to Explore Hoenn
-* Gotta Catch 'Em All: Updated encounters and events mean it is possible to obtain all Pokémon in a single playthrough.
-* Following Pokemon: Explore Hoenn together with your Pokémon partners.
-* Day & Night Cycles: More than just a cosmetic change! Some Pokémon may only be found at certain times of day.
-  
-### Aesthetic Changes
-* Character art has been upgraded to GEN IV style, with a brand new May sprite commissioned for this game.
-* Battle Backgrounds now feature environment art
+Certain mechanics, moves, abilities and species sprites are missing. For more information, see [the project's milestones](https://github.com/rh-hideout/pokeemerald-expansion/milestones).
 
-### New Mechanics & Modifications
-* Fairy Type: The Fairy type has been added, along with a few new moves to support the type.
-* Physical & Special Split: Moves have been re-categorized by Physical and Special attacks, based on modern classifications.
-* Pokemon that were given stat boosts in X&Y and SuMo have had their stats upgraded to match.
-* EXP Share is now a Key Item that can be toggled On/Off, and works across your party.
-* EXP is granted when a Pokémon is captured.
-* TMs can be used infinitely.
-* Fishing has been adjusted to not require a buttom prompt to reel-in (FRLG style).
-* Badge Boosts have been removed.
-* Vitamins now increase your Pokémon IVs (+3) instead of your EVs.
-* Supplements have been introduced that decrease IVs (-3).
+### [Documentation on features can be found here](https://github.com/rh-hideout/pokeemerald-expansion/wiki)
 
-### New Content
-* A few additional evolutions and Pokemon have been added, bringing Emerald's dex count to an even 400 available Pokemon!
-* Find a MOVE DELETER and special shops at the POKEMON LEAGUE SERVICES, located on the 2nd floor of every PokeCenter.
-* A 6th floor has been added to Lilycove's Department Store.
-* A Dojo has been added to Slateport City. Challenge the pupils of the STAT MASTERS to EV train your Pokemon.
-* Various NPCs will provide different items or gift Pokemon daily.
-* Brief cameos from some of your favorite Kanto charaters.
+## Who maintains the project?
 
-### Quality of Life & Other Adjustments
-* All Trade Evolution Pokemon now have item-based evolutions as well!
-* National Dex is given out from the start.
-* EVs can be gained at level 100.
-* Gain more than 1 Premier Ball when purchasing balls in increments of 10.
-* You can now surf at faster speeds, just like with running shoes.
-* IVs and EVs are viewable on the summary screen
-* Repels prompt you for re-use when they run out
-* Hidden Power attributes (Base Power, Type) are now accurately displayed in summary screens & battle.
-* Move Tutors can be reused
-* TMs have been replaced with other items in PICKUP's tables, and Trainer Tower now gives out rare items instead of repeat TMs.
-* Secret Power is now an HM. Dazzling Gleam replaces it as a TM.
+The project was originally started by DizzyEgg alongside other contributors.
 
+The project has now gotten larger and DizzyEgg is now maintaining the project as part of the ROM Hacking Hideout community. Some members of this community are taking on larger roles to help maintain the project.
 
-## Credits & Thanks
+### Please consider crediting the entire [list of contributors](https://github.com/rh-hideout/pokeemerald-expansion/wiki/Credits) in your project, as they have all worked hard to develop this project :)
 
-* Hyo Oppa, Wolf, Solo993, Bushbugger - Character Art
-* Carchagui, Princess Phoenix, Noobiess - Battle Backgrounds
-* PokeMerp - Day/Night system & following pokemon
-* Lunos - Many community modifications, assistance with questions, and the IV items!
-* TheXaman - Various community modificatins, debug system
-* GriffinR & the Pret Discord - Various assistance
+## Can I contribute even if I'm not a member of ROM Hacking Hideout?
 
-## PokéEmerald
+Yes! Contributions are welcome via Pull Requests and they will be reviewed by maintainers. Don't feel discouraged if we take a bit to review your PR, we'll get to it.
 
-This project is built upon the decompilation of Pokémon Emerald.
+## What is ROM Hacking Hideout?
 
-It builds the following ROM:
+A Discord-based ROM hacking community that has many members who hack using the disassembly and decompilation projects for Pokémon. Quite a few contributors to the original feature branches by DizzyEgg were members of ROM Hacking Hideout. You can call it RHH for short!
 
-* [**pokeemerald.gba**](https://datomatic.no-intro.org/index.php?page=show_record&s=23&n=1961) `sha1: f3ae088181bf583e55daf962a92bb46f4f1d07b7`
-
-To set up the repository, see [INSTALL.md](INSTALL.md).
-
-## Contacts
-
-Join the PRET [Discord](https://discord.gg/d5dubZ3) and [IRC](https://web.libera.chat/?#pret).
-
+[Click here to join the RHH Discord Server!](https://discord.gg/6CzjAG6GZk)

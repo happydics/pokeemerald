@@ -965,7 +965,7 @@ static void BagMenu_ItemPrintCallback(u8 windowId, u32 itemIndex, u8 y)
         itemQuantity = BagGetQuantityByPocketPosition(gBagPosition.pocket + 1, itemIndex);
 
         // Draw HM icon
-        if (itemId >= ITEM_HM01 && itemId <= ITEM_HM09)
+        if (itemId >= ITEM_HM01 && itemId <= ITEM_HM08)
             BlitBitmapToWindow(windowId, gBagMenuHMIcon_Gfx, 8, y - 1, 16, 16);
 
         if (gBagPosition.pocket == BERRIES_POCKET)
@@ -1549,7 +1549,7 @@ static void OpenContextMenu(u8 taskId)
         gBagMenu->contextMenuNumItems = ARRAY_COUNT(sContextMenuItems_BerryBlenderCrush);
         break;
     case ITEMMENULOCATION_APPRENTICE:
-        if (!ItemId_GetImportance(gSpecialVar_ItemId) && gSpecialVar_ItemId != ITEM_ENIGMA_BERRY)
+        if (!ItemId_GetImportance(gSpecialVar_ItemId) && gSpecialVar_ItemId != ITEM_ENIGMA_BERRY_E_READER)
         {
             gBagMenu->contextMenuItemsPtr = sContextMenuItems_Apprentice;
             gBagMenu->contextMenuNumItems = ARRAY_COUNT(sContextMenuItems_Apprentice);
@@ -1561,7 +1561,7 @@ static void OpenContextMenu(u8 taskId)
         }
         break;
     case ITEMMENULOCATION_FAVOR_LADY:
-        if (!ItemId_GetImportance(gSpecialVar_ItemId) && gSpecialVar_ItemId != ITEM_ENIGMA_BERRY)
+        if (!ItemId_GetImportance(gSpecialVar_ItemId) && gSpecialVar_ItemId != ITEM_ENIGMA_BERRY_E_READER)
         {
             gBagMenu->contextMenuItemsPtr = sContextMenuItems_FavorLady;
             gBagMenu->contextMenuNumItems = ARRAY_COUNT(sContextMenuItems_FavorLady);
@@ -1573,7 +1573,7 @@ static void OpenContextMenu(u8 taskId)
         }
         break;
     case ITEMMENULOCATION_QUIZ_LADY:
-        if (!ItemId_GetImportance(gSpecialVar_ItemId) && gSpecialVar_ItemId != ITEM_ENIGMA_BERRY)
+        if (!ItemId_GetImportance(gSpecialVar_ItemId) && gSpecialVar_ItemId != ITEM_ENIGMA_BERRY_E_READER)
         {
             gBagMenu->contextMenuItemsPtr = sContextMenuItems_QuizLady;
             gBagMenu->contextMenuNumItems = ARRAY_COUNT(sContextMenuItems_QuizLady);
@@ -2068,7 +2068,7 @@ static void Task_ItemContext_Sell(u8 taskId)
 {
     s16 *data = gTasks[taskId].data;
 
-    if (ItemId_GetPrice(gSpecialVar_ItemId) == 0 || ItemId_GetPocket(gSpecialVar_ItemId) == POCKET_TM_HM)
+    if (ItemId_GetPrice(gSpecialVar_ItemId) == 0)
     {
         CopyItemName(gSpecialVar_ItemId, gStringVar2);
         StringExpandPlaceholders(gStringVar4, gText_CantBuyKeyItem);

@@ -1,45 +1,20 @@
-.set LOCALID_MOVE_DELETER, 1
-
 LilycoveCity_PokemonCenter_2F_MapScripts::
+	map_script MAP_SCRIPT_ON_FRAME_TABLE, CableClub_OnFrame
+	map_script MAP_SCRIPT_ON_WARP_INTO_MAP_TABLE, CableClub_OnWarp
+	map_script MAP_SCRIPT_ON_LOAD, CableClub_OnLoad
+	map_script MAP_SCRIPT_ON_TRANSITION, CableClub_OnTransition
 	.byte 0
 
-LilycoveCity_PokemonCenter_2F_EventScript_RankBoard::
-	lock
-	call Common_EventScript_Pkmn_Center_Services_RankBoard
-	release
+@ The below 3 are unused and leftover from RS
+LilycoveCity_PokemonCenter_2F_EventScript_Colosseum::
+	call CableClub_EventScript_Colosseum
 	end
 
-LilycoveCity_PokemonCenter_2F_EventScript_MoveDeleter::
-	lock
-	faceplayer
-	setvar VAR_0x800B, LOCALID_MOVE_DELETER
-	call Common_EventScript_Pkmn_Center_Services_MoveDeleter
-	release
+LilycoveCity_PokemonCenter_2F_EventScript_TradeCenter::
+	call CableClub_EventScript_TradeCenter
 	end
 
-
-LilycoveCity_PokemonCenter_2F_EventScript_BerryClerk::
-	lock
-	faceplayer
-	call Common_EventScript_Pkmn_Center_Services_BerryClerk
-	release
+LilycoveCity_PokemonCenter_2F_EventScript_RecordCorner::
+	call CableClub_EventScript_RecordCorner
 	end
 
-LilycoveCity_PokemonCenter_2F_EventScript_EliteShop::
-	lock
-	faceplayer
-	call Common_EventScript_Pkmn_Center_Services_EliteShop
-	release
-	end
-
-LilycoveCity_PokemonCenter_2F_EventScript_OldMap::
-	lock
-	msgbox LilycoveCity_PokemonCenter_2F_Text_OldMap, MSGBOX_DEFAULT
-	release
-	end
-
-LilycoveCity_PokemonCenter_2F_Text_OldMap:
-	.string "I heard some guys talking about\n"
-	.string "an exhibit at the MUSEUM...\p"
-	.string "Who gets that excited over some\n"
-	.string "dusty OLD SEA MAP?$"

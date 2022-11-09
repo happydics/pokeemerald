@@ -29,11 +29,11 @@ gText_Birch_MainSpeech::
 	.string "$"
 
 gText_Birch_AndYouAre::
-	.string "But enough about me.\n$"
+	.string "And you are?$"
 
 gText_Birch_BoyOrGirl::
-	.string "What kind of trainer would\n"
-	.string "you say you are?$"
+	.string "Are you a boy?\n"
+	.string "Or are you a girl?$"
 
 gText_Birch_WhatsYourName::
 	.string "All right.\n"

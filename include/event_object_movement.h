@@ -83,13 +83,6 @@ bool8 TryGetObjectEventIdByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroupId, u
 u8 GetObjectEventIdByXY(s16 x, s16 y);
 void SetObjectEventDirection(struct ObjectEvent *objectEvent, u8 direction);
 u8 GetFirstInactiveObjectEventId(void);
-void ClearObjectEventMovement(struct ObjectEvent *objectEvent, struct Sprite *sprite);
-struct Pokemon * GetFirstLiveMon(void);
-void UpdateFollowingPokemon(void);
-void RemoveFollowingPokemon(void);
-struct ObjectEvent * GetFollowerObject(void);
-u8 GetDirectionToFace(s16, s16, s16, s16);
-void UpdateLightSprite(struct Sprite *);
 void RemoveObjectEventByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup);
 void LoadPlayerObjectReflectionPalette(u16 tag, u8 slot);
 void LoadSpecialObjectReflectionPalette(u16 tag, u8 slot);
@@ -103,15 +96,12 @@ void SetSpritePosToOffsetMapCoords(s16 *x, s16 *y, s16 dx, s16 dy);
 void ObjectEventClearHeldMovement(struct ObjectEvent *);
 void ObjectEventClearHeldMovementIfActive(struct ObjectEvent *);
 void TrySpawnObjectEvents(s16 cameraX, s16 cameraY);
->>>>>>> e1021af6bd6a83cc4d53fc3879dacb5f401a0f83
 u8 CreateObjectGraphicsSprite(u16, void (*)(struct Sprite *), s16 x, s16 y, u8 subpriority);
 u8 TrySpawnObjectEvent(u8 localId, u8 mapNum, u8 mapGroup);
 u8 SpawnSpecialObjectEventParameterized(u8 graphicsId, u8 movementBehavior, u8 localId, s16 x, s16 y, u8 elevation);
 u8 SpawnSpecialObjectEvent(struct ObjectEventTemplate *);
 void SetSpritePosToMapCoords(s16 mapX, s16 mapY, s16 *destX, s16 *destY);
 void CameraObjectReset1(void);
-u8 LoadObjectEventPalette(u16);
-u8 UpdateSpritePaletteByTemplate(const struct SpriteTemplate *, struct Sprite *);
 void ObjectEventSetGraphicsId(struct ObjectEvent *, u8 graphicsId);
 void ObjectEventTurn(struct ObjectEvent *, u8 direction);
 void ObjectEventTurnByLocalIdAndMap(u8 localId, u8 mapNum, u8 mapGroup, u8 direction);
@@ -259,7 +249,6 @@ void MovementType_JogInPlace(struct Sprite *);
 void MovementType_RunInPlace(struct Sprite *);
 void MovementType_Invisible(struct Sprite *);
 void MovementType_WalkSlowlyInPlace(struct Sprite *);
-void MovementType_FollowPlayer(struct Sprite *);
 u8 GetSlideMovementAction(u32);
 u8 GetJumpMovementAction(u32);
 u8 GetJump2MovementAction(u32);
@@ -409,20 +398,6 @@ bool8 CopyablePlayerMovement_WalkFaster(struct ObjectEvent *, struct Sprite *, u
 bool8 CopyablePlayerMovement_Slide(struct ObjectEvent *, struct Sprite *, u8, bool8(u8));
 bool8 CopyablePlayerMovement_JumpInPlace(struct ObjectEvent *, struct Sprite *, u8, bool8(u8));
 bool8 CopyablePlayerMovement_Jump(struct ObjectEvent *, struct Sprite *, u8, bool8(u8));
-
-u8 MovementType_FollowPlayer_Shadow(struct ObjectEvent *, struct Sprite *);
-u8 MovementType_FollowPlayer_Active(struct ObjectEvent *, struct Sprite *);
-u8 MovementType_FollowPlayer_Moving(struct ObjectEvent *, struct Sprite *);
-
-bool8 FollowablePlayerMovement_Idle(struct ObjectEvent *, struct Sprite *, u8, bool8(u8));
-bool8 FollowablePlayerMovement_FaceDirection(struct ObjectEvent *, struct Sprite *, u8, bool8(u8));
-bool8 FollowablePlayerMovement_Step(struct ObjectEvent *, struct Sprite *, u8, bool8(u8));
-bool8 FollowablePlayerMovement_GoSpeed1(struct ObjectEvent *, struct Sprite *, u8, bool8(u8));
-bool8 FollowablePlayerMovement_GoSpeed2(struct ObjectEvent *, struct Sprite *, u8, bool8(u8));
-bool8 FollowablePlayerMovement_Slide(struct ObjectEvent *, struct Sprite *, u8, bool8(u8));
-bool8 fph_IM_DIFFERENT(struct ObjectEvent *, struct Sprite *, u8, bool8(u8));
-bool8 FollowablePlayerMovement_GoSpeed4(struct ObjectEvent *, struct Sprite *, u8, bool8(u8));
-bool8 FollowablePlayerMovement_Jump(struct ObjectEvent *, struct Sprite *, u8, bool8(u8));
 bool8 CopyablePlayerMovement_Jump2(struct ObjectEvent *, struct Sprite *, u8, bool8(u8));
 u8 MovementType_CopyPlayerInGrass_Step1(struct ObjectEvent *, struct Sprite *);
 u8 MovementType_Buried_Step0(struct ObjectEvent *, struct Sprite *);

@@ -3,49 +3,11 @@
 
 Route101_MapScripts::
 	map_script MAP_SCRIPT_ON_TRANSITION, Route101_OnTransition
-	map_script MAP_SCRIPT_ON_RESUME,Route101_OnResume
 	map_script MAP_SCRIPT_ON_FRAME_TABLE, Route101_OnFrame
 	.byte 0
 
 Route101_OnTransition:
-	special GetTimeOfDay
-	goto_if_eq VAR_RESULT, 0, Route101_OnTransition_Day
-	goto_if_eq VAR_RESULT, 1, Route101_OnTransition_Twilight
-	goto_if_eq VAR_RESULT, 2, Route101_OnTransition_Night
-	end
-
-Route101_OnTransition_Day:
-	setvar VAR_TIMEOFDAY, 0
 	call ProfBirch_EventScript_UpdateLocation
-	end
-
-Route101_OnTransition_Twilight:
-	setvar VAR_TIMEOFDAY, 1
-	call ProfBirch_EventScript_UpdateLocation
-	end
-
-Route101_OnTransition_Night:
-	setvar VAR_TIMEOFDAY, 2
-	call ProfBirch_EventScript_UpdateLocation
-	end
-
-Route101_OnResume:
-	special GetTimeOfDay
-	goto_if_eq VAR_RESULT, 0, Route101_OnResume_Day
-	goto_if_eq VAR_RESULT, 1, Route101_OnResume_Twilight
-	goto_if_eq VAR_RESULT, 2, Route101_OnResume_Night
-	end	
-
-Route101_OnResume_Day:
-	setvar VAR_TIMEOFDAY, 0
-	end
-
-Route101_OnResume_Twilight:
-	setvar VAR_TIMEOFDAY, 1
-	end
-
-Route101_OnResume_Night:
-	setvar VAR_TIMEOFDAY, 2
 	end
 
 Route101_OnFrame:
@@ -338,14 +300,3 @@ Route101_Text_RouteSign:
 	.string "ROUTE 101\n"
 	.string "{UP_ARROW} OLDALE TOWN$"
 
-Route101_EventScript_PokemonWatcher::
-	lock
-	faceplayer
-	msgbox Route101_Text_SawARarePokemon, MSGBOX_DEFAULT
-	release
-	end
-
-Route101_Text_SawARarePokemon:
-	.string "Last night I saw a POKéMON that\n"
-	.string "I've never seen in HOENN!\p"
-	.string "But I can't find it this morning.$"

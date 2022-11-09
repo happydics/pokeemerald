@@ -1,31 +1,6 @@
 #ifndef GUARD_EVENT_SCRIPTS_H
 #define GUARD_EVENT_SCRIPTS_H
 
-extern const u8 EventScript_Follower[];
-extern const u8 EventScript_FollowerEnd[];
-extern const u8 EventScript_FollowerGeneric[];
-extern const u8 EventScript_FollowerLovesYou[];
-
-extern const u8 EventScript_FollowerIsShivering[];
-extern const u8 EventScript_FollowerNostalgia[];
-extern const u8 EventScript_FollowerHopping[];
-extern const u8 EventScript_FollowerJumpOnPlayer[];
-extern const u8 EventScript_FollowerCuddling[];
-extern const u8 EventScript_FollowerShiverCuddling[];
-extern const u8 EventScript_FollowerGetCloser[];
-extern const u8 EventScript_FollowerPokingPlayer[];
-extern const u8 EventScript_FollowerLookAround[];
-extern const u8 EventScript_FollowerLookAway[];
-extern const u8 EventScript_FollowerLookAwayBark[];
-extern const u8 EventScript_FollowerLookAwayPoke[];
-extern const u8 EventScript_FollowerPokeGround[];
-extern const u8 EventScript_FollowerStartled[];
-extern const u8 EventScript_FollowerFastHopping[];
-extern const u8 EventScript_FollowerDizzy[];
-extern const u8 EventScript_FollowerLookAroundScared[];
-extern const u8 EventScript_FollowerDance[];
-extern const u8 EnterPokeballMovement[];
-
 extern const u8 EventScript_TestSignpostMsg[];
 extern const u8 EventScript_TryGetTrainerScript[];
 extern const u8 EventScript_StartTrainerApproach[];
@@ -573,7 +548,7 @@ extern const u8 AbnormalWeather_EventScript_EndEventAndCleanup_1[];
 extern const u8 IslandCave_EventScript_OpenRegiEntrance[];
 extern const u8 MauvilleCity_EventScript_RegisterWallyCall[];
 extern const u8 Route119_EventScript_ScottWonAtFortreeGymCall[];
-extern const u8 LittlerootTown_EventScript_ScottAboardSSTidalCall[];
+extern const u8 LittlerootTown_ProfessorBirchsLab_EventScript_ScottAboardSSTidalCall[];
 extern const u8 RustboroCity_Gym_EventScript_RegisterRoxanne[];
 extern const u8 MossdeepCity_SpaceCenter_2F_EventScript_RivalRayquazaCall[];
 extern const u8 SSTidalCorridor_EventScript_ReachedStepCount[];
@@ -611,9 +586,6 @@ extern const u8 TrainerHill_EventScript_TrainerBattle[];
 // Item Use
 extern const u8 BerryTree_EventScript_ItemUsePlantBerry[];
 extern const u8 BerryTree_EventScript_ItemUseWailmerPail[];
-extern const u8 Route113_EventScript_WaterSudowoodo[];
-extern const u8 Route118_EventScript_WaterSudowoodo[];
-extern const u8 Route123_EventScript_WaterSudowoodo[];
 extern const u8 BattleFrontier_OutsideEast_EventScript_WaterSudowoodo[];
 
 extern const u8 EventScript_SelectWithoutRegisteredItem[];
@@ -639,14 +611,5 @@ extern const u8 EventScript_TradeCenter_Chair1[];
 extern const u8 EventScript_TradeCenter_Chair0[];
 extern const u8 EventScript_ConfirmLeaveCableClubRoom[];
 extern const u8 EventScript_TerminateLink[];
-
-// Dexnav
-extern const u8 EventScript_StartDexNavBattle[];
-extern const u8 EventScript_NotFoundNearby[];
-extern const u8 EventScript_PokemonGotAway[];
-extern const u8 EventScript_LostSignal[];
-extern const u8 EventScript_TooDark[];
-extern const u8 EventScript_MovedTooFast[];
-
 
 #endif // GUARD_EVENT_SCRIPTS_H

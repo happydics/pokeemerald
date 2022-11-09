@@ -39,8 +39,6 @@ struct Tileset
 {
     /*0x00*/ bool8 isCompressed;
     /*0x01*/ bool8 isSecondary;
-    /*0x02*/ u8 lightPalettes; // Bitmask determining whether a palette should be time-blended as a light
-    /*0x03*/ u8 customLightColor; // Bitmask determining which light palettes have custom light colors (color 15)
     /*0x04*/ void *tiles;
     /*0x08*/ void *palettes;
     /*0x0c*/ u16 *metatiles;
@@ -188,7 +186,7 @@ struct ObjectEvent
              u32 inShallowFlowingWater:1;
              u32 inSandPile:1;
              u32 inHotSprings:1;
-             u32 noShadow:1;
+             u32 hasShadow:1;
              u32 spriteAnimPausedBackup:1;
     /*0x03*/ u32 spriteAffineAnimPausedBackup:1;
              u32 disableJumpLandingGroundEffect:1;
@@ -218,15 +216,7 @@ struct ObjectEvent
     /*0x1F*/ u8 previousMetatileBehavior;
     /*0x20*/ u8 previousMovementDirection;
     /*0x21*/ u8 directionSequenceIndex;
-    /*0x22*/ union __attribute__((packed)) {
-        u8 playerCopyableMovement; // COPY_MOVE_*
-        struct __attribute__((packed)) {
-            u16 species:10; // 11 bits; 1024 species
-            u16 form:5; // Used for Deoxys, Unown, etc
-            u16 shiny:1;
-        } mon;
-        u16 asU16;
-    } extra;
+    /*0x22*/ u8 playerCopyableMovement; // COPY_MOVE_*
     /*size = 0x24*/
 };
 
@@ -269,8 +259,6 @@ enum {
 #define PLAYER_AVATAR_FLAG_CONTROLLABLE (1 << 5)
 #define PLAYER_AVATAR_FLAG_FORCED_MOVE  (1 << 6)
 #define PLAYER_AVATAR_FLAG_DASH         (1 << 7)
-
-#define PLAYER_AVATAR_FLAG_BIKE        (PLAYER_AVATAR_FLAG_MACH_BIKE | PLAYER_AVATAR_FLAG_ACRO_BIKE)
 
 enum
 {
@@ -324,8 +312,7 @@ struct PlayerAvatar
     /*0x02*/ u8 runningState; // this is a static running state. 00 is not moving, 01 is turn direction, 02 is moving.
     /*0x03*/ u8 tileTransitionState; // this is a transition running state: 00 is not moving, 01 is transition between tiles, 02 means you are on the frame in which you have centered on a tile but are about to keep moving, even if changing directions. 2 is also used for a ledge hop, since you are transitioning.
     /*0x04*/ u8 spriteId;
-    /*0x05*/ u8 objectEventId:7;
-             u8 creeping:1;
+    /*0x05*/ u8 objectEventId;
     /*0x06*/ bool8 preventStep;
     /*0x07*/ u8 gender;
     /*0x08*/ u8 acroBikeState; // 00 is normal, 01 is turning, 02 is standing wheelie, 03 is hopping wheelie

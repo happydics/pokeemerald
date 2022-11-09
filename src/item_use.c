@@ -1,6 +1,7 @@
 #include "global.h"
 #include "item_use.h"
 #include "battle.h"
+#include "battle_anim.h"
 #include "battle_pyramid.h"
 #include "battle_pyramid_bag.h"
 #include "berry.h"
@@ -8,7 +9,6 @@
 #include "bike.h"
 #include "coins.h"
 #include "data.h"
-#include "debug.h"
 #include "event_data.h"
 #include "event_object_lock.h"
 #include "event_object_movement.h"
@@ -99,7 +99,7 @@ static const struct YesNoFuncTable sUseTMHMYesNoFuncTable =
 static void SetUpItemUseCallback(u8 taskId)
 {
     u8 type;
-    if (gSpecialVar_ItemId == ITEM_ENIGMA_BERRY)
+    if (gSpecialVar_ItemId == ITEM_ENIGMA_BERRY_E_READER)
         type = gTasks[taskId].tEnigmaBerryType - 1;
     else
         type = ItemId_GetType(gSpecialVar_ItemId) - 1;
@@ -192,27 +192,6 @@ void ItemUseOutOfBattle_Mail(u8 taskId)
 {
     gBagMenu->newScreenCallback = CB2_CheckMail;
     Task_FadeAndCloseBagMenu(taskId);
-}
-
-void ItemUseOutOfBattle_ExpShare(u8 taskId)
-{
-	if (!gSaveBlock2Ptr->expShare)
-	{
-		PlaySE(SE_EXP_MAX);
-		if (!gTasks[taskId].data[2]) // to account for pressing select in the overworld
-			DisplayItemMessageOnField(taskId, gOtherText_ExpShareOn, Task_CloseCantUseKeyItemMessage);
-		else
-			DisplayItemMessage(taskId, 1, gOtherText_ExpShareOn, CloseItemMessage);
-	}
-	else
-	{
-		PlaySE(SE_PC_OFF);
-		if (!gTasks[taskId].data[2]) // to account for pressing select in the overworld
-			DisplayItemMessageOnField(taskId, gOtherText_ExpShareOff, Task_CloseCantUseKeyItemMessage);
-		else
-			DisplayItemMessage(taskId, 1, gOtherText_ExpShareOff, CloseItemMessage);
-	}
-	gSaveBlock2Ptr->expShare = !gSaveBlock2Ptr->expShare;
 }
 
 void ItemUseOutOfBattle_Bike(u8 taskId)
@@ -760,23 +739,26 @@ static bool8 TryToWaterSudowoodo(void)
 
 static void ItemUseOnFieldCB_WailmerPailSudowoodo(u8 taskId)
 {
-    ScriptContext2_Enable();
-    { 
-        if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE113) && gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE113))
-            ScriptContext1_SetupScript(Route113_EventScript_WaterSudowoodo);
-        else if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE118) && gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE118))
-            ScriptContext1_SetupScript(Route118_EventScript_WaterSudowoodo);
-        else if (gSaveBlock1Ptr->location.mapGroup == MAP_GROUP(ROUTE123) && gSaveBlock1Ptr->location.mapNum == MAP_NUM(ROUTE123))
-            ScriptContext1_SetupScript(Route123_EventScript_WaterSudowoodo);
-        else 
-            ScriptContext1_SetupScript(BattleFrontier_OutsideEast_EventScript_WaterSudowoodo);
-    }
+    LockPlayerFieldControls();
+    ScriptContext_SetupScript(BattleFrontier_OutsideEast_EventScript_WaterSudowoodo);
     DestroyTask(taskId);
 }
 
 void ItemUseOutOfBattle_Medicine(u8 taskId)
 {
     gItemUseCB = ItemUseCB_Medicine;
+    SetUpItemUseCallback(taskId);
+}
+
+void ItemUseOutOfBattle_AbilityCapsule(u8 taskId)
+{
+    gItemUseCB = ItemUseCB_AbilityCapsule;
+    SetUpItemUseCallback(taskId);
+}
+
+void ItemUseOutOfBattle_AbilityPatch(u8 taskId)
+{
+    gItemUseCB = ItemUseCB_AbilityPatch;
     SetUpItemUseCallback(taskId);
 }
 
@@ -889,7 +871,6 @@ static void Task_UseRepel(u8 taskId)
     if (!IsSEPlaying())
     {
         VarSet(VAR_REPEL_STEP_COUNT, ItemId_GetHoldEffectParam(gSpecialVar_ItemId));
-        VarSet(VAR_REPEL_LAST_USED, gSpecialVar_ItemId);
         RemoveUsedItem();
         if (!InBattlePyramid())
             DisplayItemMessage(taskId, FONT_NORMAL, gStringVar4, CloseItemMessage);
@@ -939,7 +920,12 @@ void Task_UseDigEscapeRopeOnField(u8 taskId)
 static void ItemUseOnFieldCB_EscapeRope(u8 taskId)
 {
     Overworld_ResetStateAfterDigEscRope();
-    RemoveUsedItem();
+    #if I_KEY_ESCAPE_ROPE < GEN_8
+        RemoveUsedItem();
+    #else
+        CopyItemName(gSpecialVar_ItemId, gStringVar2);
+        StringExpandPlaceholders(gStringVar4, gText_PlayerUsedVar2);
+    #endif
     gTasks[taskId].data[0] = 0;
     DisplayItemMessageOnField(taskId, gStringVar4, Task_UseDigEscapeRopeOnField);
 }
@@ -971,29 +957,70 @@ void ItemUseOutOfBattle_EvolutionStone(u8 taskId)
     SetUpItemUseCallback(taskId);
 }
 
+static u32 GetBallThrowableState(void)
+{
+    if (IsBattlerAlive(GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT))
+     && IsBattlerAlive(GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT)))
+        return BALL_THROW_UNABLE_TWO_MONS;
+    else if (IsPlayerPartyAndPokemonStorageFull() == TRUE)
+        return BALL_THROW_UNABLE_NO_ROOM;
+#if B_SEMI_INVULNERABLE_CATCH >= GEN_4
+    else if (gStatuses3[GetCatchingBattler()] & STATUS3_SEMI_INVULNERABLE)
+        return BALL_THROW_UNABLE_SEMI_INVULNERABLE;
+#endif
+    else if (FlagGet(B_FLAG_NO_CATCHING))
+        return BALL_THROW_UNABLE_DISABLED_FLAG;
+
+    return BALL_THROW_ABLE;
+}
+
+bool32 CanThrowBall(void)
+{
+    return (GetBallThrowableState() == BALL_THROW_ABLE);
+}
+
+static const u8 sText_CantThrowPokeBall_TwoMons[] = _("Cannot throw a ball!\nThere are two Pokémon out there!\p");
+static const u8 sText_CantThrowPokeBall_SemiInvulnerable[] = _("Cannot throw a ball!\nThere's no Pokémon in sight!\p");
+static const u8 sText_CantThrowPokeBall_Disabled[] = _("POKé BALLS cannot be used\nright now!\p");
 void ItemUseInBattle_PokeBall(u8 taskId)
 {
-    #ifdef TX_DEBUGGING
-    if (FlagGet(FLAG_SYS_NO_CATCHING)){ //DEBUG
-        static const u8 sText_BallsCannotBeUsed[] = _("Poké Balls cannot be used\nright now!\p");
-        DisplayItemMessage(taskId, 1, sText_BallsCannotBeUsed, CloseItemMessage);
-        return;
-    }
-    #endif
-    if (IsPlayerPartyAndPokemonStorageFull() == FALSE) // have room for mon?
+    switch (GetBallThrowableState())
     {
+    case BALL_THROW_ABLE:
+    default:
         RemoveBagItem(gSpecialVar_ItemId, 1);
         if (!InBattlePyramid())
             Task_FadeAndCloseBagMenu(taskId);
         else
             CloseBattlePyramidBag(taskId);
+        break;
+    case BALL_THROW_UNABLE_TWO_MONS:
+        if (!InBattlePyramid())
+            DisplayItemMessage(taskId, FONT_NORMAL, sText_CantThrowPokeBall_TwoMons, CloseItemMessage);
+        else
+            DisplayItemMessageInBattlePyramid(taskId, sText_CantThrowPokeBall_TwoMons, Task_CloseBattlePyramidBagMessage);
+        break;
+    case BALL_THROW_UNABLE_NO_ROOM:
+        if (!InBattlePyramid())
+            DisplayItemMessage(taskId, FONT_NORMAL, gText_BoxFull, CloseItemMessage);
+        else
+            DisplayItemMessageInBattlePyramid(taskId, gText_BoxFull, Task_CloseBattlePyramidBagMessage);
+        break;
+#if B_SEMI_INVULNERABLE_CATCH >= GEN_4
+    case BALL_THROW_UNABLE_SEMI_INVULNERABLE:
+        if (!InBattlePyramid())
+            DisplayItemMessage(taskId, FONT_NORMAL, sText_CantThrowPokeBall_SemiInvulnerable, CloseItemMessage);
+        else
+            DisplayItemMessageInBattlePyramid(taskId, sText_CantThrowPokeBall_SemiInvulnerable, Task_CloseBattlePyramidBagMessage);
+        break;
+#endif
+    case BALL_THROW_UNABLE_DISABLED_FLAG:
+        if (!InBattlePyramid())
+            DisplayItemMessage(taskId, FONT_NORMAL, sText_CantThrowPokeBall_Disabled, CloseItemMessage);
+        else
+            DisplayItemMessageInBattlePyramid(taskId, sText_CantThrowPokeBall_Disabled, Task_CloseBattlePyramidBagMessage);
+        break;
     }
-    else if (!InBattlePyramid())
-    {
-        DisplayItemMessage(taskId, FONT_NORMAL, gText_BoxFull, CloseItemMessage);
-    }
-    else
-        DisplayItemMessageInBattlePyramid(taskId, gText_BoxFull, Task_CloseBattlePyramidBagMessage);
 }
 
 static void Task_CloseStatIncreaseMessage(u8 taskId)
@@ -1161,27 +1188,23 @@ void ItemUseInBattle_EnigmaBerry(u8 taskId)
     }
 }
 
+void ItemUseOutOfBattle_FormChange(u8 taskId)
+{
+    gItemUseCB = ItemUseCB_FormChange;
+    gTasks[taskId].data[0] = FALSE;
+    SetUpItemUseCallback(taskId);
+}
+
+void ItemUseOutOfBattle_FormChange_ConsumedOnUse(u8 taskId)
+{
+    gItemUseCB = ItemUseCB_FormChange_ConsumedOnUse;
+    gTasks[taskId].data[0] = TRUE;
+    SetUpItemUseCallback(taskId);
+}
+
 void ItemUseOutOfBattle_CannotUse(u8 taskId)
 {
     DisplayDadsAdviceCannotUseItemMessage(taskId, gTasks[taskId].tUsingRegisteredKeyItem);
-}
-
-void ItemUseOutOfBattle_ReduceIV(u8 taskId)
-{
-    gItemUseCB = ItemUseCB_ReduceIV;
-    SetUpItemUseCallback(taskId);
-}
-
-void ItemUseOutOfBattle_IncreaseIV(u8 taskId)
-{
-    gItemUseCB = ItemUseCB_IncreaseIV;
-    SetUpItemUseCallback(taskId);
-}
-
-void ItemUseOutOfBattle_Mints(u8 taskId)
-{
-    gItemUseCB = ItemUseCB_Mints;
-    SetUpItemUseCallback(taskId);
 }
 
 #undef tUsingRegisteredKeyItem

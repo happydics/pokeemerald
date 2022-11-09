@@ -4,7 +4,6 @@
 #include "coord_event_weather.h"
 #include "daycare.h"
 #include "debug.h"
-#include "dexnav.h"
 #include "faraway_island.h"
 #include "event_data.h"
 #include "event_object_movement.h"
@@ -81,7 +80,7 @@ void FieldClearPlayerInput(struct FieldInput *input)
     input->heldDirection2 = FALSE;
     input->tookStep = FALSE;
     input->pressedBButton = FALSE;
-    input->pressedRButton = FALSE;
+    input->input_field_1_0 = FALSE;
     input->input_field_1_1 = FALSE;
     input->input_field_1_2 = FALSE;
     input->input_field_1_3 = FALSE;
@@ -106,8 +105,6 @@ void FieldGetPlayerInput(struct FieldInput *input, u16 newKeys, u16 heldKeys)
                 input->pressedAButton = TRUE;
             if (newKeys & B_BUTTON)
                 input->pressedBButton = TRUE;
-            if (newKeys & R_BUTTON && !FlagGet(FLAG_SYS_DEXNAV_SEARCH))
-                input->pressedRButton = TRUE;
         }
 
         if (heldKeys & (DPAD_UP | DPAD_DOWN | DPAD_LEFT | DPAD_RIGHT))
@@ -134,36 +131,13 @@ void FieldGetPlayerInput(struct FieldInput *input, u16 newKeys, u16 heldKeys)
     else if (heldKeys & DPAD_RIGHT)
         input->dpadDirection = DIR_EAST;
 
-    //DEBUG
-    #ifdef TX_DEBUGGING
-        if (!TX_DEBUG_MENU_OPTION)
-        {
-            if (heldKeys & R_BUTTON) 
-            {
-                if(input->pressedSelectButton)
-                {
-                    input->input_field_1_0 = TRUE;
-                    input->pressedSelectButton = FALSE;
-                }else if(input->pressedStartButton) 
-                {
-                    input->input_field_1_2 = TRUE;
-                    input->pressedStartButton = FALSE;
-                }
-            }
-            if (heldKeys & L_BUTTON) 
-            {
-                if(input->pressedSelectButton)
-                {
-                    input->input_field_1_1 = TRUE;
-                    input->pressedSelectButton = FALSE;
-                }else if(input->pressedStartButton) 
-                {
-                    input->input_field_1_3 = TRUE;
-                    input->pressedStartButton = FALSE;
-                }
-            }
-        }
-    #endif
+#if DEBUG_SYSTEM_ENABLE == TRUE && DEBUG_SYSTEM_IN_MENU == FALSE
+    if ((heldKeys & DEBUG_SYSTEM_HELD_KEYS) && input->DEBUG_SYSTEM_TRIGGER_EVENT)
+    {
+        input->input_field_1_2 = TRUE;
+        input->DEBUG_SYSTEM_TRIGGER_EVENT = FALSE;
+    }
+#endif
 }
 
 int ProcessPlayerFieldInput(struct FieldInput *input)
@@ -220,27 +194,18 @@ int ProcessPlayerFieldInput(struct FieldInput *input)
         ShowStartMenu();
         return TRUE;
     }
-    
-    if (input->tookStep && TryFindHiddenPokemon())
-        return TRUE;
-    
     if (input->pressedSelectButton && UseRegisteredKeyItemOnField() == TRUE)
         return TRUE;
-    
-    if (input->pressedRButton && TryStartDexnavSearch())
-        return TRUE;
 
-    #ifdef TX_DEBUGGING
-        if (!TX_DEBUG_MENU_OPTION)
-        {
-            if (input->input_field_1_2)
-            {
-                PlaySE(SE_WIN_OPEN);
-                Debug_ShowMainMenu();
-                return TRUE;
-            }
-        }
-    #endif
+#if DEBUG_SYSTEM_ENABLE == TRUE && DEBUG_SYSTEM_IN_MENU == FALSE
+    if (input->input_field_1_2)
+    {
+        PlaySE(SE_WIN_OPEN);
+        FreezeObjectEvents();
+        Debug_ShowMainMenu();
+        return TRUE;
+    }
+#endif
 
     return FALSE;
 }
@@ -633,7 +598,7 @@ static bool8 TryStartStepCountScript(u16 metatileBehavior)
         }
         if (ShouldDoScottBattleFrontierCall() == TRUE)
         {
-            ScriptContext1_SetupScript(LittlerootTown_EventScript_ScottAboardSSTidalCall);
+            ScriptContext_SetupScript(LittlerootTown_ProfessorBirchsLab_EventScript_ScottAboardSSTidalCall);
             return TRUE;
         }
         if (ShouldDoRoxanneCall() == TRUE)
@@ -722,10 +687,8 @@ void RestartWildEncounterImmunitySteps(void)
 
 static bool8 CheckStandardWildEncounter(u16 metatileBehavior)
 {
-    #ifdef TX_DEBUGGING
-    if (FlagGet(FLAG_SYS_NO_ENCOUNTER)) //DEBUG
-        return FALSE;//
-    #endif
+    if (FlagGet(OW_FLAG_NO_ENCOUNTER))
+        return FALSE;
 
     if (sWildEncounterImmunitySteps < 4)
     {
@@ -742,7 +705,7 @@ static bool8 CheckStandardWildEncounter(u16 metatileBehavior)
     }
 
     sPreviousPlayerMetatileBehavior = metatileBehavior;
-    return FALSE;   
+    return FALSE;
 }
 
 static bool8 TryArrowWarp(struct MapPosition *position, u16 metatileBehavior, u8 direction)

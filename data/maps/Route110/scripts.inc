@@ -9,54 +9,14 @@ Route110_MapScripts::
 	map_script MAP_SCRIPT_ON_FRAME_TABLE, Route110_OnFrame
 	.byte 0
 
-Route110_OnTransition:
-	special GetTimeOfDay
-	goto_if_eq VAR_RESULT, 0, Route110_OnTransition_Day
-	goto_if_eq VAR_RESULT, 1, Route110_OnTransition_Twilight
-	goto_if_eq VAR_RESULT, 2, Route110_OnTransition_Night
-	end
-
-Route110_OnTransition_Day:
-	setvar VAR_TIMEOFDAY, 0
-	call Common_EventScript_SetupRivalGfxId
-	call Common_EventScript_SetupRivalOnBikeGfxId
-	call_if_eq VAR_CYCLING_CHALLENGE_STATE, 1, Route110_EventScript_SaveCyclingMusic
-	end
-
-Route110_OnTransition_Twilight:
-	setvar VAR_TIMEOFDAY, 1
-	call Common_EventScript_SetupRivalGfxId
-	call Common_EventScript_SetupRivalOnBikeGfxId
-	call_if_eq VAR_CYCLING_CHALLENGE_STATE, 1, Route110_EventScript_SaveCyclingMusic
-	end
-
-Route110_OnTransition_Night:
-	setvar VAR_TIMEOFDAY, 2
-	call Common_EventScript_SetupRivalGfxId
-	call Common_EventScript_SetupRivalOnBikeGfxId
-	call_if_eq VAR_CYCLING_CHALLENGE_STATE, 1, Route110_EventScript_SaveCyclingMusic
-	end
-
 Route110_OnResume:
-	special GetTimeOfDay
-	goto_if_eq VAR_RESULT, 0, Route110_OnResume_Day
-	goto_if_eq VAR_RESULT, 1, Route110_OnResume_Twilight
-	goto_if_eq VAR_RESULT, 2, Route110_OnResume_Night
-	end	
-
-Route110_OnResume_Day:
-	setvar VAR_TIMEOFDAY, 0
 	special UpdateCyclingRoadState
 	end
 
-Route110_OnResume_Twilight:
-	setvar VAR_TIMEOFDAY, 1
-	special UpdateCyclingRoadState
-	end
-
-Route110_OnResume_Night:
-	setvar VAR_TIMEOFDAY, 2
-	special UpdateCyclingRoadState
+Route110_OnTransition:
+	call Common_EventScript_SetupRivalGfxId
+	call Common_EventScript_SetupRivalOnBikeGfxId
+	call_if_eq VAR_CYCLING_CHALLENGE_STATE, 1, Route110_EventScript_SaveCyclingMusic
 	end
 
 Route110_EventScript_SaveCyclingMusic::
@@ -503,7 +463,7 @@ Route110_EventScript_BrendanDefeated::
 	end
 
 Route110_EventScript_GiveItemfinder::
-	giveitem ITEM_ITEMFINDER
+	giveitem ITEM_DOWSING_MACHINE
 	return
 
 Route110_EventScript_RivalExit::

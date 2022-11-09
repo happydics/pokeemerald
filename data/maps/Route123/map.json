@@ -352,10 +352,10 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_WOMAN_2",
-      "x": 14,
-      "y": 14,
+      "x": 18,
+      "y": 9,
       "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_LOOK_AROUND",
+      "movement_type": "MOVEMENT_TYPE_ROTATE_COUNTERCLOCKWISE",
       "movement_range_x": 0,
       "movement_range_y": 0,
       "trainer_type": "TRAINER_TYPE_NORMAL",
@@ -547,7 +547,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_WOMAN_5",
-      "x": 30,
+      "x": 14,
       "y": 16,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_FACE_UP",
@@ -560,7 +560,7 @@
     },
     {
       "graphics_id": "OBJ_EVENT_GFX_YOUNGSTER",
-      "x": 30,
+      "x": 14,
       "y": 12,
       "elevation": 3,
       "movement_type": "MOVEMENT_TYPE_WALK_DOWN_AND_UP",
@@ -583,19 +583,6 @@
       "trainer_sight_or_berry_tree_id": "0",
       "script": "Route123_EventScript_ItemRevivalHerb",
       "flag": "FLAG_ITEM_ROUTE_123_REVIVAL_HERB"
-    },
-    {
-      "graphics_id": "OBJ_EVENT_GFX_SUDOWOODO",
-      "x": 18,
-      "y": 1,
-      "elevation": 3,
-      "movement_type": "MOVEMENT_TYPE_NONE",
-      "movement_range_x": 0,
-      "movement_range_y": 0,
-      "trainer_type": "TRAINER_TYPE_NONE",
-      "trainer_sight_or_berry_tree_id": "0",
-      "script": "Route123_EventScript_Sudowoodo",
-      "flag": "FLAG_HIDE_ROUTE123_SUDOWOODO"
     }
   ],
   "warp_events": [

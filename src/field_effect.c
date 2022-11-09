@@ -31,7 +31,6 @@
 #include "constants/metatile_behaviors.h"
 #include "constants/rgb.h"
 #include "constants/songs.h"
-#include "pokemon_storage_system.h"
 
 #define subsprite_table(ptr) {.subsprites = ptr, .subspriteCount = (sizeof ptr) / (sizeof(struct Subsprite))}
 
@@ -67,6 +66,7 @@ static void PokeballGlowEffect_WaitForSound(struct Sprite *);
 static void PokeballGlowEffect_Idle(struct Sprite *);
 static void SpriteCB_PokeballGlow(struct Sprite *);
 
+static void FieldCallback_UseFly(void);
 static void Task_UseFly(u8);
 static void FieldCallback_FlyIntoMap(void);
 static void Task_FlyIntoMap(u8);
@@ -782,7 +782,7 @@ void FieldEffectScript_LoadFadedPalette(u8 **script)
 {
     struct SpritePalette *palette = (struct SpritePalette *)FieldEffectScript_ReadWord(script);
     LoadSpritePalette(palette);
-    UpdateSpritePaletteWithWeather(IndexOfSpritePaletteTag(palette->tag), FALSE);
+    UpdateSpritePaletteWithWeather(IndexOfSpritePaletteTag(palette->tag));
     (*script) += 4;
 }
 
@@ -914,7 +914,7 @@ u8 AddNewGameBirchObject(s16 x, s16 y, u8 subpriority)
 
 u8 CreateMonSprite_PicBox(u16 species, s16 x, s16 y, u8 subpriority)
 {
-    s32 spriteId = CreateMonPicSprite_HandleDeoxys(species, 0, 0x8000, TRUE, x, y, 0, gMonPaletteTable[species].tag);
+    s32 spriteId = CreateMonPicSprite(species, 0, 0x8000, TRUE, x, y, 0, gMonPaletteTable[species].tag);
     PreservePaletteInWeather(IndexOfSpritePaletteTag(gMonPaletteTable[species].tag) + 0x10);
     if (spriteId == 0xFFFF)
         return MAX_SPRITES;
@@ -925,7 +925,7 @@ u8 CreateMonSprite_PicBox(u16 species, s16 x, s16 y, u8 subpriority)
 u8 CreateMonSprite_FieldMove(u16 species, u32 otId, u32 personality, s16 x, s16 y, u8 subpriority)
 {
     const struct CompressedSpritePalette *spritePalette = GetMonSpritePalStructFromOtIdPersonality(species, otId, personality);
-    u16 spriteId = CreateMonPicSprite_HandleDeoxys(species, otId, personality, TRUE, x, y, 0, spritePalette->tag);
+    u16 spriteId = CreateMonPicSprite(species, otId, personality, TRUE, x, y, 0, spritePalette->tag);
     PreservePaletteInWeather(IndexOfSpritePaletteTag(spritePalette->tag) + 0x10);
     if (spriteId == 0xFFFF)
         return MAX_SPRITES;
@@ -935,14 +935,12 @@ u8 CreateMonSprite_FieldMove(u16 species, u32 otId, u32 personality, s16 x, s16 
 
 void FreeResourcesAndDestroySprite(struct Sprite *sprite, u8 spriteId)
 {
-    u8 paletteNum = sprite->oam.paletteNum;
     ResetPreservedPalettesInWeather();
     if (sprite->oam.affineMode != ST_OAM_AFFINE_OFF)
     {
         FreeOamMatrix(sprite->oam.matrixNum);
     }
-    FreeAndDestroyMonPicSpriteNoPalette(spriteId);
-    FieldEffectFreePaletteIfUnused(paletteNum); // Clear palette only if unused, in case follower is using it
+    FreeAndDestroyMonPicSprite(spriteId);
 }
 
 // r, g, b are between 0 and 16
@@ -1014,7 +1012,7 @@ bool8 FldEff_PokecenterHeal(void)
     u8 nPokemon;
     struct Task *task;
 
-    nPokemon = CountPartyNonEggMons();
+    nPokemon = CalculatePlayerPartyCount();
     task = &gTasks[CreateTask(Task_PokecenterHeal, 0xff)];
     task->tNumMons = nPokemon;
     task->tFirstBallX = 93;
@@ -1342,10 +1340,10 @@ static void SpriteCB_HallOfFameMonitor(struct Sprite *sprite)
 void ReturnToFieldFromFlyMapSelect(void)
 {
     SetMainCallback2(CB2_ReturnToField);
-    gFieldCallback = FieldCallback_Fly;
+    gFieldCallback = FieldCallback_UseFly;
 }
 
-void FieldCallback_Fly(void)
+static void FieldCallback_UseFly(void)
 {
     FadeInFromBlack();
     CreateTask(Task_UseFly, 0);
@@ -1429,13 +1427,8 @@ void FieldCB_FallWarpExit(void)
 {
     Overworld_PlaySpecialMapMusic();
     WarpFadeInScreen();
-<<<<<<< HEAD
-    ScriptContext2_Enable();
-    FreezeObjectEvents();  // TODO: How does this interact with follower pokemon?
-=======
     LockPlayerFieldControls();
     FreezeObjectEvents();
->>>>>>> e1021af6bd6a83cc4d53fc3879dacb5f401a0f83
     CreateTask(Task_FallWarpFieldEffect, 0);
     gFieldCallback = NULL;
 }
@@ -1587,7 +1580,7 @@ static void Task_EscalatorWarpOut(u8 taskId)
 
 static bool8 EscalatorWarpOut_Init(struct Task *task)
 {
-    FreezeObjectEvents(); // TODO: Follower pokemon interaction
+    FreezeObjectEvents();
     CameraObjectReset2();
     StartEscalator(task->tGoingUp);
     task->tState++;
@@ -1965,7 +1958,7 @@ static void Task_LavaridgeGymB1FWarp(u8 taskId)
 
 static bool8 LavaridgeGymB1FWarpEffect_Init(struct Task *task, struct ObjectEvent *objectEvent, struct Sprite *sprite)
 {
-    FreezeObjectEvents(); // TODO: Follower pokemon interaction
+    FreezeObjectEvents();
     CameraObjectReset2();
     SetCameraPanningCallback(NULL);
     gPlayerAvatar.preventStep = TRUE;
@@ -2082,7 +2075,7 @@ static void Task_LavaridgeGymB1FWarpExit(u8 taskId)
 static bool8 LavaridgeGymB1FWarpExitEffect_Init(struct Task *task, struct ObjectEvent *objectEvent, struct Sprite *sprite)
 {
     CameraObjectReset2();
-    FreezeObjectEvents(); // TODO: Follower pokemon interaction
+    FreezeObjectEvents();
     gPlayerAvatar.preventStep = TRUE;
     objectEvent->invisible = TRUE;
     task->data[0]++;
@@ -2158,7 +2151,7 @@ static void Task_LavaridgeGym1FWarp(u8 taskId)
 
 static bool8 LavaridgeGym1FWarpEffect_Init(struct Task *task, struct ObjectEvent *objectEvent, struct Sprite *sprite)
 {
-    FreezeObjectEvents(); // TODO: Follower pokemon interaction
+    FreezeObjectEvents();
     CameraObjectReset2();
     gPlayerAvatar.preventStep = TRUE;
     objectEvent->fixedPriority = 1;
@@ -2246,13 +2239,8 @@ void SpriteCB_AshPuff(struct Sprite *sprite)
 
 void StartEscapeRopeFieldEffect(void)
 {
-<<<<<<< HEAD
-    ScriptContext2_Enable();
-    FreezeObjectEvents();  // TODO: Follower pokemon interaction
-=======
     LockPlayerFieldControls();
     FreezeObjectEvents();
->>>>>>> e1021af6bd6a83cc4d53fc3879dacb5f401a0f83
     CreateTask(Task_EscapeRopeWarpOut, 80);
 }
 
@@ -3015,23 +3003,8 @@ static void Task_SurfFieldEffect(u8 taskId)
 
 static void SurfFieldEffect_Init(struct Task *task)
 {
-<<<<<<< HEAD
-    struct ObjectEvent *followerObject = GetFollowerObject();
-    ScriptContext2_Enable();
-=======
     LockPlayerFieldControls();
->>>>>>> e1021af6bd6a83cc4d53fc3879dacb5f401a0f83
     FreezeObjectEvents();
-    // Put follower into pokeball before using Surf
-    if (followerObject && !followerObject->invisible) {
-      // TODO: ClearObjectEventMovement (
-      followerObject->singleMovementActive = 0;
-      ObjectEventClearHeldMovement(followerObject);
-      gSprites[followerObject->spriteId].data[1] = 0;
-      gSprites[followerObject->spriteId].animCmdIndex = 0; // Needed because of weird animCmdIndex stuff
-      // )
-      ObjectEventSetHeldMovement(followerObject, MOVEMENT_ACTION_ENTER_POKEBALL);
-    }
     gPlayerAvatar.preventStep = TRUE;
     SetPlayerAvatarStateMask(PLAYER_AVATAR_FLAG_SURFING);
     PlayerGetDestCoords(&task->tDestX, &task->tDestY);
@@ -3082,15 +3055,13 @@ static void SurfFieldEffect_JumpOnSurfBlob(struct Task *task)
 
 static void SurfFieldEffect_End(struct Task *task)
 {
-    struct ObjectEvent *objectEvent = &gObjectEvents[gPlayerAvatar.objectEventId];
-    struct ObjectEvent *followerObject = GetFollowerObject();
+    struct ObjectEvent *objectEvent;
+    objectEvent = &gObjectEvents[gPlayerAvatar.objectEventId];
     if (ObjectEventClearHeldMovementIfFinished(objectEvent))
     {
         gPlayerAvatar.preventStep = FALSE;
         gPlayerAvatar.flags &= ~PLAYER_AVATAR_FLAG_CONTROLLABLE;
         ObjectEventSetHeldMovement(objectEvent, GetFaceDirectionMovementAction(objectEvent->movementDirection));
-        if (followerObject)
-          ObjectEventClearHeldMovementIfFinished(followerObject);
         SetSurfBlob_BobState(objectEvent->fieldEffectSpriteId, BOB_PLAYER_AND_MON);
         UnfreezeObjectEvents();
         UnlockPlayerFieldControls();
@@ -3111,7 +3082,7 @@ u8 FldEff_RayquazaSpotlight(void)
     struct Sprite *sprite = &gSprites[spriteId];
 
     sprite->oam.priority = 1;
-    sprite->oam.paletteNum = 4; // TODO: What (dynamic) palette should this Raquaza use?
+    sprite->oam.paletteNum = 4;
     sprite->data[0] = 0;
     sprite->data[1] = 0;
     sprite->data[2] = 0;
@@ -3146,6 +3117,7 @@ u8 FldEff_NPCFlyOut(void)
     u8 spriteId = CreateSprite(gFieldEffectObjectTemplatePointers[FLDEFFOBJ_BIRD], 0x78, 0, 1);
     struct Sprite *sprite = &gSprites[spriteId];
 
+    sprite->oam.paletteNum = 0;
     sprite->oam.priority = 1;
     sprite->callback = SpriteCB_NPCFlyOut;
     sprite->data[1] = gFieldEffectArguments[0];
@@ -3296,7 +3268,7 @@ static void FlyOutFieldEffect_FlyOffWithBird(struct Task *task)
         struct ObjectEvent *objectEvent = &gObjectEvents[gPlayerAvatar.objectEventId];
         ObjectEventClearHeldMovementIfActive(objectEvent);
         objectEvent->inanimate = FALSE;
-        objectEvent->noShadow = TRUE; // TODO: Make shadow smaller instead of disappearing completely ?
+        objectEvent->hasShadow = FALSE;
         SetFlyBirdPlayerSpriteId(task->tBirdSpriteId, objectEvent->spriteId);
         CameraObjectReset2();
         task->tState++;
@@ -3327,6 +3299,7 @@ static u8 CreateFlyBirdSprite(void)
     struct Sprite *sprite;
     spriteId = CreateSprite(gFieldEffectObjectTemplatePointers[FLDEFFOBJ_BIRD], 0xff, 0xb4, 0x1);
     sprite = &gSprites[spriteId];
+    sprite->oam.paletteNum = 0;
     sprite->oam.priority = 1;
     sprite->callback = SpriteCB_FlyBirdLeaveBall;
     return spriteId;
@@ -3516,7 +3489,6 @@ static void FlyInFieldEffect_BirdSwoopDown(struct Task *task)
         ObjectEventTurn(objectEvent, DIR_WEST);
         StartSpriteAnim(&gSprites[objectEvent->spriteId], ANIM_GET_ON_OFF_POKEMON_WEST);
         objectEvent->invisible = FALSE;
-        objectEvent->noShadow = TRUE;
         task->tBirdSpriteId = CreateFlyBirdSprite();
         StartFlyBirdSwoopDown(task->tBirdSpriteId);
         SetFlyBirdPlayerSpriteId(task->tBirdSpriteId, objectEvent->spriteId);
@@ -3917,22 +3889,4 @@ static void Task_MoveDeoxysRock(u8 taskId)
             break;
     }
 }
-<<<<<<< HEAD
-=======
 
-// new
-u8 FldEff_CaveDust(void)
-{
-    u8 spriteId;
-    
-    SetSpritePosToOffsetMapCoords((s16 *)&gFieldEffectArguments[0], (s16 *)&gFieldEffectArguments[1], 8, 8);
-    spriteId = CreateSpriteAtEnd(gFieldEffectObjectTemplatePointers[FLDEFFOBJ_CAVE_DUST], gFieldEffectArguments[0], gFieldEffectArguments[1], 0xFF);
-    if (spriteId != MAX_SPRITES)
-    {
-        gSprites[spriteId].coordOffsetEnabled = TRUE;
-        gSprites[spriteId].data[0] = 22;
-    }
-    
-    return spriteId;
-}
->>>>>>> e1021af6bd6a83cc4d53fc3879dacb5f401a0f83

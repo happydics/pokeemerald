@@ -15,7 +15,6 @@
 #include "field_effect.h"
 #include "event_object_lock.h"
 #include "event_object_movement.h"
-#include "event_scripts.h"
 #include "field_message_box.h"
 #include "field_player_avatar.h"
 #include "field_screen_effect.h"
@@ -49,11 +48,11 @@
 #include "trainer_see.h"
 #include "tv.h"
 #include "window.h"
+#include "quests.h"
 #include "constants/event_objects.h"
 
 typedef u16 (*SpecialFunc)(void);
 typedef void (*NativeFunc)(void);
-typedef bool8 (*ScrFunc)(struct ScriptContext*);
 
 EWRAM_DATA const u8 *gRamScriptRetAddr = NULL;
 static EWRAM_DATA u32 sAddressOffset = 0; // For relative addressing in vgoto etc., used by saved scripts (e.g. Mystery Event)
@@ -64,6 +63,7 @@ static EWRAM_DATA u16 sMovingNpcMapNum = 0;
 static EWRAM_DATA u16 sFieldEffectScriptId = 0;
 
 static u8 sBrailleWindowId;
+static bool8 gIsScriptedWildDouble;
 
 extern const SpecialFunc gSpecials[];
 extern const u8 *gStdScripts[];
@@ -86,7 +86,7 @@ static const u8 sScriptConditionTable[6][3] =
     1, 0, 1, // !=
 };
 
-static u8 * const sScriptStringVars[] =
+static u8 *const sScriptStringVars[] =
 {
     gStringVar1,
     gStringVar2,
@@ -135,15 +135,10 @@ bool8 ScrCmd_specialvar(struct ScriptContext *ctx)
 
 bool8 ScrCmd_callnative(struct ScriptContext *ctx)
 {
-    u32 func = ScriptReadWord(ctx);
-    ((NativeFunc) func)();
-    return FALSE;
-}
+    NativeFunc func = (NativeFunc)ScriptReadWord(ctx);
 
-bool8 ScrCmd_callfunc(struct ScriptContext *ctx)
-{
-    u32 func = ScriptReadWord(ctx);
-    return ((ScrFunc) func)(ctx);
+    func();
+    return FALSE;
 }
 
 bool8 ScrCmd_waitstate(struct ScriptContext *ctx)
@@ -1000,21 +995,9 @@ bool8 ScrCmd_applymovement(struct ScriptContext *ctx)
 {
     u16 localId = VarGet(ScriptReadHalfword(ctx));
     const void *movementScript = (const void *)ScriptReadWord(ctx);
-    struct ObjectEvent *objEvent;
-
 
     ScriptMovement_StartObjectMovementScript(localId, gSaveBlock1Ptr->location.mapNum, gSaveBlock1Ptr->location.mapGroup, movementScript);
     sMovingNpcId = localId;
-    if (localId != OBJ_EVENT_ID_FOLLOWER && !FlagGet(FLAG_SAFE_FOLLOWER_MOVEMENT)) { // Force follower into pokeball
-      objEvent = GetFollowerObject();
-      // return early if no follower or in shadowing state
-      if (objEvent == NULL || gSprites[objEvent->spriteId].data[1] == 0) {
-        return FALSE;
-      }
-      ClearObjectEventMovement(objEvent, &gSprites[objEvent->spriteId]);
-      gSprites[objEvent->spriteId].animCmdIndex = 0; // Needed to set start frame of animation
-      ScriptMovement_StartObjectMovementScript(OBJ_EVENT_ID_FOLLOWER, gSaveBlock1Ptr->location.mapNum, gSaveBlock1Ptr->location.mapGroup, EnterPokeballMovement);
-    }
     return FALSE;
 }
 
@@ -1033,15 +1016,6 @@ bool8 ScrCmd_applymovementat(struct ScriptContext *ctx)
 static bool8 WaitForMovementFinish(void)
 {
     return ScriptMovement_IsObjectMovementFinished(sMovingNpcId, sMovingNpcMapNum, sMovingNpcMapGroup);
-    if (ScriptMovement_IsObjectMovementFinished(sMovingNpcId, sMovingNpcMapNum, sMovingNpcMapGroup)) {
-        struct ObjectEvent *objEvent = GetFollowerObject();
-        // If the follower is still entering the pokeball, wait for it to finish too
-        // This prevents a `release` after this script command from getting the follower stuck in an intermediate state
-        if (sMovingNpcId != OBJ_EVENT_ID_FOLLOWER && objEvent && ObjectEventGetHeldMovementActionId(objEvent) == MOVEMENT_ACTION_ENTER_POKEBALL)
-            return ScriptMovement_IsObjectMovementFinished(objEvent->localId, objEvent->mapNum, objEvent->mapGroup);
-        return TRUE;
-    }
-    return FALSE;
 }
 
 bool8 ScrCmd_waitmovement(struct ScriptContext *ctx)
@@ -1270,11 +1244,6 @@ bool8 ScrCmd_lock(struct ScriptContext *ctx)
 bool8 ScrCmd_releaseall(struct ScriptContext *ctx)
 {
     u8 playerObjectId;
-    struct ObjectEvent *followerObject = GetFollowerObject();
-    FlagClear(FLAG_SAFE_FOLLOWER_MOVEMENT);
-    // Release follower from movement iff it exists and is in the shadowing state
-    if (followerObject && gSprites[followerObject->spriteId].data[1] == 0)
-        ClearObjectEventMovement(followerObject, &gSprites[followerObject->spriteId]);
 
     HideFieldMessageBox();
     playerObjectId = GetObjectEventIdByLocalIdAndMap(OBJ_EVENT_ID_PLAYER, 0, 0);
@@ -1287,11 +1256,6 @@ bool8 ScrCmd_releaseall(struct ScriptContext *ctx)
 bool8 ScrCmd_release(struct ScriptContext *ctx)
 {
     u8 playerObjectId;
-    struct ObjectEvent *followerObject = GetFollowerObject();
-    FlagClear(FLAG_SAFE_FOLLOWER_MOVEMENT);
-    // Release follower from movement iff it exists and is in the shadowing state
-    if (followerObject && gSprites[followerObject->spriteId].data[1] == 0)
-        ClearObjectEventMovement(followerObject, &gSprites[followerObject->spriteId]);
 
     HideFieldMessageBox();
     if (gObjectEvents[gSelectedObjectEvent].active)
@@ -1607,16 +1571,6 @@ bool8 ScrCmd_bufferleadmonspeciesname(struct ScriptContext *ctx)
     return FALSE;
 }
 
-bool8 ScrFunc_bufferlivemonspeciesname(struct ScriptContext *ctx)
-{
-    u8 stringVarIndex = ScriptReadByte(ctx);
-
-    u8 *dest = sScriptStringVars[stringVarIndex];
-    u32 species = GetMonData(GetFirstLiveMon(), MON_DATA_SPECIES);
-    StringCopy(dest, gSpeciesNames[species]);
-    return FALSE;
-}
-
 bool8 ScrCmd_bufferpartymonnick(struct ScriptContext *ctx)
 {
     u8 stringVarIndex = ScriptReadByte(ctx);
@@ -1922,15 +1876,33 @@ bool8 ScrCmd_setwildbattle(struct ScriptContext *ctx)
     u16 species = ScriptReadHalfword(ctx);
     u8 level = ScriptReadByte(ctx);
     u16 item = ScriptReadHalfword(ctx);
+    u16 species2 = ScriptReadHalfword(ctx);
+    u8 level2 = ScriptReadByte(ctx);
+    u16 item2 = ScriptReadHalfword(ctx);
 
-    CreateScriptedWildMon(species, level, item);
+    if(species2 == SPECIES_NONE)
+    {
+        CreateScriptedWildMon(species, level, item);
+        gIsScriptedWildDouble = FALSE;
+    }
+    else
+    {
+        CreateScriptedDoubleWildMon(species, level, item, species2, level2, item2);
+        gIsScriptedWildDouble = TRUE;
+    }
+
     return FALSE;
 }
 
 bool8 ScrCmd_dowildbattle(struct ScriptContext *ctx)
 {
-    BattleSetup_StartScriptedWildBattle();
+    if (gIsScriptedWildDouble == FALSE)
+        BattleSetup_StartScriptedWildBattle();
+    else
+        BattleSetup_StartScriptedDoubleWildBattle();
+
     ScriptContext_Stop();
+
     return TRUE;
 }
 
@@ -2074,13 +2046,6 @@ bool8 ScrCmd_playmoncry(struct ScriptContext *ctx)
 
     PlayCry_Script(species, mode);
     return FALSE;
-}
-
-bool8 ScrFunc_playfirstmoncry(struct ScriptContext *ctx)
-{
-  u16 species = GetMonData(GetFirstLiveMon(), MON_DATA_SPECIES);
-  PlayCry_Script(species, 0);
-  return FALSE;
 }
 
 bool8 ScrCmd_waitmoncry(struct ScriptContext *ctx)
@@ -2361,5 +2326,114 @@ bool8 ScrCmd_warpwhitefade(struct ScriptContext *ctx)
     SetWarpDestination(mapGroup, mapNum, warpId, x, y);
     DoWhiteFadeWarp();
     ResetInitialPlayerAvatarState();
+    return TRUE;
+}
+
+bool8 ScrCmd_questmenu(struct ScriptContext *ctx)
+{
+    u8 caseId = ScriptReadByte(ctx);
+    u8 questId = VarGet(ScriptReadByte(ctx));
+
+    switch (caseId)
+    {
+    case QUEST_MENU_OPEN:
+    default:
+        BeginNormalPaletteFade(0xFFFFFFFF, 2, 16, 0, 0);
+        QuestMenu_Init(0, CB2_ReturnToFieldContinueScriptPlayMapMusic);
+        ScriptContext_Stop();
+        break;
+    case QUEST_MENU_UNLOCK_QUEST:
+        QuestMenu_GetSetQuestState(questId, FLAG_SET_UNLOCKED);
+        break;
+    case QUEST_MENU_SET_ACTIVE:
+        QuestMenu_GetSetQuestState(questId, FLAG_SET_UNLOCKED);
+        QuestMenu_GetSetQuestState(questId, FLAG_SET_ACTIVE);
+        break;
+    case QUEST_MENU_SET_REWARD:
+        QuestMenu_GetSetQuestState(questId, FLAG_SET_UNLOCKED);
+        QuestMenu_GetSetQuestState(questId, FLAG_SET_REWARD);
+        QuestMenu_GetSetQuestState(questId, FLAG_REMOVE_ACTIVE);
+        break;
+    case QUEST_MENU_COMPLETE_QUEST:
+        QuestMenu_GetSetQuestState(questId, FLAG_SET_UNLOCKED);
+        QuestMenu_GetSetQuestState(questId, FLAG_SET_COMPLETED);
+        QuestMenu_GetSetQuestState(questId, FLAG_REMOVE_REWARD);
+        break;
+    case QUEST_MENU_CHECK_UNLOCKED:
+        if (QuestMenu_GetSetQuestState(questId, FLAG_GET_UNLOCKED))
+            gSpecialVar_Result = TRUE;
+        else
+            gSpecialVar_Result = FALSE;
+        break;
+    case QUEST_MENU_CHECK_ACTIVE:
+        if (QuestMenu_GetSetQuestState(questId, FLAG_GET_ACTIVE))
+            gSpecialVar_Result = TRUE;
+        else
+            gSpecialVar_Result = FALSE;
+        break;
+    case QUEST_MENU_CHECK_REWARD:
+        if (QuestMenu_GetSetQuestState(questId, FLAG_GET_REWARD))
+            gSpecialVar_Result = TRUE;
+        else
+            gSpecialVar_Result = FALSE;
+        break;
+    case QUEST_MENU_CHECK_COMPLETE:
+        if (QuestMenu_GetSetQuestState(questId, FLAG_GET_COMPLETED))
+            gSpecialVar_Result = TRUE;
+        else
+            gSpecialVar_Result = FALSE;
+        break;
+    case QUEST_MENU_BUFFER_QUEST_NAME:
+            QuestMenu_CopyQuestName(gStringVar1, questId);
+        break;
+    }
+    
+    return TRUE;
+}
+
+bool8 ScrCmd_returnqueststate(struct ScriptContext *ctx)
+{
+    u8 questId = VarGet(ScriptReadByte(ctx));
+
+    if (QuestMenu_GetSetQuestState(questId, FLAG_GET_INACTIVE)){
+        gSpecialVar_Result = FLAG_GET_INACTIVE;
+        return FALSE;
+    }
+    if (QuestMenu_GetSetQuestState(questId, FLAG_GET_ACTIVE)){
+        gSpecialVar_Result = FLAG_GET_ACTIVE;
+        return FALSE;
+    }
+    if (QuestMenu_GetSetQuestState(questId, FLAG_GET_REWARD)){
+        gSpecialVar_Result = FLAG_GET_REWARD;
+        return FALSE;
+    }
+    if (QuestMenu_GetSetQuestState(questId, FLAG_GET_COMPLETED)){
+        gSpecialVar_Result = FLAG_GET_COMPLETED;
+        return FALSE;
+    }
+}
+
+bool8 ScrCmd_subquestmenu(struct ScriptContext *ctx)
+{
+    u8 caseId = ScriptReadByte(ctx);
+    u8 parentId = VarGet(ScriptReadHalfword(ctx));
+    u8 childId = VarGet(ScriptReadHalfword(ctx));
+
+    switch (caseId)
+    {
+        case QUEST_MENU_COMPLETE_QUEST:
+            QuestMenu_GetSetSubquestState(parentId ,FLAG_SET_COMPLETED,childId);
+            break;
+        case QUEST_MENU_CHECK_COMPLETE:
+            if (QuestMenu_GetSetSubquestState(parentId ,FLAG_GET_COMPLETED,childId))
+                gSpecialVar_Result = TRUE;
+            else
+                gSpecialVar_Result = FALSE;
+            break;
+        case QUEST_MENU_BUFFER_QUEST_NAME:
+            QuestMenu_CopySubquestName(gStringVar1,parentId,childId);
+            break;
+    }
+
     return TRUE;
 }

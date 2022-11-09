@@ -277,6 +277,8 @@ include songs.mk
 %.gbapal: %.png ; $(GFX) $< $@
 %.lz: % ; $(GFX) $< $@
 %.rl: % ; $(GFX) $< $@
+
+$(CRY_SUBDIR)/uncomp_%.bin: $(CRY_SUBDIR)/uncomp_%.aif ; $(AIF) $< $@
 $(CRY_SUBDIR)/%.bin: $(CRY_SUBDIR)/%.aif ; $(AIF) $< $@ --compress
 sound/%.bin: sound/%.aif ; $(AIF) $< $@
 
@@ -302,11 +304,6 @@ endif
 
 ifeq ($(DINFO),1)
 override CFLAGS += -g
-endif
-
-ifeq ($(DDEBUG),1)
-override ASFLAGS += --defsym DEBUG=1
-override CPPFLAGS += -D DEBUG=1
 endif
 
 # The dep rules have to be explicit or else missing files won't be reported.
@@ -428,7 +425,7 @@ $(ELF): $(OBJ_DIR)/ld_script.ld $(OBJS) libagbsyscall
 
 $(ROM): $(ELF)
 	$(OBJCOPY) -O binary $< $@
-	$(FIX) $@ --silent
+	$(FIX) $@ -p --silent
 
 modern: all
 

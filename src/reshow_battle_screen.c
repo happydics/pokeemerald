@@ -220,7 +220,6 @@ static void CreateBattlerSprite(u8 battler)
         {
             if (GetMonData(&gEnemyParty[gBattlerPartyIndexes[battler]], MON_DATA_HP) == 0)
                 return;
-
             if (gBattleScripting.monCaught) // Don't create opponent sprite if it has been caught.
                 return;
 

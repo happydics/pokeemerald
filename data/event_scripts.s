@@ -2,6 +2,7 @@
 #include "constants/apprentice.h"
 #include "constants/battle.h"
 #include "constants/battle_arena.h"
+#include "constants/battle_config.h"
 #include "constants/battle_dome.h"
 #include "constants/battle_factory.h"
 #include "constants/battle_frontier.h"
@@ -53,7 +54,7 @@
 #include "constants/union_room.h"
 #include "constants/vars.h"
 #include "constants/weather.h"
-
+#include "constants/quests.h"
 	.include "asm/macros.inc"
 	.include "asm/macros/event.inc"
 	.include "constants/constants.inc"
@@ -722,7 +723,6 @@ Common_EventScript_OutOfCenterPartyHeal::
 	playfanfare MUS_HEAL
 	waitfanfare
 	special HealPlayerParty
-  callnative UpdateFollowingPokemon
 	fadescreen FADE_FROM_BLACK
 	return
 
@@ -889,8 +889,9 @@ gText_RegisteredTrainerinPokeNav::
 	.string "in the POKéNAV.$"
 
 gText_ComeBackWithSecretPower::
-	.string "Do you know about SECRET POWER?\p"
-	.string "Our group, we love SECRET POWER.\p"
+	.string "Do you know the TM SECRET POWER?\p"
+	.string "Our group, we love the TM SECRET\n"
+	.string "POWER.\p"
 	.string "One of our members will give it to you.\n"
 	.string "Come back and show me if you get it.\p"
 	.string "We'll accept you as a member and sell\n"
@@ -1055,12 +1056,6 @@ Common_EventScript_LegendaryFlewAway::
 	.include "data/scripts/move_tutors.inc"
 	.include "data/scripts/trainer_hill.inc"
 	.include "data/scripts/test_signpost.inc"
-  .include "data/scripts/follower.inc"
 	.include "data/text/frontier_brain.inc"
 	.include "data/text/save.inc"
 	.include "data/text/birch_speech.inc"
-	.include "data/maps/AlteringCave_Underwater/scripts.inc"
-	.include "data/maps/LilycoveCity_DepartmentStore_6F/scripts.inc"
-	.include "data/maps/SlateportCity_Dojo/scripts.inc"
-	.include "data/maps/PetalburgCity_PostOffice/scripts.inc"
-    .include "data/scripts/dexnav.inc"

@@ -35,9 +35,6 @@ prefabs.json
 .vscode/
 *.a
 .fuse_hidden*
-.ccls-cache/*
-.ropeproject/
-overworld/
 *.sna
 *.diff
 *.sym

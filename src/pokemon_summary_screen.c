@@ -28,6 +28,7 @@
 #include "palette.h"
 #include "pokeball.h"
 #include "pokemon.h"
+#include "pokemon_debug.h"
 #include "pokemon_storage_system.h"
 #include "pokemon_summary_screen.h"
 #include "region_map.h"
@@ -40,6 +41,8 @@
 #include "text.h"
 #include "tv.h"
 #include "window.h"
+#include "constants/battle_config.h"
+#include "constants/battle_move_effects.h"
 #include "constants/items.h"
 #include "constants/moves.h"
 #include "constants/party_menu.h"
@@ -187,6 +190,7 @@ static EWRAM_DATA struct PokemonSummaryScreenData
     u8 unk_filler4[6];
     u8 splitIconSpriteId;
 } *sMonSummaryScreen = NULL;
+
 EWRAM_DATA u8 gLastViewedMonIndex = 0;
 static EWRAM_DATA u8 sMoveSlotToReplace = 0;
 ALIGNED(4) static EWRAM_DATA u8 sAnimDelayTaskId = 0;
@@ -311,7 +315,6 @@ static void DestroyMoveSelectorSprites(u8);
 static void SetMainMoveSelectorColor(u8);
 static void KeepMoveSelectorVisible(u8);
 static void SummaryScreen_DestroyAnimDelayTask(void);
-static void BufferIvOrEvStats(u8 mode);
 
 // const rom data
 #include "data/text/move_descriptions.h"
@@ -725,7 +728,6 @@ static void (*const sTextPrinterTasks[])(u8 taskId) =
 static const u8 sMemoNatureTextColor[] = _("{COLOR LIGHT_RED}{SHADOW GREEN}");
 static const u8 sMemoMiscTextColor[] = _("{COLOR WHITE}{SHADOW DARK_GRAY}"); // This is also affected by palettes, apparently
 static const u8 sStatsLeftColumnLayout[] = _("{DYNAMIC 0}/{DYNAMIC 1}\n{DYNAMIC 2}\n{DYNAMIC 3}");
-static const u8 sStatsLeftColumnLayoutIVEV[] = _("{DYNAMIC 0}\n{DYNAMIC 1}\n{DYNAMIC 2}");
 static const u8 sStatsRightColumnLayout[] = _("{DYNAMIC 0}\n{DYNAMIC 1}\n{DYNAMIC 2}");
 static const u8 sMovesPPLayout[] = _("{PP}{DYNAMIC 0}/{DYNAMIC 1}");
 
@@ -933,13 +935,13 @@ static const union AnimCmd *const sSpriteAnimTable_MoveTypes[NUMBER_OF_MON_TYPES
     sSpriteAnim_CategoryTough,
 };
 
-const struct CompressedSpriteSheet gSpriteSheet_MoveTypes =
+static const struct CompressedSpriteSheet sSpriteSheet_MoveTypes =
 {
     .data = gMoveTypes_Gfx,
     .size = (NUMBER_OF_MON_TYPES + CONTEST_CATEGORIES_COUNT) * 0x100,
     .tag = TAG_MOVE_TYPES
 };
-const struct SpriteTemplate gSpriteTemplate_MoveTypes =
+static const struct SpriteTemplate sSpriteTemplate_MoveTypes =
 {
     .tileTag = TAG_MOVE_TYPES,
     .paletteTag = TAG_MOVE_TYPES,
@@ -1198,7 +1200,7 @@ void ShowPokemonSummaryScreen(u8 mode, void *mons, u8 monIndex, u8 maxMonIndex, 
     SummaryScreen_SetAnimDelayTaskId(TASK_NONE);
 
     if (gMonSpritesGfxPtr == NULL)
-        CreateMonSpritesGfxManager();
+        CreateMonSpritesGfxManager(MON_SPR_GFX_MANAGER_A, MON_SPR_GFX_MODE_NORMAL);
 
     SetMainCallback2(CB2_InitSummaryScreen);
 }
@@ -1420,7 +1422,7 @@ static bool8 DecompressGraphics(void)
         sMonSummaryScreen->switchCounter++;
         break;
     case 7:
-        LoadCompressedSpriteSheet(&gSpriteSheet_MoveTypes);
+        LoadCompressedSpriteSheet(&sSpriteSheet_MoveTypes);
         sMonSummaryScreen->switchCounter++;
         break;
     case 8:
@@ -1589,74 +1591,47 @@ static void CloseSummaryScreen(u8 taskId)
         StopCryAndClearCrySongs();
         m4aMPlayVolumeControl(&gMPlayInfo_BGM, TRACKS_ALL, 0x100);
         if (gMonSpritesGfxPtr == NULL)
-            DestroyMonSpritesGfxManager();
+            DestroyMonSpritesGfxManager(MON_SPR_GFX_MANAGER_A);
         FreeSummaryScreen();
         DestroyTask(taskId);
     }
 }
 
-// Cycle summary page between stats, IVs and EVs
-static void ChangeSummaryState (s16 *taskData, u8 taskId)
-{
-    switch (taskData[3])
-    {
-        case 0:
-            taskData[3] = 1;
-            break;
-        case 1:
-            taskData[3] = 2;
-            break;
-        case 2:
-            taskData[3] = 0;
-            break;
-    }
-    gTasks[taskId].func = Task_HandleInput;
-}
-
 static void Task_HandleInput(u8 taskId)
 {
-    s16 *data = gTasks[taskId].data;
-
     if (MenuHelpers_ShouldWaitForLinkRecv() != TRUE && !gPaletteFade.active)
     {
         if (JOY_NEW(DPAD_UP))
         {
-            data[3] = 0;
             ChangeSummaryPokemon(taskId, -1);
         }
         else if (JOY_NEW(DPAD_DOWN))
         {
-            data[3] = 0;
             ChangeSummaryPokemon(taskId, 1);
         }
         else if ((JOY_NEW(DPAD_LEFT)) || GetLRKeysPressed() == MENU_L_PRESSED)
         {
-            data[3] = 0;
             ChangePage(taskId, -1);
         }
         else if ((JOY_NEW(DPAD_RIGHT)) || GetLRKeysPressed() == MENU_R_PRESSED)
         {
-            data[3] = 0;
             ChangePage(taskId, 1);
         }
         else if (JOY_NEW(A_BUTTON))
         {
-            if (sMonSummaryScreen->currPageIndex == PSS_PAGE_SKILLS)
+            if (sMonSummaryScreen->currPageIndex != PSS_PAGE_SKILLS)
             {
-                // Cycle through IVs/EVs/stats on pressing A
-                ChangeSummaryState(data, taskId);
-                BufferIvOrEvStats(data[3]);
-            }
-            else if (sMonSummaryScreen->currPageIndex == PSS_PAGE_INFO)
-            {
-                StopPokemonAnimations();
-                PlaySE(SE_SELECT);
-                BeginCloseSummaryScreen(taskId);
-            }
-            else // Contest or Battle Moves
-            {
-                PlaySE(SE_SELECT);
-                SwitchToMoveSelection(taskId);
+                if (sMonSummaryScreen->currPageIndex == PSS_PAGE_INFO)
+                {
+                    StopPokemonAnimations();
+                    PlaySE(SE_SELECT);
+                    BeginCloseSummaryScreen(taskId);
+                }
+                else // Contest or Battle Moves
+                {
+                    PlaySE(SE_SELECT);
+                    SwitchToMoveSelection(taskId);
+                }
             }
         }
         else if (JOY_NEW(B_BUTTON))
@@ -1665,6 +1640,15 @@ static void Task_HandleInput(u8 taskId)
             PlaySE(SE_SELECT);
             BeginCloseSummaryScreen(taskId);
         }
+        #if P_ENABLE_DEBUG == TRUE
+        else if (JOY_NEW(SELECT_BUTTON) && !gMain.inBattle)
+        {
+            sMonSummaryScreen->callback = CB2_Debug_Pokemon;
+            StopPokemonAnimations();
+            PlaySE(SE_SELECT);
+            CloseSummaryScreen(taskId);
+        }
+        #endif
     }
 }
 
@@ -1789,22 +1773,28 @@ static void Task_ChangeSummaryMon(u8 taskId)
 static s8 AdvanceMonIndex(s8 delta)
 {
     struct Pokemon *mon = sMonSummaryScreen->monList.mons;
-    u8 index = sMonSummaryScreen->curMonIndex;
-    u8 numMons = sMonSummaryScreen->maxMonIndex + 1;
-    delta += numMons;
 
-    index = (index + delta) % numMons;
-
-    // skip over any Eggs unless on the Info Page
-    if (sMonSummaryScreen->currPageIndex != PSS_PAGE_INFO)
-        while (GetMonData(&mon[index], MON_DATA_IS_EGG))
-            index = (index + delta) % numMons;
-
-    // to avoid "scrolling" to the same Pokemon
-    if (index == sMonSummaryScreen->curMonIndex)
-        return -1;
+    if (sMonSummaryScreen->currPageIndex == PSS_PAGE_INFO)
+    {
+        if (delta == -1 && sMonSummaryScreen->curMonIndex == 0)
+            return -1;
+        else if (delta == 1 && sMonSummaryScreen->curMonIndex >= sMonSummaryScreen->maxMonIndex)
+            return -1;
+        else
+            return sMonSummaryScreen->curMonIndex + delta;
+    }
     else
+    {
+        s8 index = sMonSummaryScreen->curMonIndex;
+
+        do
+        {
+            index += delta;
+            if (index < 0 || index > sMonSummaryScreen->maxMonIndex)
+                return -1;
+        } while (GetMonData(&mon[index], MON_DATA_IS_EGG));
         return index;
+    }
 }
 
 static s8 AdvanceMultiBattleMonIndex(s8 delta)
@@ -2984,7 +2974,6 @@ static void PutPageWindowTilemaps(u8 page)
         PutWindowTilemap(PSS_LABEL_WINDOW_POKEMON_SKILLS_STATS_LEFT);
         PutWindowTilemap(PSS_LABEL_WINDOW_POKEMON_SKILLS_STATS_RIGHT);
         PutWindowTilemap(PSS_LABEL_WINDOW_POKEMON_SKILLS_EXP);
-        PutWindowTilemap(PSS_LABEL_WINDOW_PROMPT_INFO);
         break;
     case PSS_PAGE_BATTLE_MOVES:
         PutWindowTilemap(PSS_LABEL_WINDOW_BATTLE_MOVES_TITLE);
@@ -3034,7 +3023,6 @@ static void ClearPageWindowTilemaps(u8 page)
         ClearWindowTilemap(PSS_LABEL_WINDOW_POKEMON_SKILLS_STATS_LEFT);
         ClearWindowTilemap(PSS_LABEL_WINDOW_POKEMON_SKILLS_STATS_RIGHT);
         ClearWindowTilemap(PSS_LABEL_WINDOW_POKEMON_SKILLS_EXP);
-        ClearWindowTilemap(PSS_LABEL_WINDOW_PROMPT_INFO);
         break;
     case PSS_PAGE_BATTLE_MOVES:
         if (sMonSummaryScreen->mode == SUMMARY_MODE_SELECT_MOVE)
@@ -3185,13 +3173,13 @@ static void PrintMonOTID(void)
 
 static void PrintMonAbilityName(void)
 {
-    u8 ability = GetAbilityBySpecies(sMonSummaryScreen->summary.species, sMonSummaryScreen->summary.abilityNum);
+    u16 ability = GetAbilityBySpecies(sMonSummaryScreen->summary.species, sMonSummaryScreen->summary.abilityNum);
     PrintTextOnWindow(AddWindowFromTemplateList(sPageInfoTemplate, PSS_DATA_WINDOW_INFO_ABILITY), gAbilityNames[ability], 0, 1, 0, 1);
 }
 
 static void PrintMonAbilityDescription(void)
 {
-    u8 ability = GetAbilityBySpecies(sMonSummaryScreen->summary.species, sMonSummaryScreen->summary.abilityNum);
+    u16 ability = GetAbilityBySpecies(sMonSummaryScreen->summary.species, sMonSummaryScreen->summary.abilityNum);
     PrintTextOnWindow(AddWindowFromTemplateList(sPageInfoTemplate, PSS_DATA_WINDOW_INFO_ABILITY), gAbilityDescriptionPointers[ability], 0, 17, 0, 0);
 }
 
@@ -3430,11 +3418,11 @@ static void PrintHeldItemName(void)
     const u8 *text;
     int x;
 
-    if (sMonSummaryScreen->summary.item == ITEM_ENIGMA_BERRY
+    if (sMonSummaryScreen->summary.item == ITEM_ENIGMA_BERRY_E_READER
         && IsMultiBattle() == TRUE
         && (sMonSummaryScreen->curMonIndex == 1 || sMonSummaryScreen->curMonIndex == 4 || sMonSummaryScreen->curMonIndex == 5))
     {
-        text = ItemId_GetName(ITEM_ENIGMA_BERRY);
+        text = ItemId_GetName(ITEM_ENIGMA_BERRY_E_READER);
     }
     else if (sMonSummaryScreen->summary.item == ITEM_NONE)
     {
@@ -3470,114 +3458,23 @@ static void PrintRibbonCount(void)
     PrintTextOnWindow(AddWindowFromTemplateList(sPageSkillsTemplate, PSS_DATA_WINDOW_SKILLS_RIBBON_COUNT), text, x, 1, 0, 0);
 }
 
-// Based on https://www.pokecommunity.com/showpost.php?p=10024409&postcount=21
-static void BufferStat(u8 *dst, s8 natureMod, u32 stat, u32 strId, u32 n) {
-  static const u8 textNatureMinus[] = _("{COLOR_HIGHLIGHT_SHADOW}{BLUE}{TRANSPARENT}{07}"); // Blue
-  static const u8 textNaturePlus[] = _("{COLOR_HIGHLIGHT_SHADOW}{05}{TRANSPARENT}{06}"); // Red
-  static const u8 textNatureNone[] = _("{COLOR_HIGHLIGHT_SHADOW}{01}{TRANSPARENT}{DARK_GRAY}"); // Black
-  u8 *txtPtr;
-  if (natureMod == 0)
-    txtPtr = StringCopy(dst, textNatureNone);
-  else if (natureMod > 0)
-    txtPtr = StringCopy(dst, textNaturePlus);
-  else
-    txtPtr = StringCopy(dst, textNatureMinus);
-
-  ConvertIntToDecimalStringN(txtPtr, stat, STR_CONV_MODE_RIGHT_ALIGN, n);
-  DynamicPlaceholderTextUtil_SetPlaceholderPtr(strId, dst);
-}
-
-static void BufferIvOrEvStats(u8 mode)
-{
-    u16 hp, hp2, atk, def, spA, spD, spe;
-    u8 *currHPString = Alloc(20);
-    const s8 *natureMod = gNatureStatTable[sMonSummaryScreen->summary.nature];
-
-    switch (mode)
-    {
-    case 0: // stats mode
-    default:
-        hp = sMonSummaryScreen->summary.currentHP;
-        hp2 = sMonSummaryScreen->summary.maxHP;
-        atk = sMonSummaryScreen->summary.atk;
-        def = sMonSummaryScreen->summary.def;
-
-        spA = sMonSummaryScreen->summary.spatk;
-        spD = sMonSummaryScreen->summary.spdef;
-        spe = sMonSummaryScreen->summary.speed;
-        break;
-    case 1: // iv mode
-        hp = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_HP_IV);
-        atk = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_ATK_IV);
-        def = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_DEF_IV);
-
-        spA = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPATK_IV);
-        spD = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPDEF_IV);
-        spe = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPEED_IV);
-        break;
-    case 2: // ev mode
-        hp = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_HP_EV);
-        atk = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_ATK_EV);
-        def = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_DEF_EV);
-
-        spA = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPATK_EV);
-        spD = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPDEF_EV);
-        spe = GetMonData(&sMonSummaryScreen->currentMon, MON_DATA_SPEED_EV);
-        break;
-    }
-
-    FillWindowPixelBuffer(sMonSummaryScreen->windowIds[PSS_DATA_WINDOW_SKILLS_STATS_LEFT], 0);
-    FillWindowPixelBuffer(sMonSummaryScreen->windowIds[PSS_DATA_WINDOW_SKILLS_STATS_RIGHT], 0);
-
-    switch (mode)
-    {
-    case 0:
-    default:
-        BufferStat(currHPString, 0, hp, 0, 3);
-        BufferStat(gStringVar1, 0, hp2, 1, 3);
-        BufferStat(gStringVar2, natureMod[STAT_ATK - 1], atk, 2, 7);
-        BufferStat(gStringVar3, natureMod[STAT_DEF - 1], def, 3, 7);
-        DynamicPlaceholderTextUtil_ExpandPlaceholders(gStringVar4, sStatsLeftColumnLayout);
-        PrintLeftColumnStats();
-
-        BufferStat(gStringVar1, natureMod[STAT_SPATK - 1], spA, 0, 3);
-        BufferStat(gStringVar2, natureMod[STAT_SPDEF - 1], spD, 1, 3);
-        BufferStat(gStringVar3, natureMod[STAT_SPEED - 1], spe, 2, 3);
-        DynamicPlaceholderTextUtil_ExpandPlaceholders(gStringVar4, sStatsRightColumnLayout);
-        PrintRightColumnStats();
-        break;
-    case 1:
-    case 2:
-        BufferStat(gStringVar1, 0, hp, 0, 7);
-        BufferStat(gStringVar2, 0, atk, 1, 7);
-        BufferStat(gStringVar3, 0, def, 2, 7);
-        DynamicPlaceholderTextUtil_ExpandPlaceholders(gStringVar4, sStatsLeftColumnLayoutIVEV);
-        PrintLeftColumnStats();
-
-        BufferStat(gStringVar1, 0, spA, 0, 3);
-        BufferStat(gStringVar2, 0, spD, 1, 3);
-        BufferStat(gStringVar3, 0, spe, 2, 3);
-        DynamicPlaceholderTextUtil_ExpandPlaceholders(gStringVar4, sStatsRightColumnLayout);
-        PrintRightColumnStats();
-        break;
-    }
-
-    Free(currHPString);
-}
-
 static void BufferLeftColumnStats(void)
 {
-    u8 *currentHPString = Alloc(20);
-    u8 *maxHPString = Alloc(20);
-    u8 *attackString = Alloc(20);
-    u8 *defenseString = Alloc(20);
-    const s8 *natureMod = gNatureStatTable[sMonSummaryScreen->summary.nature];
+    u8 *currentHPString = Alloc(8);
+    u8 *maxHPString = Alloc(8);
+    u8 *attackString = Alloc(8);
+    u8 *defenseString = Alloc(8);
+
+    ConvertIntToDecimalStringN(currentHPString, sMonSummaryScreen->summary.currentHP, STR_CONV_MODE_RIGHT_ALIGN, 3);
+    ConvertIntToDecimalStringN(maxHPString, sMonSummaryScreen->summary.maxHP, STR_CONV_MODE_RIGHT_ALIGN, 3);
+    ConvertIntToDecimalStringN(attackString, sMonSummaryScreen->summary.atk, STR_CONV_MODE_RIGHT_ALIGN, 7);
+    ConvertIntToDecimalStringN(defenseString, sMonSummaryScreen->summary.def, STR_CONV_MODE_RIGHT_ALIGN, 7);
 
     DynamicPlaceholderTextUtil_Reset();
-    BufferStat(currentHPString, 0, sMonSummaryScreen->summary.currentHP, 0, 3);
-    BufferStat(maxHPString, 0, sMonSummaryScreen->summary.maxHP, 1, 3);
-    BufferStat(attackString, natureMod[STAT_ATK - 1], sMonSummaryScreen->summary.atk, 2, 7);
-    BufferStat(defenseString, natureMod[STAT_DEF - 1], sMonSummaryScreen->summary.def, 3, 7);
+    DynamicPlaceholderTextUtil_SetPlaceholderPtr(0, currentHPString);
+    DynamicPlaceholderTextUtil_SetPlaceholderPtr(1, maxHPString);
+    DynamicPlaceholderTextUtil_SetPlaceholderPtr(2, attackString);
+    DynamicPlaceholderTextUtil_SetPlaceholderPtr(3, defenseString);
     DynamicPlaceholderTextUtil_ExpandPlaceholders(gStringVar4, sStatsLeftColumnLayout);
 
     Free(currentHPString);
@@ -3593,12 +3490,14 @@ static void PrintLeftColumnStats(void)
 
 static void BufferRightColumnStats(void)
 {
-    const s8 *natureMod = gNatureStatTable[sMonSummaryScreen->summary.nature];
+    ConvertIntToDecimalStringN(gStringVar1, sMonSummaryScreen->summary.spatk, STR_CONV_MODE_RIGHT_ALIGN, 3);
+    ConvertIntToDecimalStringN(gStringVar2, sMonSummaryScreen->summary.spdef, STR_CONV_MODE_RIGHT_ALIGN, 3);
+    ConvertIntToDecimalStringN(gStringVar3, sMonSummaryScreen->summary.speed, STR_CONV_MODE_RIGHT_ALIGN, 3);
 
     DynamicPlaceholderTextUtil_Reset();
-    BufferStat(gStringVar1, natureMod[STAT_SPATK - 1], sMonSummaryScreen->summary.spatk, 0, 3);
-    BufferStat(gStringVar2, natureMod[STAT_SPDEF - 1], sMonSummaryScreen->summary.spdef, 1, 3);
-    BufferStat(gStringVar3, natureMod[STAT_SPEED - 1], sMonSummaryScreen->summary.speed, 2, 3);
+    DynamicPlaceholderTextUtil_SetPlaceholderPtr(0, gStringVar1);
+    DynamicPlaceholderTextUtil_SetPlaceholderPtr(1, gStringVar2);
+    DynamicPlaceholderTextUtil_SetPlaceholderPtr(2, gStringVar3);
     DynamicPlaceholderTextUtil_ExpandPlaceholders(gStringVar4, sStatsRightColumnLayout);
 }
 
@@ -3732,54 +3631,35 @@ static void PrintMoveNameAndPP(u8 moveIndex)
 
 static void PrintMovePowerAndAccuracy(u16 moveIndex)
 {
-    struct Pokemon *mon = &sMonSummaryScreen->currentMon;
-        u16 species = GetMonData(mon, MON_DATA_SPECIES);
-        const u8 *text;
-        if (moveIndex != 0)
+    const u8 *text;
+    if (moveIndex != 0)
+    {
+        FillWindowPixelRect(PSS_LABEL_WINDOW_MOVES_POWER_ACC, PIXEL_FILL(0), 53, 0, 19, 32);
+
+        if (gBattleMoves[moveIndex].power < 2)
         {
-            FillWindowPixelRect(PSS_LABEL_WINDOW_MOVES_POWER_ACC, PIXEL_FILL(0), 53, 0, 19, 32);
-        
-        if (moveIndex == MOVE_HIDDEN_POWER)
-        {
-            u8 powerBits = ((GetMonData(mon, MON_DATA_HP_IV) & 2) >> 1)
-                     | ((GetMonData(mon, MON_DATA_ATK_IV) & 2) << 0)
-                     | ((GetMonData(mon, MON_DATA_DEF_IV) & 2) << 1)
-                     | ((GetMonData(mon, MON_DATA_SPEED_IV) & 2) << 2)
-                     | ((GetMonData(mon, MON_DATA_SPATK_IV)& 2) << 3)
-                     | ((GetMonData(mon, MON_DATA_SPDEF_IV) & 2) << 4);
-              
-            u8 powerForHiddenPower = (40 * powerBits) / 63 + 30;
-              
-            ConvertIntToDecimalStringN(gStringVar1, powerForHiddenPower, STR_CONV_MODE_RIGHT_ALIGN, 3);
-            text = gStringVar1;
+            text = gText_ThreeDashes;
         }
         else
         {
-            if (gBattleMoves[moveIndex].power < 2)
-            {
-                text = gText_ThreeDashes;
-            }
-            else
-            {
-                ConvertIntToDecimalStringN(gStringVar1, gBattleMoves[moveIndex].power, STR_CONV_MODE_RIGHT_ALIGN, 3);
-                text = gStringVar1;
-            }
+            ConvertIntToDecimalStringN(gStringVar1, gBattleMoves[moveIndex].power, STR_CONV_MODE_RIGHT_ALIGN, 3);
+            text = gStringVar1;
         }
-       
-            PrintTextOnWindow(PSS_LABEL_WINDOW_MOVES_POWER_ACC, text, 53, 1, 0, 0);
 
-            if (gBattleMoves[moveIndex].accuracy == 0)
-            {
-                    text = gText_ThreeDashes;
-            }
-            else
-            {
-                    ConvertIntToDecimalStringN(gStringVar1, gBattleMoves[moveIndex].accuracy, STR_CONV_MODE_RIGHT_ALIGN, 3);
-                    text = gStringVar1;
-            }
+        PrintTextOnWindow(PSS_LABEL_WINDOW_MOVES_POWER_ACC, text, 53, 1, 0, 0);
 
-            PrintTextOnWindow(PSS_LABEL_WINDOW_MOVES_POWER_ACC, text, 53, 17, 0, 0);
+        if (gBattleMoves[moveIndex].accuracy == 0)
+        {
+            text = gText_ThreeDashes;
         }
+        else
+        {
+            ConvertIntToDecimalStringN(gStringVar1, gBattleMoves[moveIndex].accuracy, STR_CONV_MODE_RIGHT_ALIGN, 3);
+            text = gStringVar1;
+        }
+
+        PrintTextOnWindow(PSS_LABEL_WINDOW_MOVES_POWER_ACC, text, 53, 17, 0, 0);
+    }
 }
 
 static void PrintContestMoves(void)
@@ -3851,14 +3731,22 @@ static void PrintContestMoveDescription(u8 moveSlot)
 static void PrintMoveDetails(u16 move)
 {
     u8 windowId = AddWindowFromTemplateList(sPageMovesTemplate, PSS_DATA_WINDOW_MOVE_DESCRIPTION);
+    u8 moveEffect;
     FillWindowPixelBuffer(windowId, PIXEL_FILL(0));
     if (move != MOVE_NONE)
     {
         if (sMonSummaryScreen->currPageIndex == PSS_PAGE_BATTLE_MOVES)
         {
+            moveEffect = gBattleMoves[move].effect;
+        #if B_SHOW_SPLIT_ICON == TRUE
             ShowSplitIcon(GetBattleMoveSplit(move));
+        #endif
             PrintMovePowerAndAccuracy(move);
-            PrintTextOnWindow(windowId, gMoveDescriptionPointers[move - 1], 6, 1, 0, 0);
+
+            if (moveEffect != EFFECT_PLACEHOLDER)
+                PrintTextOnWindow(windowId, gMoveDescriptionPointers[move - 1], 6, 1, 0, 0);
+            else
+                PrintTextOnWindow(windowId, gNotDoneYetDescription, 6, 1, 0, 0);
         }
         else
         {
@@ -3989,7 +3877,7 @@ static void CreateMoveTypeIcons(void)
     for (i = SPRITE_ARR_ID_TYPE; i < SPRITE_ARR_ID_TYPE + 5; i++)
     {
         if (sMonSummaryScreen->spriteIds[i] == SPRITE_NONE)
-            sMonSummaryScreen->spriteIds[i] = CreateSprite(&gSpriteTemplate_MoveTypes, 0, 0, 2);
+            sMonSummaryScreen->spriteIds[i] = CreateSprite(&sSpriteTemplate_MoveTypes, 0, 0, 2);
 
         SetSpriteInvisibility(i, TRUE);
     }
@@ -4032,28 +3920,10 @@ static void SetMoveTypeIcons(void)
 {
     u8 i;
     struct PokeSummary *summary = &sMonSummaryScreen->summary;
-    struct Pokemon *mon = &sMonSummaryScreen->currentMon;
-    u16 species = GetMonData(mon, MON_DATA_SPECIES);
     for (i = 0; i < MAX_MON_MOVES; i++)
     {
-        if (summary->moves[i] != MOVE_NONE) {
-            if (summary->moves[i] == MOVE_HIDDEN_POWER) {
-                u8 typeBits  = ((GetMonData(mon, MON_DATA_HP_IV) & 1) << 0)
-                     | ((GetMonData(mon, MON_DATA_ATK_IV) & 1) << 1)
-                     | ((GetMonData(mon, MON_DATA_DEF_IV) & 1) << 2)
-                     | ((GetMonData(mon, MON_DATA_SPEED_IV) & 1) << 3)
-                     | ((GetMonData(mon, MON_DATA_SPATK_IV) & 1) << 4)
-                     | ((GetMonData(mon, MON_DATA_SPDEF_IV) & 1) << 5);
-
-                u8 type = ((NUMBER_OF_MON_TYPES - 3) * typeBits) / 63 + 1;
-                if (type == TYPE_MYSTERY)
-                    type = TYPE_FAIRY;
-                type |= 0xC0;
-                SetTypeSpritePosAndPal(type & 0x3F, 85, 32 + (i * 16), i + SPRITE_ARR_ID_TYPE);
-            } else {
-                SetTypeSpritePosAndPal(gBattleMoves[summary->moves[i]].type, 85, 32 + (i * 16), i + SPRITE_ARR_ID_TYPE);
-            }
-        }
+        if (summary->moves[i] != MOVE_NONE)
+            SetTypeSpritePosAndPal(gBattleMoves[summary->moves[i]].type, 85, 32 + (i * 16), i + SPRITE_ARR_ID_TYPE);
         else
             SetSpriteInvisibility(i + SPRITE_ARR_ID_TYPE, TRUE);
     }
@@ -4074,9 +3944,6 @@ static void SetContestMoveTypeIcons(void)
 
 static void SetNewMoveTypeIcon(void)
 {
-    struct Pokemon *mon = &sMonSummaryScreen->currentMon;
-    u16 species = GetMonData(mon, MON_DATA_SPECIES);
-
     if (sMonSummaryScreen->newMove == MOVE_NONE)
     {
         SetSpriteInvisibility(SPRITE_ARR_ID_TYPE + 4, TRUE);
@@ -4084,22 +3951,7 @@ static void SetNewMoveTypeIcon(void)
     else
     {
         if (sMonSummaryScreen->currPageIndex == PSS_PAGE_BATTLE_MOVES)
-            if (sMonSummaryScreen->newMove == MOVE_HIDDEN_POWER) {
-                u8 typeBits  = ((GetMonData(mon, MON_DATA_HP_IV) & 1) << 0)
-                     | ((GetMonData(mon, MON_DATA_ATK_IV) & 1) << 1)
-                     | ((GetMonData(mon, MON_DATA_DEF_IV) & 1) << 2)
-                     | ((GetMonData(mon, MON_DATA_SPEED_IV) & 1) << 3)
-                     | ((GetMonData(mon, MON_DATA_SPATK_IV) & 1) << 4)
-                     | ((GetMonData(mon, MON_DATA_SPDEF_IV) & 1) << 5);
-
-                u8 type = (15 * typeBits) / 63 + 1;
-                if (type >= TYPE_MYSTERY)
-                    type++;
-                type |= 0xC0;
-                SetTypeSpritePosAndPal(type & 0x3F, 85, 96, SPRITE_ARR_ID_TYPE + 4);
-            } else {
-                SetTypeSpritePosAndPal(gBattleMoves[sMonSummaryScreen->newMove].type, 85, 96, SPRITE_ARR_ID_TYPE + 4);
-            }
+            SetTypeSpritePosAndPal(gBattleMoves[sMonSummaryScreen->newMove].type, 85, 96, SPRITE_ARR_ID_TYPE + 4);
         else
             SetTypeSpritePosAndPal(NUMBER_OF_MON_TYPES + gContestMoves[sMonSummaryScreen->newMove].contestCategory, 85, 96, SPRITE_ARR_ID_TYPE + 4);
     }
@@ -4136,44 +3988,26 @@ static u8 LoadMonGfxAndSprite(struct Pokemon *mon, s16 *state)
     case 0:
         if (gMain.inBattle)
         {
-            if (ShouldIgnoreDeoxysForm(3, sMonSummaryScreen->curMonIndex))
-                HandleLoadSpecialPokePic_DontHandleDeoxys(&gMonFrontPicTable[summary->species2],
-                                                          gMonSpritesGfxPtr->sprites.ptr[B_POSITION_OPPONENT_LEFT],
-                                                          summary->species2,
-                                                          summary->pid);
-            else
-                HandleLoadSpecialPokePic_2(&gMonFrontPicTable[summary->species2],
-                                           gMonSpritesGfxPtr->sprites.ptr[B_POSITION_OPPONENT_LEFT],
-                                           summary->species2,
-                                           summary->pid);
+            HandleLoadSpecialPokePic(TRUE,
+                                     gMonSpritesGfxPtr->sprites.ptr[B_POSITION_OPPONENT_LEFT],
+                                     summary->species2,
+                                     summary->pid);
         }
         else
         {
             if (gMonSpritesGfxPtr != NULL)
             {
-                if (sMonSummaryScreen->monList.mons == gPlayerParty || sMonSummaryScreen->mode == SUMMARY_MODE_BOX || sMonSummaryScreen->handleDeoxys == TRUE)
-                    HandleLoadSpecialPokePic_2(&gMonFrontPicTable[summary->species2],
-                                               gMonSpritesGfxPtr->sprites.ptr[B_POSITION_OPPONENT_LEFT],
-                                               summary->species2,
-                                               summary->pid);
-                else
-                    HandleLoadSpecialPokePic_DontHandleDeoxys(&gMonFrontPicTable[summary->species2],
-                                                              gMonSpritesGfxPtr->sprites.ptr[B_POSITION_OPPONENT_LEFT],
-                                                              summary->species2,
-                                                              summary->pid);
+                HandleLoadSpecialPokePic(TRUE,
+                                         gMonSpritesGfxPtr->sprites.ptr[B_POSITION_OPPONENT_LEFT],
+                                         summary->species2,
+                                         summary->pid);
             }
             else
             {
-                if (sMonSummaryScreen->monList.mons == gPlayerParty || sMonSummaryScreen->mode == SUMMARY_MODE_BOX || sMonSummaryScreen->handleDeoxys == TRUE)
-                    HandleLoadSpecialPokePic_2(&gMonFrontPicTable[summary->species2],
-                                                MonSpritesGfxManager_GetSpritePtr(B_POSITION_OPPONENT_LEFT),
-                                                summary->species2,
-                                                summary->pid);
-                else
-                    HandleLoadSpecialPokePic_DontHandleDeoxys(&gMonFrontPicTable[summary->species2],
-                                                              MonSpritesGfxManager_GetSpritePtr(B_POSITION_OPPONENT_LEFT),
-                                                              summary->species2,
-                                                              summary->pid);
+                HandleLoadSpecialPokePic(TRUE,
+                                         MonSpritesGfxManager_GetSpritePtr(MON_SPR_GFX_MANAGER_A, B_POSITION_OPPONENT_LEFT),
+                                         summary->species2,
+                                         summary->pid);
             }
         }
         (*state)++;
