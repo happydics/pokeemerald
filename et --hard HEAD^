@@ -1,0 +1,1508 @@
+[33mcommit 0b47a4fec42acc580714b387e7b8fa9c8b08b361[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m)[m
+Merge: 05e4efffb 1e031d737
+Author: happydics <jdadaniel157@gmail.com>
+Date:   Wed Nov 9 06:40:52 2022 -0500
+
+    debug menu
+
+[33mcommit 05e4efffb5c4406348b58ce424b55958198a04ab[m
+Merge: 85fcb3966 2ee6a3e8a
+Author: happydics <jdadaniel157@gmail.com>
+Date:   Wed Nov 9 05:55:22 2022 -0500
+
+    dum shouldve been there
+
+[33mcommit 85fcb3966624994f5e005cee694320dfc5c189fb[m[33m ([m[1;31mdummythick/main[m[33m)[m
+Merge: a9d39d44f e1021af6b
+Author: jost <jost@LAPTOP-6302M03L>
+Date:   Tue Nov 8 02:56:38 2022 -0500
+
+    hahashdf
+
+[33mcommit 1e031d737734c2865bbfd03baf105ed47abf37a0[m[33m ([m[1;31mxaman/tx_debug_system[m[33m)[m
+Author: TheXaman <48356183+TheXaman@users.noreply.github.com>
+Date:   Wed Nov 2 22:00:08 2022 +0100
+
+    fixes merge
+
+[33mcommit e5b54238ec208d34e39e40d42ff32ad66ff418a9[m
+Merge: fc0a9ace6 d90132842
+Author: TheXaman <48356183+TheXaman@users.noreply.github.com>
+Date:   Wed Nov 2 21:51:11 2022 +0100
+
+    Merge branch 'master' of https://github.com/pret/pokeemerald into tx_debug_system
+
+[33mcommit d90132842a60a2649042037f07d6fc1e3fccc714[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Sun Oct 30 12:22:41 2022 -0400
+
+    Update gitignore/spacing for new region map data
+
+[33mcommit c76beed98990a57c84d3930190fd194abfedf7e8[m
+Merge: 01c71b4ce cc182bf05
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Sun Oct 30 11:01:37 2022 -0400
+
+    Merge pull request #1807 from pret/porymap-5
+    
+    Update for Porymap 5.0.0
+
+[33mcommit 01c71b4ce12fd8e9d48404f5a207ec8821be337f[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Sun Oct 30 03:24:48 2022 -0400
+
+    Fix more text and movements labeled as scripts
+
+[33mcommit f439a2dee749640415bc2433ac9aaf5ee50dd2d8[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Sun Oct 30 03:14:47 2022 -0400
+
+    Fix EventScript_WroteSecretCodeLockOpened typo
+
+[33mcommit b035fc1f42ab101145e22325eccddde13d03cd8e[m
+Merge: e752c8a2f 85c0d2dac
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Thu Oct 27 14:01:48 2022 -0400
+
+    Merge pull request #1811 from AsparagusEduardo/pret/pr/BardSounds
+    
+    Cleaned up Bard Sounds
+
+[33mcommit 85c0d2dac83e479c3c283b9f02ce859969ef896e[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Thu Oct 27 11:26:09 2022 -0300
+
+    Review changes
+
+[33mcommit 85ce30b1d60b82ed648298f795d7bd28ad6ae957[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Tue Oct 25 14:33:02 2022 -0300
+
+    Created macros for Bard Sounds
+
+[33mcommit cc182bf05ef976fbf80edd4c16b1b84edbcd0355[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Mon Oct 24 10:05:59 2022 -0400
+
+    Use Porymap's new order for connection fields
+
+[33mcommit ae6ec3b1b8a998e2852b48276c0ce119bc154dc8[m
+Author: Marcus Huderle <huderlem@gmail.com>
+Date:   Sat Oct 22 15:09:37 2022 -0500
+
+    Change cleanString() to convert invalid chars to underscores
+
+[33mcommit e752c8a2f9ae20615373440ae0c2af73874fa851[m
+Merge: fad92ec90 473087064
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Thu Oct 20 11:45:35 2022 -0400
+
+    Merge pull request #1805 from tustin2121/tustin2121-patch-runimmedeately
+    
+    Document seldom-used trigger functionality
+
+[33mcommit fad92ec9063aca2f95c945c22f2b7191fe9a5cf2[m
+Merge: 0d0a9bd31 7f0989404
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Thu Oct 20 11:36:10 2022 -0400
+
+    Merge pull request #1803 from abaresk/thunder
+    
+    Add more documentation to thunder weather effect
+
+[33mcommit 3e8baa5b0499a99338f6ca42c3529c71c5d9a438[m
+Merge: a418f8d97 0d0a9bd31
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Tue Oct 18 22:54:25 2022 -0400
+
+    Merge branch 'master' into porymap-5
+
+[33mcommit a418f8d9767891064f65887142c47ad1c403bdcc[m
+Merge: e33581ff9 36551dff2
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Tue Oct 18 22:45:56 2022 -0400
+
+    Merge pull request #1755 from GriffinRichards/map-dynamic
+    
+    Rename special map constants, treat warp ids as strings
+
+[33mcommit 47308706465639ab1dcfd1c03227e7e23edb616c[m
+Author: tustin2121 <tustin2121@gmail.com>
+Date:   Tue Oct 18 21:12:31 2022 -0400
+
+    VAR_RUN_TRIGGER_IMMEDIATELY -> TRIGGER_RUN_IMMEDIATELY
+    
+    Getting rid of the VAR_ prefix, to avoid the porymap problem.
+
+[33mcommit e1021af6bd6a83cc4d53fc3879dacb5f401a0f83[m[33m ([m[1;31mghoul/dexnav[m[33m)[m
+Author: ghoulslash <pokevoyager0@gmail.com>
+Date:   Tue Oct 18 20:37:33 2022 -0400
+
+    fix MapHasNoEncounterData
+
+[33mcommit e33581ff9c43259961cc78c8fc778fd0b0aabb03[m
+Merge: bd023b1c6 bb3992e7d
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Tue Oct 18 18:41:04 2022 -0400
+
+    Merge pull request #1671 from sphericalice/heal-location-none
+    
+    Add the HEAL_LOCATION_NONE constant
+
+[33mcommit 7f09894045efebda1045ffeb5411dc4dce8e75a0[m
+Merge: e67d55bfc 0d0a9bd31
+Author: Abaresk <abaresk01@gmail.com>
+Date:   Tue Oct 18 04:37:56 2022 +0000
+
+    Merge branch 'master' into thunder
+
+[33mcommit 0d0a9bd31dbd8768a4924688e200c5ee98846dc6[m
+Author: Marcus Huderle <huderlem@gmail.com>
+Date:   Mon Oct 17 19:05:24 2022 -0500
+
+    Update src/overworld.c
+    
+    Co-authored-by: GriffinR <griffin.g.richards@gmail.com>
+
+[33mcommit 48ab684b480f9f1e332704d676f332b58a33a0dd[m
+Author: Marcus Huderle <huderlem@gmail.com>
+Date:   Sun Oct 16 13:06:43 2022 -0500
+
+    Fix weather color map documentation
+
+[33mcommit 716025395c90e7d982d1a6833d10efe1684304c2[m
+Merge: 2e128e328 af081b08e
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Mon Oct 17 18:56:58 2022 -0400
+
+    Merge pull request #1802 from abaresk/wild-encounters
+    
+    Document new metatile wild encounter odds
+
+[33mcommit 7431044da14d1eac9dc69a4762a272fbf018ad79[m
+Author: ghoulslash <pokevoyager0@gmail.com>
+Date:   Mon Oct 17 09:19:41 2022 -0400
+
+    dont open dexnav from start menu if map has no encounters
+
+[33mcommit 4775e0372afed5cfeb71ccb78a46cdd00b7320eb[m
+Merge: a5773a41a 2e128e328
+Author: ghoulslash <pokevoyager0@gmail.com>
+Date:   Mon Oct 17 09:06:27 2022 -0400
+
+    merge w pret
+
+[33mcommit 327c648e87c408d98a168ac872f10ee6c1092b52[m
+Author: tustin2121 <tustin2121@gmail.com>
+Date:   Sun Oct 16 20:46:50 2022 -0400
+
+    Document seldom-used trigger functionality
+    
+    Added a define for use in overworld triggers where the goal is to run the provided script in the immediate script context instead of the global one like normal. This is used in triggers in the desert, on faraway island, and a couple other places to do weather effects quickly and on the same frame. Suggestions for a better define name are welcome.
+
+[33mcommit e67d55bfc431da12cc8f8983049c45f7704b7cff[m
+Author: Abaresk <abaresk01@gmail.com>
+Date:   Sat Oct 15 13:29:30 2022 +0000
+
+    Fix names
+
+[33mcommit b538239f18d5b28a85eb56f6c265d1c3984a5a89[m
+Author: Abaresk <abaresk01@gmail.com>
+Date:   Sat Oct 15 03:52:02 2022 +0000
+
+    Add more documentation to thunder weather
+
+[33mcommit 2e128e3282f0d7b300a72dd8735c05dbf2327a85[m
+Merge: 722e501b7 453da8aa8
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Thu Oct 13 14:30:18 2022 -0400
+
+    Merge pull request #1799 from AsparagusEduardo/pret/pr/recordedInvalid
+    
+    Moved ILLEGAL_BATTLE_TYPES to include\constants\battle.h and renamed it to BATTLE_TYPE_RECORDED_INVALID
+
+[33mcommit 722e501b7c75b944f04e789360d650fd71a32860[m
+Merge: a10ec0487 044898fe9
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Thu Oct 13 14:29:43 2022 -0400
+
+    Merge pull request #1800 from AsparagusEduardo/pret/pr/gSoftResetDisabled
+    
+    Documented missing gSoftResetDisabled uses
+
+[33mcommit a10ec0487e61b4d05e191b0cd3d29694b7b4c506[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Wed Oct 12 19:19:42 2022 -0400
+
+    Color rotating gate pngs
+
+[33mcommit af081b08ee852dd72dc55061a3a22df3367619e4[m
+Author: Abaresk <abaresk01@gmail.com>
+Date:   Wed Oct 12 04:35:23 2022 +0000
+
+    Make related func names more concise
+
+[33mcommit 11e3f03bd8fa5546e522995b2cb582930a074724[m
+Author: Abaresk <abaresk01@gmail.com>
+Date:   Wed Oct 12 03:51:13 2022 +0000
+
+    Document new metatile wild encounter odds
+
+[33mcommit bbb4ee32ca5369e8206800b9609d5bef2f99eb50[m
+Merge: bb2e64b3f dc97eca92
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Mon Oct 10 21:10:25 2022 -0400
+
+    Merge pull request #1801 from Kurausukun/storage_struct
+    
+    Combine "Unused" Field into Tile Buffer
+
+[33mcommit dc97eca92d39da1e91706cb8f284f8a1f34d87e1[m
+Author: Kurausukun <lord.uber1@gmail.com>
+Date:   Mon Oct 10 21:00:31 2022 -0400
+
+    combine "unused" field into tile buffer
+
+[33mcommit bd023b1c6cd201463e1c2cd3efdb07cb8f0e04d0[m
+Merge: 6db489e2d 65d3944a9
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Mon Oct 10 12:47:47 2022 -0400
+
+    Merge pull request #1796 from GriffinRichards/tilesets-c
+    
+    Convert tilesets.s to C
+
+[33mcommit 65d3944a935f96421acee1a621a02a14e3fa742d[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Sat Oct 8 01:28:19 2022 -0400
+
+    Give tileset palettes proper type, name compressed secret base tiles
+
+[33mcommit 044898fe9540a5e8bebb20445b02f2c926eccb3b[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Fri Oct 7 15:56:00 2022 -0300
+
+    Documented missing gSoftResetDisabled uses
+
+[33mcommit 453da8aa8c8da024814fd2aff48b7aeb2e65b76b[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Fri Oct 7 15:49:00 2022 -0300
+
+    Moved ILLEGAL_BATTLE_TYPES to include\constants\battle.h and renamed it to BATTLE_TYPE_RECORDED_INVALID
+
+[33mcommit bb2e64b3fc20f713356fb68326175871c8996331[m
+Merge: e293986fb ea168d1a6
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Thu Oct 6 22:17:32 2022 -0400
+
+    Merge pull request #1786 from tustin2121/patch-spritestuff
+    
+    Subsprite Tables Documentation
+
+[33mcommit ea168d1a6b9e6cf6a3581e9cf18f3dd124d08a19[m
+Author: tustin2121 <tustin2121@gmail.com>
+Date:   Thu Oct 6 20:34:46 2022 -0400
+
+    Fix typo 2: revelations
+
+[33mcommit f3bddd1ea61dc19eba13a8a53e84594ca5d42980[m
+Author: tustin2121 <tustin2121@gmail.com>
+Date:   Thu Oct 6 19:36:01 2022 -0400
+
+    Fix typo
+
+[33mcommit e293986fbb52a30d8e9783e9a7a75d2782ee09cd[m
+Merge: c6e4c29ea 1107ff954
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Thu Oct 6 17:24:53 2022 -0400
+
+    Merge pull request #1793 from GriffinRichards/clean-shop
+    
+    Clean up shop.c
+
+[33mcommit c6e4c29ea3ccf2e9c49c9060316026aa2f9a907a[m
+Merge: cefbf5986 79a34411c
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Wed Oct 5 20:44:28 2022 -0400
+
+    Merge pull request #1792 from GriffinRichards/display-tiles
+    
+    Add DISPLAY_TILE_* constants
+
+[33mcommit cefbf5986ceee0ac2136ce1690bf305feb96b891[m
+Merge: 1ae501023 a20334f79
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Tue Oct 4 22:42:42 2022 -0400
+
+    Merge pull request #1797 from AsparagusEduardo/pret/pr/item
+    
+    Removed unused functions in item header
+
+[33mcommit a20334f79a48fcf03744ea8a6f779a0a20661a13[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Tue Oct 4 22:06:07 2022 -0300
+
+    Removed unused functions in item header
+
+[33mcommit 79a34411ce339eca21f4c2e58236b348b89c928d[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Thu Sep 29 15:22:21 2022 -0400
+
+    Add additional DISPLAY_TILE_WIDTH usage
+
+[33mcommit 1ae5010233a07bbd4fbe80a340019e04215afb71[m
+Merge: b8bf9dea5 8dad7cc64
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Thu Sep 29 11:40:02 2022 -0400
+
+    Merge pull request #1794 from SBird1337/doc/decompress-casts
+    
+    [doc] clean up casts in decompress.c
+
+[33mcommit 8dad7cc64990b0b130ec67abbf56bb4dcaea67df[m
+Author: sbird <sbird@no.tld>
+Date:   Thu Sep 29 17:33:39 2022 +0200
+
+    [doc] clean up casts in decompress.c
+
+[33mcommit 6db489e2d5d1354e8c7f9b0102a3afd6a2b7d46d[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Tue Sep 27 20:16:48 2022 -0400
+
+    Use constants for overworld object palette slots
+
+[33mcommit 4f407a1066300d62b997444161402dde7e55c096[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Tue Sep 27 15:15:32 2022 -0400
+
+    Convert tilesets.s to C
+
+[33mcommit fc0a9ace625aaa395bfaa52867507c848fde8daf[m
+Author: TheXaman <48356183+TheXaman@users.noreply.github.com>
+Date:   Tue Sep 27 22:10:22 2022 +0200
+
+    added battle start
+
+[33mcommit 0238bb4d7576d2191e75162fecaef0d267e906d5[m
+Author: TheXaman <48356183+TheXaman@users.noreply.github.com>
+Date:   Tue Sep 27 21:01:26 2022 +0200
+
+    fix visual bug
+
+[33mcommit 235e78afc7cc4f9c88930f3e044bcf28250e49d0[m
+Author: TheXaman <48356183+TheXaman@users.noreply.github.com>
+Date:   Tue Sep 27 20:42:40 2022 +0200
+
+    initial battle debug menu WIP
+
+[33mcommit 360dfef1af646c181808dcbfd821495232f6e176[m
+Author: TheXaman <48356183+TheXaman@users.noreply.github.com>
+Date:   Tue Sep 27 15:15:31 2022 +0200
+
+    made flag toggle list dynamic
+
+[33mcommit e515e52abb8f477df32b1bb050ffee5ba149954b[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Mon Sep 26 12:22:27 2022 -0400
+
+    Add DISPLAY_TILE_* constants
+
+[33mcommit 1034c40902369280eae31f3b415f356e58286881[m
+Author: TheXaman <48356183+TheXaman@users.noreply.github.com>
+Date:   Mon Sep 26 21:08:06 2022 +0200
+
+    Added reset pokedex flags for @AsparagusEduardo
+
+[33mcommit 571ef0c0f99a79d511f557aa2de79ead13188bea[m
+Author: TheXaman <48356183+TheXaman@users.noreply.github.com>
+Date:   Mon Sep 26 20:45:32 2022 +0200
+
+    renaming and reordering
+
+[33mcommit 9ac80f7e9b64950bbebee98a28c722608c422e28[m
+Author: TheXaman <48356183+TheXaman@users.noreply.github.com>
+Date:   Mon Sep 26 20:21:20 2022 +0200
+
+    tiny fix
+
+[33mcommit b3f167abf66ea8268b28727a3e14e345ada282e5[m
+Author: TheXaman <48356183+TheXaman@users.noreply.github.com>
+Date:   Mon Sep 26 20:19:56 2022 +0200
+
+    put fill submenu into main menu
+
+[33mcommit cbf397876b50f5bde9505d15a845ab8cb23f9e84[m
+Author: TheXaman <48356183+TheXaman@users.noreply.github.com>
+Date:   Mon Sep 26 20:13:03 2022 +0200
+
+    put cheat start into utility
+
+[33mcommit 76426c891c5100384c45d7f2426c27c0244fce24[m
+Author: TheXaman <48356183+TheXaman@users.noreply.github.com>
+Date:   Mon Sep 26 20:04:32 2022 +0200
+
+    added Fill submenu, added fill function for PC items and all bag pockets  @LOuroboros
+
+[33mcommit 5d7e6d85f88297c83d5d252f52a1af93182e033f[m
+Author: TheXaman <48356183+TheXaman@users.noreply.github.com>
+Date:   Mon Sep 26 18:51:34 2022 +0200
+
+    renamed gDebugText to proper sDebugText
+
+[33mcommit 74fa06bc6742fa92bca1060ed87cfe00b1f51ee5[m
+Author: TheXaman <48356183+TheXaman@users.noreply.github.com>
+Date:   Mon Sep 26 18:50:23 2022 +0200
+
+    used {CLEAR_TO X} instead of manual spaces
+
+[33mcommit ba341d604fdc7dfc5b315e18d8f71ab0a9b5e885[m
+Author: TheXaman <48356183+TheXaman@users.noreply.github.com>
+Date:   Mon Sep 26 18:47:35 2022 +0200
+
+    added alligned arrows for debug submenus
+
+[33mcommit d2718fd2dafa711aacf63ae05167ac23a00bf106[m
+Author: TheXaman <48356183+TheXaman@users.noreply.github.com>
+Date:   Mon Sep 26 17:43:39 2022 +0200
+
+    added new window to flags/vars showing the current state and added submenu indicator
+
+[33mcommit 6be8454627898b5b630d20b39ca52b1f4ac70b69[m
+Author: TheXaman <48356183+TheXaman@users.noreply.github.com>
+Date:   Mon Sep 26 14:59:07 2022 +0200
+
+    combined flags and vars into one submenu
+
+[33mcommit c839abd74b5d5d4ad98ecad3e3a960be61554d24[m
+Author: TheXaman <48356183+TheXaman@users.noreply.github.com>
+Date:   Mon Sep 26 14:41:49 2022 +0200
+
+    added submenu arrows, increased menu high to full screen
+
+[33mcommit ada444977c9be94c24a0815a645a62ec7f897217[m
+Author: TheXaman <48356183+TheXaman@users.noreply.github.com>
+Date:   Mon Sep 26 14:31:52 2022 +0200
+
+    Added option for generating incrementing pokemon in pc boxes
+
+[33mcommit f0744641d1636cb3723e666f1ec172f3d704d3c1[m
+Merge: 171367d66 56c28fb2d
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Sun Sep 25 21:56:09 2022 -0400
+
+    Merge pull request #1651 from garakmon/entry_json
+    
+    use json for region map sections
+
+[33mcommit 171367d66cb77ba5a43911624489d6142b080c32[m
+Merge: 45e6b4817 3cc21a0fc
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Sun Sep 25 21:55:22 2022 -0400
+
+    Merge pull request #1643 from cbt6/object-event-graphics-info
+    
+    Format object event graphics info
+
+[33mcommit 45e6b48170cf791aa66df228a62209f1815d50a0[m
+Merge: b8bf9dea5 7223dbd62
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Sun Sep 25 21:54:26 2022 -0400
+
+    Merge pull request #1636 from GriffinRichards/rme-update
+    
+    Updates to region map for Porymap
+
+[33mcommit b8bf9dea564f8ab0b5036ad24c64e2e368817805[m
+Merge: f695ddd1b 5054cf358
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Sun Sep 25 21:50:37 2022 -0400
+
+    Merge pull request #1791 from AsparagusEduardo/pret/pr/unk40EF
+    
+    Documented unk40EF in Summary Screen
+
+[33mcommit 5054cf35862326278bdb73827be4c075b483aa14[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Sun Sep 25 21:33:20 2022 -0300
+
+    Documented unk40EF in Summary Screen
+
+[33mcommit f695ddd1ba3a9d9a882bf35cde4d18c09b386432[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Sun Sep 25 18:34:07 2022 -0400
+
+    Ignore new Porymap config
+
+[33mcommit 56c28fb2dd43baf9eaf14efede072c4c6023f940[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Sun Sep 25 18:15:16 2022 -0400
+
+    Move region map gitignore to existing data gitignore
+
+[33mcommit e473aaf78347af345e8957f649bc386fcf94eb8e[m
+Merge: 3fe423a6f 4579efe4c
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Sun Sep 25 18:10:04 2022 -0400
+
+    Merge branch 'master' of https://github.com/pret/pokeemerald into entry_json
+
+[33mcommit 7223dbd62f60996efc6816f2a0df96254a3474a7[m
+Merge: 277750b08 4579efe4c
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Sun Sep 25 11:56:57 2022 -0400
+
+    Merge branch 'master' into rme-update
+
+[33mcommit 4579efe4c7358d8c2d067146c056a71fd21b62ff[m
+Merge: d8b391906 0f35f080e
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Sat Sep 24 23:27:40 2022 -0400
+
+    Merge pull request #1790 from AsparagusEduardo/pret/pr/namingScreenGender
+    
+    Gender icon in naming screen based on Pokémon name length
+
+[33mcommit 0f35f080ecb8a59d3941817c6a4e236d6600cabb[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Sat Sep 24 23:48:24 2022 -0300
+
+    Gender icon in naming screen based on Pokémon name length
+
+[33mcommit d8b391906383186ff1b05d1cf7167577527ef8d2[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Sat Sep 24 18:27:53 2022 -0400
+
+    Ignore Porymap's prefabs file
+
+[33mcommit 9b6b164aadd18052d9d44be03f3f851a909cf527[m
+Merge: ad9247439 343d7f7d2
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Fri Sep 23 13:49:48 2022 -0400
+
+    Merge pull request #1768 from SBird1337/feature/mgba-print
+    
+    [debug] add support for mgba printf
+
+[33mcommit 343d7f7d269be96fbc82be6b421bdc657fa79979[m
+Author: sbird <sbird@no.tld>
+Date:   Fri Sep 23 04:02:30 2022 +0200
+
+    [debug] do not use heap allocation for MgbaPrintf
+
+[33mcommit 12670e8e3ee0ca49dd88d36e83ec698bfc7b227f[m
+Author: sbird <sbird@no.tld>
+Date:   Fri Sep 23 03:48:58 2022 +0200
+
+    [debug] simplify macros, add EX versions
+
+[33mcommit 22329d3318cde3f07ed5401226c0df2b5d951957[m
+Author: sbird <sbird@no.tld>
+Date:   Fri Sep 23 03:23:44 2022 +0200
+
+    [debug] use boolean constants for nStopProgram
+
+[33mcommit 44a5a8d31e5920c7f2eab588f772dd13ff7ff5f1[m
+Author: sbird <sbird@no.tld>
+Date:   Fri Sep 23 03:22:57 2022 +0200
+
+    [debug] fix AGBAssert for AGBPrintf debug block
+
+[33mcommit ad9247439ced0375a73ef11e535e8857f653195b[m
+Merge: d79252aa7 7e112b0f0
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Thu Sep 22 20:50:19 2022 -0400
+
+    Merge pull request #1788 from AsparagusEduardo/pret/pr/newKeys
+    
+    Added missing uses of JOY_xx macros
+
+[33mcommit 7e112b0f0ddcc05fcbe08855114e6fea810fc3a6[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Thu Sep 22 21:43:33 2022 -0300
+
+    Added missing uses of JOY_xx macros
+
+[33mcommit 1107ff954d93dff53bdc8025a763d5f6a328f141[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Thu Sep 22 13:32:35 2022 -0400
+
+    Clean up shop.c
+
+[33mcommit d79252aa7f4c0c1deacf9ae2404c938daa25e841[m
+Merge: b8341558c bca1267ca
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Thu Sep 22 12:19:05 2022 -0400
+
+    Merge pull request #1784 from AsparagusEduardo/pret/pr/FrontierPartySize
+    
+    Altered MAX_FRONTIER_PARTY_SIZE to be automatically calculated by the other frontier party sizes
+
+[33mcommit b8341558c324ee42066e23d3cca164f8bf04e49e[m
+Merge: 9bcc36fe0 041870672
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Thu Sep 22 12:13:07 2022 -0400
+
+    Merge pull request #1779 from GriffinRichards/sync-fld-weather
+    
+    Add misc constant usage to field_weather_effect
+
+[33mcommit 9bcc36fe08377509dcb606fc0e4308759e6c3897[m
+Merge: e74fa7b8c c8afeea18
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Thu Sep 22 11:34:03 2022 -0400
+
+    Merge pull request #1767 from GriffinRichards/trainer-pals
+    
+    Generate trainer pic palettes from image
+
+[33mcommit e74fa7b8c08c0f5e28beed26711114781474337b[m
+Merge: 36494c1c1 8a68596b6
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Thu Sep 22 11:25:06 2022 -0400
+
+    Merge pull request #1785 from AsparagusEduardo/pret/pr/malloc
+    
+    Removed unnecessary malloc.h macros
+
+[33mcommit 5c55e441734458119a8bf7b748d6dadc77c9302a[m
+Author: tustin2121 <tustin2121@gmail.com>
+Date:   Sat Sep 17 14:34:20 2022 -0400
+
+    More diagrams
+    
+    - Diagramed all subsprite tables in the code base. There's a LOT in the slot machine code.
+
+[33mcommit c371a44a83616a06bff012dd81dfdd4cca9b7f78[m
+Author: tustin2121 <tustin2121@gmail.com>
+Date:   Sat Sep 17 13:34:54 2022 -0400
+
+    Formatting
+
+[33mcommit 13877f71dcb884aac6a6bb58493ad4a56811dade[m
+Author: tustin2121 <tustin2121@gmail.com>
+Date:   Sat Sep 17 13:33:10 2022 -0400
+
+    Minor documentation
+    
+    Some things I figured out while working on my hack.
+    - The Subsprite tables do not use `DISPLAY_WIDTH`, but rather use -16, since they are signed bytes. The negative numbers better illustrate what the tables are doing.
+    - Figured out the as-of-yet undocumented data in SpriteCB_FlygonSilhouette
+
+[33mcommit 8a68596b6436a28fee13cc216aed290736b3156d[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Fri Sep 16 20:36:44 2022 -0300
+
+    Removed free macro
+
+[33mcommit e412ec30a0d9ddcf1a1cc427488fdc8279ae08a6[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Fri Sep 16 20:34:22 2022 -0300
+
+    Removed calloc macro
+
+[33mcommit 63156b4398213bc89fb6666f2126f751902a4d84[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Fri Sep 16 20:24:26 2022 -0300
+
+    Removed malloc macro
+
+[33mcommit bca1267ca84af5dab9f82ec1c2209c786eb1f6b7[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Thu Sep 15 14:52:18 2022 -0300
+
+    Altered MAX_FRONTIER_PARTY_SIZE to be automatically calculated by the other frontier party sizes
+
+[33mcommit 36494c1c1d2941180867cf4c03c9859454f54a45[m
+Merge: c1dfd3c9e 492380bd2
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Wed Sep 14 12:14:33 2022 -0400
+
+    Merge pull request #1783 from AsparagusEduardo/pret/pr/battlerReservedPalettes
+    
+    gReservedSpritePaletteCount using MAX_BATTLERS_COUNT for battles
+
+[33mcommit 492380bd24912a80be4e7a14e8e4bf8355c277fd[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Wed Sep 14 12:20:59 2022 -0300
+
+    gReservedSpritePaletteCount using MAX_BATTLERS_COUNT for battles
+
+[33mcommit e8a0f15a700be9ee883381c5d55b885084102c28[m
+Author: TheXaman <48356183+TheXaman@users.noreply.github.com>
+Date:   Wed Sep 14 14:51:03 2022 +0200
+
+    added a submenu to set the weather
+
+[33mcommit 59818acc8104eac6ef9806df99c8a27f5c798005[m
+Author: TheXaman <48356183+TheXaman@users.noreply.github.com>
+Date:   Wed Sep 14 13:35:51 2022 +0200
+
+    backported the menu improvments from the rhh implementation:
+    -code cleanup
+    -better whitespaces
+    -reworked TX_DEBUGGING to TX_DEBUG_SYSTEM_ENABLE = TRUE
+    -removed menu flicker when changing
+    -object events frozen while in menu
+    -easier way to rebind debug keys
+
+[33mcommit c1dfd3c9eca7d9dd73ac7dbaff0444d965758f4c[m
+Merge: 509f1d59c 97021baec
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Tue Sep 13 15:08:37 2022 -0400
+
+    Merge pull request #1763 from GriffinRichards/rm-global
+    
+    Drop usage of global directive
+
+[33mcommit 509f1d59cd534e5d4f2c75ad8207b9c5d3dd5270[m
+Merge: 91c040b08 2d841a25f
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Tue Sep 13 14:51:20 2022 -0400
+
+    Merge pull request #1782 from LOuroboros/patch-2
+    
+    Removed unused extern declaration of old gUnknown func
+
+[33mcommit 2d841a25f96854ffa449650cc1f04d7154883d0b[m
+Author: LOuroboros <lunosouroboros@gmail.com>
+Date:   Tue Sep 13 15:45:01 2022 -0300
+
+    Removed unused extern declaration of old gUnknown func
+
+[33mcommit 91c040b081dfa1dbecd893dd4a9ab3e5dc5c34be[m
+Merge: 4c34babb4 65108c319
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Tue Sep 13 14:00:11 2022 -0400
+
+    Merge pull request #1777 from AsparagusEduardo/pret/pr/trailingWhitespace
+    
+    Cleaned trailing whitespace
+
+[33mcommit 4c34babb4dd625db9053438761c3e3fb0c25026b[m
+Merge: e7a459c77 14c6d8b91
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Mon Sep 12 22:02:46 2022 -0400
+
+    Merge pull request #1780 from LOuroboros/raquaza
+    
+    Fixed a typo and scripting vars alignment
+
+[33mcommit e7a459c7782bac344cb13257fd02250596eb905a[m
+Merge: d3d8b4a18 5eb931225
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Mon Sep 12 21:27:57 2022 -0400
+
+    Merge pull request #1781 from AsparagusEduardo/pret/pr/argumentsHeaders
+    
+    Added missing labels in headers
+
+[33mcommit 14c6d8b91a49d214d3da2bba2b90e4cb9d811587[m
+Author: LOuroboros <lunosouroboros@gmail.com>
+Date:   Mon Sep 12 21:32:42 2022 -0300
+
+    Fixed alignment for the value of vars 0x4020 to 0x40FF
+
+[33mcommit cb83a0920318b2e98782a9a10a098b8441a99913[m
+Author: LOuroboros <lunosouroboros@gmail.com>
+Date:   Mon Sep 12 21:27:53 2022 -0300
+
+    Fixed vars alignment
+
+[33mcommit 222362e8045e653115cf4e4759c1a25732cea899[m
+Author: LOuroboros <lunosouroboros@gmail.com>
+Date:   Mon Sep 12 21:26:22 2022 -0300
+
+    Fixed Raquaza typo
+
+[33mcommit 5eb931225082972b013964c1a160989b7d69bd69[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Mon Sep 12 21:14:15 2022 -0300
+
+    Added missing labels in headers
+
+[33mcommit 041870672ac07c98f4cab39c25737201740728ea[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Mon Sep 12 15:11:58 2022 -0400
+
+    Add misc constant usage to field_weather_effect
+
+[33mcommit d3d8b4a181313110fbb3043c3d0da9d9e99f8696[m
+Merge: 91cba0e64 8b7230c3c
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Mon Sep 12 14:32:27 2022 -0400
+
+    Merge pull request #1762 from GriffinRichards/sync-fieldmap
+    
+    Sync fieldmap
+
+[33mcommit 65108c319265a7a5f232e0fa6af61d091823ad45[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Sun Sep 11 14:14:49 2022 -0400
+
+    Cleaned trailing whitespace
+
+[33mcommit 91cba0e6486caca12cb17d11ae3f11b5f7eabc57[m
+Merge: c3623bc92 61752a497
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Sun Sep 11 13:49:50 2022 -0400
+
+    Merge pull request #1776 from AsparagusEduardo/pret/pr/ShinyValue
+    
+    Added parenthesis to GET_SHINY_VALUE
+
+[33mcommit 61752a4977eb90826593cec40848efe1212529f0[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Sun Sep 11 13:35:58 2022 -0400
+
+    Added parenthesis to GET_SHINY_VALUE
+
+[33mcommit c3623bc9288bdcece5a69fda1c34af883af0038f[m
+Merge: ecb75ee51 914477963
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Fri Sep 9 12:53:55 2022 -0400
+
+    Merge pull request #1775 from AsparagusEduardo/pret/pr/repeatedStrings
+    
+    Removed repeated extern consts in strings.h
+
+[33mcommit 91447796340c6738c610fd0b003209d54c72456e[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Fri Sep 9 08:49:16 2022 -0400
+
+    Removed repeated extern consts in strings.h
+
+[33mcommit ecb75ee5148e9522e3dfef30a3b1df10ecaf43ca[m
+Merge: 75ded96ec 1fa9bc1b5
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Thu Sep 8 21:48:05 2022 -0400
+
+    Merge pull request #1774 from AsparagusEduardo/pret/pr/monCoords
+    
+    Adjusted style of coords tables
+
+[33mcommit 1fa9bc1b5c5a2eed1f88462757968c3f8d1cb26b[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Thu Sep 8 18:32:01 2022 -0400
+
+    Adjusted style of coords tables
+
+[33mcommit 75ded96ecf4045a8374f3944aa5f1d3b83b320e3[m
+Merge: c5e1feae3 d58af1ba9
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Thu Sep 8 16:31:26 2022 -0400
+
+    Merge pull request #1773 from Jaizu/patch-27
+    
+    Fix 'y' actually being 'x' in CreatePCMultichoice
+
+[33mcommit d58af1ba9217963706cefbae06a0eb0999ccd441[m
+Author: Jaizu <jaizu85@gmail.com>
+Date:   Thu Sep 8 10:38:52 2022 +0200
+
+    Fix 'y' actually being 'x' in CreatePCMultichoice
+
+[33mcommit c5e1feae382e7f8b65235e555e627fceee2c7d0e[m
+Merge: af1725793 05c13614c
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Wed Sep 7 16:50:57 2022 -0400
+
+    Merge pull request #1772 from LOuroboros/patch-1
+    
+    Undefined temporary preproc macro HIBYTE
+
+[33mcommit 05c13614c64ecc79b4aabf455e0c073a9f9424ae[m
+Author: LOuroboros <lunosouroboros@gmail.com>
+Date:   Wed Sep 7 13:41:48 2022 -0300
+
+    Undefined temporary preproc macro HIBYTE
+
+[33mcommit af1725793af39a49d8d36228a449aa48b2c4b6a4[m
+Merge: 281bddcd3 3a0759d45
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Wed Sep 7 10:43:08 2022 -0400
+
+    Merge pull request #1771 from SBird1337/doc/aslr
+    
+    [doc] fix misnamed dma <--> aslr
+
+[33mcommit 3a0759d458a711196739a7397248cdf1d34069e9[m
+Author: sbird <sbird@no.tld>
+Date:   Wed Sep 7 14:37:03 2022 +0200
+
+    [doc] fix misnamed dma <--> aslr
+
+[33mcommit 281bddcd3d594a6dc79d6e94cae780822abf1dfe[m
+Merge: 74b563f69 7500435a8
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Tue Sep 6 21:40:37 2022 -0400
+
+    Merge pull request #1765 from AsparagusEduardo/pret/pokefirered_sync4
+    
+    Implemented review changes from https://github.com/pret/pokefirered/pull/548
+
+[33mcommit 74b563f69612eebba60d9a33f0d797d8231653a7[m
+Merge: f334b61b4 3771abbe0
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Tue Sep 6 21:35:10 2022 -0400
+
+    Merge pull request #1749 from GriffinRichards/ur-classes
+    
+    Fix names and constant usage for union room classes
+
+[33mcommit f334b61b4437742c37a23fb1507f1ba404ef9af0[m
+Merge: 7dac3c4b6 12bb32666
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Tue Sep 6 21:20:49 2022 -0400
+
+    Merge pull request #1769 from AsparagusEduardo/pret/pr/frontierTrainerMonAlign
+    
+    Aligned FRONTIER_MONS trainer macros with the rest for consistency
+
+[33mcommit 12bb32666b558c3b5b68c7652f03d87483d272a6[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Tue Sep 6 17:05:56 2022 -0400
+
+    Aligned FRONTIER_MONS trainer macros with the rest for consistency
+
+[33mcommit 584bfe022192f6e68ae202c40febc1dc7839db4e[m
+Author: sbird <sbird@no.tld>
+Date:   Tue Sep 6 13:40:29 2022 +0200
+
+    [debug] add support for mgba printf
+    
+    * adds support for mgba printf debugging as well as adding support for switching between debugging configuration
+    * adds `mini_printf` as an alternative to libc printf as well as switches to choose a pretty printing handler
+    * adds a pretty printing format to `mini_printf` to print preproc encoded strings
+
+[33mcommit 7dac3c4b653345b08447b1c98571bb97a3d26cff[m
+Merge: 797aa0814 33f10d213
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Mon Sep 5 20:28:33 2022 -0400
+
+    Merge pull request #1766 from tustin2121/tustin2121-patch-extern
+    
+    Adding missing externs
+
+[33mcommit c8afeea1824f01e8435e5bf1115b366bec65ff82[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Mon Sep 5 16:09:45 2022 -0400
+
+    Generate trainer pic palettes from image
+
+[33mcommit 33f10d2139b4e47d9f6705c8b9b30ef5533d48e0[m
+Author: tustin2121 <tustin2121@gmail.com>
+Date:   Mon Sep 5 09:49:20 2022 -0400
+
+    Adding missing externs
+    
+    If there are not externs on these forward declarations, it's entirely possible for the program to link and missing data to be assigned to someplace presumed in IWRAM or something.
+
+[33mcommit 7500435a8040c1ae3b62cf47eac6e1e9a5c60fbe[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Sun Sep 4 21:24:12 2022 -0300
+
+    Implemented review changes from https://github.com/pret/pokefirered/pull/548
+
+[33mcommit 36551dff2f36e7d44dee83fccf9ff4f64bf3d23f[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Sat Sep 3 15:43:43 2022 -0400
+
+    Treat warp ids as strings to allow constants
+
+[33mcommit 797aa081416a809f5c7cc2e001f551b334b32941[m
+Merge: ff53a553b 41bf6bde2
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Sat Sep 3 01:04:55 2022 -0400
+
+    Merge pull request #1764 from AsparagusEduardo/pret/battlerMacros
+    
+    Further uses of GET_BATTLER_SIDE macros'
+
+[33mcommit 41bf6bde258af3e52867800c7b2fdb02f0540674[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Sat Sep 3 00:28:53 2022 -0400
+
+    Removed pointless macro
+
+[33mcommit 790bdd69f81a3ea43f7e30c783eee651f8496b5d[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Sat Sep 3 00:28:32 2022 -0400
+
+    Using GET_BATTLER_SIDE and GET_BATTLER_SIDE2
+
+[33mcommit 97021baec6f9f112b27ce1356b7e3ca0873327ba[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Fri Sep 2 21:53:44 2022 -0400
+
+    Drop usage of global directive
+
+[33mcommit 8b7230c3c456f23cc87b3581f641688e41e82987[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Fri Sep 2 19:41:28 2022 -0400
+
+    CpuFastFill -> CpuFastFill16 in fieldmap
+
+[33mcommit 7f1c4720a246702c97ef04f7191648ccac587232[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Fri Sep 2 19:36:46 2022 -0400
+
+    Update arguments for ApplyGlobalTintToPaletteSlot
+
+[33mcommit 03a98c72bc435bf92e535de26f21ce0c06df6dd9[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Fri Sep 2 19:29:35 2022 -0400
+
+    Sync fieldmap
+
+[33mcommit ff53a553bc50b1b9cd490b51cfb645c912e8ccee[m
+Merge: a28fbbc1b c7fc2e13f
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Fri Sep 2 17:09:49 2022 -0400
+
+    Merge pull request #1761 from AsparagusEduardo/pret/tmFlagNames
+    
+    Renamed TM flags to keep consistency with the rest of the repo
+
+[33mcommit c7fc2e13f771cb30a0eb579d1f77e76a85d3be5d[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Fri Sep 2 16:54:58 2022 -0400
+
+    Renamed TM flags to keep consistency with the rest of the repo
+
+[33mcommit a28fbbc1b86426a58c15586a8e0992aba5a24cb9[m
+Merge: d211adbc7 261b0ff11
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Thu Sep 1 11:51:04 2022 -0400
+
+    Merge pull request #1748 from GriffinRichards/fix-judgement
+    
+    Standardize judgement vs judgment spelling
+
+[33mcommit d211adbc77f51e1b23d3f4a40d7cf86582ab8182[m
+Merge: b66de1f05 5d346fd93
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Thu Sep 1 11:42:09 2022 -0400
+
+    Merge pull request #1760 from LOuroboros/bermuda
+    
+    Updated a couple of sizeofs in src/battle_pyramid_bag.c
+
+[33mcommit 5d346fd9392eb718dce06875a26538691343f582[m
+Author: LOuroboros <lunosouroboros@gmail.com>
+Date:   Wed Aug 31 23:49:43 2022 -0300
+
+    Updated a couple more sizeofs
+
+[33mcommit b66de1f056b265c460e2e9405d4c8fa4ac8b79c6[m
+Merge: 0a2ac61b0 ea345f90f
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Wed Aug 31 22:14:06 2022 -0400
+
+    Merge pull request #1759 from LOuroboros/pyramidSchemes
+    
+    Automatized the contents of some sideof in src/item.c
+
+[33mcommit ea345f90f5d2e9cb8a63ad12343aeea49e67340c[m
+Author: LOuroboros <lunosouroboros@gmail.com>
+Date:   Wed Aug 31 23:05:06 2022 -0300
+
+    Picked the correct pointers for correctness' sake
+
+[33mcommit e02b33ee112f9f08c0866a27fb8c2ad1e763ad20[m
+Author: LOuroboros <lunosouroboros@gmail.com>
+Date:   Wed Aug 31 22:56:39 2022 -0300
+
+    Automatized the contents of some sideof in src/item.c
+
+[33mcommit 006d28fd699dd0acc9f6b0c5263aad754a3cc890[m
+Author: TheXaman <48356183+TheXaman@users.noreply.github.com>
+Date:   Mon Aug 29 14:51:40 2022 +0200
+
+    tiny  fix for wrong "give pokemon" window
+
+[33mcommit 94183b45c7c0acdf61233c284de5a143f30533ae[m
+Author: TheXaman <48356183+TheXaman@users.noreply.github.com>
+Date:   Mon Aug 29 14:48:40 2022 +0200
+
+    Added options for ttoggling battle frontier pass and giving max BPs
+
+[33mcommit 0a2ac61b0f43ebf2a17acfc37705472b75819866[m
+Merge: 8aead3b4c 1c8d3a492
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Sat Aug 27 11:40:33 2022 -0400
+
+    Merge pull request #1757 from AsparagusEduardo/pret_clean2
+    
+    Cleanup based on previous PRs
+
+[33mcommit 1c8d3a49225a16ff28b0507f79ee041b9bddbb0f[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Sat Aug 27 11:19:50 2022 -0400
+
+    Removed unnecessary parenthesis
+
+[33mcommit 99fbad92e21003c474b608ba8dc47fe3570184e5[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Sat Aug 27 02:50:55 2022 -0400
+
+    IS_BATTLER_OF_TYPE
+
+[33mcommit 866d916f2fb27c16fc064386766f99d5a9f36bf2[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Sat Aug 27 02:07:58 2022 -0400
+
+    SpriteTemplate formatting
+
+[33mcommit 1f0a952546c29584b17684581de69cea92d8a19b[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Sat Aug 27 01:44:39 2022 -0400
+
+    Usage of BATTLE_OPPOSITE
+
+[33mcommit 15d611ba65eb5f6f7c0fde16ee487f3650bbf017[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Sat Aug 27 01:26:13 2022 -0400
+
+    Usage of BATTLE_PARTNER
+
+[33mcommit 6c457f42afb948c3697f03d92ee9042dab8e4b5b[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Sat Aug 27 00:59:12 2022 -0400
+
+    Corrected uses of GetBattlerSide
+
+[33mcommit 0a34d4704189c43dfabaf0d74d1cb66b9e957653[m
+Merge: 481210b7f 8aead3b4c
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Sat Aug 27 00:56:00 2022 -0400
+
+    Merge remote-tracking branch 'pret/master' into pret_clean2
+
+[33mcommit 481210b7f318ee4811a4193216d77c3eefadf848[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Sat Aug 27 00:54:30 2022 -0400
+
+    Missing uses of MAX_SPRITES
+
+[33mcommit 8aead3b4c87aa6cb3904fe58fde0a5fbbd57575d[m
+Merge: 578064d79 11b4958f2
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Fri Aug 26 23:53:44 2022 -0400
+
+    Merge pull request #1747 from GriffinRichards/contest-ai-bug
+    
+    Incorporate commented bug fixes in contest AI scripts
+
+[33mcommit 578064d79966ebfcd0de8782f8b7294415fd6c87[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Fri Aug 26 15:23:54 2022 -0400
+
+    Add missing use of METATILE_ROW_WIDTH
+
+[33mcommit 0516f948372b70f339c04a1b78b71c519dd86c63[m
+Merge: c5e873aa2 23bf67c63
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Fri Aug 26 14:52:10 2022 -0400
+
+    Merge pull request #1753 from LOuroboros/GetLeadMonFriendshipScore
+    
+    Added constants for GetLeadMonFriendshipScore
+
+[33mcommit c5e873aa2b4f732cc32322c1942b2e6fca853fc9[m
+Merge: 005c46f0d c2d5dd2a1
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Fri Aug 26 14:47:24 2022 -0400
+
+    Merge pull request #1742 from GriffinRichards/sound-pan
+    
+    Add missing usage of SOUND_PAN_*
+
+[33mcommit 005c46f0da637ad1e754d26d3474d85f94685edc[m
+Merge: 8a1130d04 6fb4da68f
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Thu Aug 25 22:09:56 2022 -0400
+
+    Merge pull request #1754 from AsparagusEduardo/pret_citySigns
+    
+    Corrected Oldale Town Sign labels
+
+[33mcommit 6fb4da68f398905917e5579f955a74cbd609e741[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Thu Aug 25 22:00:24 2022 -0400
+
+    Corrected Oldale Town Sign labels
+
+[33mcommit ce4a6e9067d5ded0d674a95fe32fc08b28b970a3[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Thu Aug 25 21:34:05 2022 -0400
+
+    MAP_NONE -> MAP_DYNAMIC
+
+[33mcommit 23bf67c63ffd46258f8a435314c8fb67213cd9b6[m
+Author: LOuroboros <lunosouroboros@gmail.com>
+Date:   Thu Aug 25 11:43:01 2022 -0300
+
+    Removed unnecessary inclusion of header in src/field_specials.c
+
+[33mcommit 11d6ae48205d01710d4fc8c961bd29f053272678[m
+Author: LOuroboros <lunosouroboros@gmail.com>
+Date:   Thu Aug 25 11:34:37 2022 -0300
+
+    Renamed the GetLeadMonFriendshipScore constants
+
+[33mcommit 8a1130d0461aac5e29fc1966f5ae6405bf2d2afe[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Thu Aug 25 10:21:41 2022 -0400
+
+    Missing constant in friendshiptodamagecalculation
+
+[33mcommit 1f4ef2a0fb26f10f37686aa9c0da6b356f898721[m
+Author: LOuroboros <lunosouroboros@gmail.com>
+Date:   Thu Aug 25 10:32:14 2022 -0300
+
+    Added constants for GetLeadMonFriendshipScore
+
+[33mcommit 32ea55dcba712ec04a90c505f49cb83125c65c29[m
+Merge: 8cc520ccd 015961c00
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Wed Aug 24 17:08:15 2022 -0400
+
+    Merge pull request #1752 from LOuroboros/patch-4
+    
+    Re-aligned READ_PTR_FROM_TASK's 2nd line EoL
+
+[33mcommit 8cc520ccd7ca4eba7956f91da750615f0b24a830[m
+Merge: eecf96839 3a6552929
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Wed Aug 24 17:07:59 2022 -0400
+
+    Merge pull request #1751 from LOuroboros/patch-3
+    
+    Fixed KeyInterCB_DeferToEventScript comment
+
+[33mcommit eecf968390f502013f7ca1aae2f0ae3851e1f14d[m
+Merge: 8a8ba92f2 90f72a745
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Wed Aug 24 17:07:17 2022 -0400
+
+    Merge pull request #1750 from LOuroboros/patch-2
+    
+    Fixed switch syntax in Task_TryFieldPoisonWhiteOut
+
+[33mcommit 015961c00ac46551408e8c43b6ce14a2b2ecb36e[m
+Author: LOuroboros <lunosouroboros@gmail.com>
+Date:   Wed Aug 24 17:19:24 2022 -0300
+
+    Re-aligned READ_PTR_FROM_TASK's 2nd line EoL
+
+[33mcommit 3a6552929335551a214df051eb3a30434aefb22b[m
+Author: LOuroboros <lunosouroboros@gmail.com>
+Date:   Wed Aug 24 17:12:59 2022 -0300
+
+    Fixed KeyInterCB_DeferToEventScript comment
+
+[33mcommit 90f72a745adde802c9ab287a217b8c80b36b7d21[m
+Author: LOuroboros <lunosouroboros@gmail.com>
+Date:   Wed Aug 24 17:01:36 2022 -0300
+
+    Fixed switch syntax in Task_TryFieldPoisonWhiteOut
+
+[33mcommit 3771abbe087df2a18963fd4a4e0f8a117c1b059a[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Tue Aug 23 12:39:24 2022 -0400
+
+    Fix names and constant usage for union room classes
+
+[33mcommit 8a8ba92f21f6e6238d551dd656c6c7e5027d8ff5[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Mon Aug 22 19:04:47 2022 -0400
+
+    Revert COMMON wildcards
+
+[33mcommit 898ec580aed45076b8acbd40c1c7a22f37202241[m
+Merge: 30906762e 5515e328b
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Mon Aug 22 01:30:33 2022 -0400
+
+    Merge pull request #1737 from GriffinRichards/lock-unlock
+    
+    Clean up lock/unlock anim movement
+
+[33mcommit 30906762ed062d0c92bcfc2bcd5e4766b5c57885[m
+Merge: 9e175a103 e8a05e92e
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Sat Aug 20 23:03:59 2022 -0400
+
+    Merge pull request #1740 from AsparagusEduardo/pret_stringTabs
+    
+    Fixed inconsistent use of white space for scripts, .c files and .h files.
+
+[33mcommit 261b0ff118bc24e7d6353180d1bdac3f3942ef48[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Sat Aug 20 22:58:46 2022 -0400
+
+    Standardize judgement vs judgment spelling
+
+[33mcommit 9e175a1037fe64f3cb03874401aea24cfc6f567c[m
+Merge: 81ef818f6 cf4d05e9e
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Sat Aug 20 22:54:32 2022 -0400
+
+    Merge pull request #1735 from GriffinRichards/arena-const
+    
+    Add some missing battle arena constants
+
+[33mcommit 81ef818f61ae48363d18a467143c3281cbbd7a74[m
+Merge: 1685365cd e06ba3975
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Sat Aug 20 22:43:52 2022 -0400
+
+    Merge pull request #1731 from GriffinRichards/missing-tag
+    
+    Move party menu data constants
+
+[33mcommit 76d2d92abbb58cdddc6f7cea2fd518e4229b54c5[m
+Merge: 3bc2cf921 1685365cd
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Sat Aug 20 12:43:09 2022 -0400
+
+    Merge branch 'pretmaster' into pret_clean2
+
+[33mcommit 1685365cd415ba24e7696bc765fc9e1bafdd46b6[m
+Merge: cce991890 e43f65cc6
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Fri Aug 19 21:27:55 2022 -0400
+
+    Merge pull request #1727 from AsparagusEduardo/pret_clean
+    
+    Cleanup from https://github.com/pret/pokefirered/pull/532
+
+[33mcommit 11b4958f230bafa46611c7b4f04142d32d54451d[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Fri Aug 19 19:45:15 2022 -0400
+
+    Incorporate commented bug fixes in contest AI scripts
+
+[33mcommit c2d5dd2a1fd85b48c3dec49e89f5a26ed3bc4a44[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Wed Aug 17 11:44:20 2022 -0400
+
+    Additional battle anim sync
+
+[33mcommit cce99189080cea6b8745aca84cfd75d0858c0822[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Thu Aug 18 23:13:27 2022 -0400
+
+    Add Wnum_tiles to additional num_tiles rules
+
+[33mcommit 5e593a62fbfb631068772d1589d556c8a998142e[m
+Author: Martin Griffin <martinrgriffin@gmail.com>
+Date:   Fri Aug 19 04:07:25 2022 +0100
+
+    Ignore num_tiles if it would truncate non-transparent tiles (#1729)
+
+[33mcommit 3bc2cf921c79530862c8c4b2fff0ce7a5bfef4c9[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Mon Aug 8 10:06:30 2022 -0400
+
+    Sync src/battle_controllers.c with pokefirered
+
+[33mcommit 59f89bde9e8ced4c8240bdaded3b938ee1454def[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Thu Aug 18 14:23:45 2022 -0400
+
+    Misc cleanup
+
+[33mcommit 936ebbd9737eccbecd93760a36a9d137d7f029f5[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Wed Aug 17 11:47:00 2022 -0400
+
+    Fix phaseShit typo
+
+[33mcommit e707cdffa870630aaf175a9d5a58d40d5788969b[m
+Merge: 26734d80f 5933c4243
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Tue Aug 16 19:12:45 2022 -0400
+
+    Merge pull request #1744 from AsparagusEduardo/pret_syncMapSec
+    
+    Synced Route 4 and 10's MapSec labels
+
+[33mcommit 5933c42439dcdfcfbef28ec5a51ba4dc9645f924[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Tue Aug 16 18:23:37 2022 -0400
+
+    Synced Route 4 and 10's MapSec labels
+
+[33mcommit 2ec8f27811888cfb9968112c2dc130da2734400a[m
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Tue Aug 16 13:00:28 2022 -0400
+
+    Add missing usage of SOUND_PAN_*
+
+[33mcommit e43f65cc692e415148b1be4df33a86f37dcea74e[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Mon Aug 15 21:06:26 2022 -0400
+
+    using BATTLE_RUN constants in BattleScript_EffectTeleport
+
+[33mcommit 7b0c8ec97245b9eebdf354acae4fd00ea408a8a9[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Mon Aug 15 20:41:12 2022 -0400
+
+    Revert style changes
+
+[33mcommit 26734d80f30620110aa771367ad62640b12d15aa[m
+Merge: 96fa350b4 0149f420f
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Mon Aug 15 18:51:32 2022 -0400
+
+    Merge pull request #1728 from AsparagusEduardo/pret_monDataEnum
+    
+    Convert MON_DATA constants into enum to ease editing and addition of fields.
+
+[33mcommit 44b26cc8aa1203e6a6824f21cf4d43335d1fe6a0[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Mon Aug 15 18:27:37 2022 -0400
+
+    From pokefirered
+
+[33mcommit 0149f420f9ce3346cf395c8f7863eb3ab9d05057[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Mon Aug 15 17:36:55 2022 -0400
+
+    Corrected comment
+
+[33mcommit e8a05e92e476ad2e50dc1be235b549e332cda5fc[m
+Author: Eduardo Quezada <eduardo602002@gmail.com>
+Date:   Mon Aug 15 17:04:34 2022 -0400
+
+    Corrected additional inconsistent uses of whitespace
+
+[33mcommit 96fa350b45e7940f2ac9c381d55856fc885ec314[m
+Merge: 3dc3dc847 ec73158f1
+Author: GriffinR <griffin.g.richards@gmail.com>
+Date:   Mon Aug 15 16:46:01 2022 -0400
+
+    Merge pull request #1741 from tustin2121/tustin2121-patch-scriptcontext
+    
+    Renaming the Script Contexts
+
+[33mcommit ec73158f16a668d984b7af033470ce2c02081339[m
+Author: tustin2121 <tustin2121@gmail.com>
+Date:   Mon Aug 15 16:37:38 2022 -0400
+
+    Moving documentation comments per request
+    
+    from the discord chat.
+
+[33mcommit 1cb659df8c10e671e250a84f6fa7c15d0fb61251[m
+Author: tustin2121 <tustin2121@gmail.com>
+Date:   Mon Aug 15 15:18:12 2022 -0400
+
+    Renaming Script Contexts
+    
+    - Determined how the various script contexts were used and renamed accordingly.
+    - ScriptContext2_Enable/Disable => Lock/UnlockPlayerFieldControls - The sole purpose of the flag is to make sure the player can't move around in the overworld. It has nothing to do with script contexts.
+    - ScriptContext1 => ScriptContext - It is the global script context used to set up scripts which run over many frames.
+    - ScriptContext2_RunNewScript => RunScriptImmediately - ScriptContext2's sole purpose was to run sc
